@@ -46,14 +46,17 @@ npm run dev
 
 # Run test server
 npm run test
+
+# Format code
+npm run format
 ```
 
 The app will be available at `http://localhost:5173`.
 
 ---
-
+ 
 ## Available Scripts
-
+ 
 ```bash
 npm run dev        # Start development server
 npm run build      # Build for production
@@ -61,11 +64,13 @@ npm run preview    # Preview production build locally
 npm run lint       # Run ESLint
 npm run test       # Run unit tests with Vitest
 npm run deploy     # Build and deploy to GitHub Pages
+npm run format     # Format all files in the src folder
 ```
+ 
 ---
-
+ 
 ## Folder Overview
-
+ 
 | Folder | Description |
 |---|---|
 | `public/` | Static files served as-is — favicon and shared SVG icon sprites |
@@ -88,11 +93,12 @@ npm run deploy     # Build and deploy to GitHub Pages
 | `src/__test__/` | Component unit tests written with Vitest + Testing Library |
 | `src/test/` | Test configuration and global setup for the test environment |
 | `.github/workflows/` | GitHub Actions CI/CD pipelines for deploy and testing |
-
+| `.vscode/` | VS Code workspace settings to enforce formatting for all team members |
+ 
 ---
-
+ 
 ## Project Structure
-
+ 
 ```
 badilni-frontend/
 ├── public/
@@ -127,8 +133,8 @@ badilni-frontend/
 │   │   │   └── Footer.jsx       # Page footer — links and branding
 │   │   │
 │   │   ├── home/
-│   │   │   ├── FirstSection.jsx # Landing hero section — headline, CTA, hero image
-│   │   │   └── SecondSection.jsx# Landing features/highlights section
+│   │   │   ├── FirstSection.jsx  # Landing hero section — headline, CTA, hero image
+│   │   │   └── SecondSection.jsx # Landing features/highlights section
 │   │   │
 │   │   ├── listings/
 │   │   │   ├── ListingCard.jsx  # Card component displaying a single listing preview
@@ -169,13 +175,18 @@ badilni-frontend/
 │       ├── deploy.yml           # CI/CD — builds and deploys to GitHub Pages on push to main
 │       └── unit-testing.yml     # CI — runs Vitest on push and pull requests to main
 │
+├── .vscode/
+│   └── settings.json            # VS Code workspace settings for consistent formatting
+│
+├── .editorconfig                # Editor-agnostic formatting rules (indent, charset, EOL)
+├── .prettierrc                  # Prettier formatting config
 ├── index.html                   # HTML shell — Vite entry, mounts #root div
 ├── vite.config.js               # Vite config — plugins, base path for GitHub Pages
 ├── eslint.config.js             # ESLint flat config — React hooks + refresh rules
 ├── package.json                 # Dependencies and npm scripts
 └── .gitignore                   # Ignores node_modules, dist, editor files
 ```
-
+ 
 ---
 
 ## Deployment

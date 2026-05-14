@@ -1,5 +1,5 @@
-import FirstSection from "../components/home/FirstSection";
-import SecondSection from "../components/home/SecondSection";
+import FirstSection from '../components/home/FirstSection'
+import SecondSection from '../components/home/SecondSection'
 
 const Home = () => {
   return (
@@ -7,7 +7,7 @@ const Home = () => {
       <FirstSection />
       <SecondSection />
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
