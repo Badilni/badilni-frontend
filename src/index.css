@@ -1,1 +1,27 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.light {
+    --background: #f5f5f5; /*main color for background*/
+    --whiteBackground:#ffffff; /*ex:for any card background*/
+    --primary: #3b82f6;
+    --secondary:#2f97e9;
+
+
+    --warning:#F59E0B;/* ex: Alert*/
+    --backWarningOpacity:#F59E0B0d; /*with opacity 5% */
+
+    --danger:#FF6B6B;/* ex: Cancel or delete */
+    --backgDanger:#ef4444; /*without opacity*/
+    --backgDangerOpacity:#ef44440d; /*with opacity 5% */
+
+    --success:#10B981;
+    --backgSuccessOpacity:#10B9810d;/*with opacity 5% */
+    
+    
+    --main-text:#3b82f6; /*for main title*/
+    --black-text:#1A1D2E; /*any text 'll be black*/
+    --grat-text:#94a3b8; /* */
+    --lkmfv:#0f172a;
+
+}
