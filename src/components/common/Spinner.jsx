@@ -1,5 +1,5 @@
 import { useSpinner } from '../../hooks/useSpinner';
-import logoImg from '/Badilni.png';
+import logoImg from '/logo.png';
 
 const Spinner = () => {
   const { text, showText } = useSpinner("Badilni");
@@ -9,7 +9,7 @@ const Spinner = () => {
       <div className="flex items-center space-x-3">
         <div className={`transition-transform duration-700 ease-in-out ${showText ? '-translate-x-2' : 'translate-x-12'}`}>
           <div className=" flex items-center justify-center">
-            <img src={logoImg} alt="Logo" className="w-full h-full object-contain" />
+            <img src={logoImg} alt="Logo" className="w-12 h-12 object-contain" />
           </div>
         </div>
 
