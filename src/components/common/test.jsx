@@ -15,7 +15,7 @@ const ShowcasePage = () => {
   }
 
   return (
-    // استخدمنا var(--background) و var(--black-text) من الـ Root
+    
     <div className="min-h-screen bg-[var(--background)] text-[var(--black-text)] font-poppins p-10 light">
       
       <header className="max-w-6xl mx-auto flex justify-between items-center mb-20">
