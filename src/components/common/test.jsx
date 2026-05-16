@@ -1,9 +1,22 @@
-import Button from "../common/Button"
-const FirstSection = () => {
-  return (
-    <div>
+import { useState, useEffect } from 'react';
+import Button from '../common/Button'; 
+import Spinner from '../common/Spinner';
 
-      <div className="min-h-screen bg-[var(--background)] text-[var(--black-text)] font-poppins p-10 light">
+const ShowcasePage = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <Spinner />; 
+  }
+
+  return (
+    
+    <div className="min-h-screen bg-[var(--background)] text-[var(--black-text)] font-poppins p-10 light">
       
       <header className="max-w-6xl mx-auto flex justify-between items-center mb-20">
          <h2 className="text-2xl font-bold text-[var(--main-text)]">Badilni</h2>
@@ -104,8 +117,7 @@ const FirstSection = () => {
 
       </main>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default FirstSection
+export default ShowcasePage;
