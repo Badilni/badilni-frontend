@@ -12,8 +12,8 @@ describe("Home Page", () => {
   });
 
   it("Should find first content section", () => {
-    const firstSection = screen.getByText("First Section");
-    expect(firstSection).toBeInTheDocument();
+    const firstSection = screen.getAllByText("Badilni");
+    expect(firstSection[0]).toBeInTheDocument();
   });
   it("Should find second content section", () => {
     const secondSection = screen.getByText("Second Section");

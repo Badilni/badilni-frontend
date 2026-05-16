@@ -9,13 +9,13 @@ const Button = ({
 
 const variants = {
 
-  primary: 'border-none rounded-[60px] overflow-hidden bg-[linear-gradient(to_bottom,#2f97e9,#2d94e6,#2c92e3,#2a8fe0,#298ddd,#278ada,#2688d7,#2485d5,#2383d2,#2180cf,#207ecc,#1e7bc9)] text-white hover:opacity-90 transition-all',
-  secondary: 'border-none rounded-[60px] overflow-hidden bg-[linear-gradient(to_left,#2f97e9,#2d94e6,#2c92e3,#2a8fe0,#298ddd,#278ada,#2688d7,#2485d5,#2383d2,#2180cf,#207ecc,#1e7bc9)] text-white hover:opacity-90 transition-all',
-  outline: 'border border-[var(--primary)] rounded-[60px] text-[var(--black-text)] hover:text-[var(--primary)] bg-transparent transition-all',
-  danger: 'bg-[var(--whiteBackground)] border border-[var(--danger)] text-[var(--danger)] rounded-[60px] hover:text-white hover:bg-[var(--danger)] transition-all',
-  skills: 'bg-[var(--whiteBackground)] border border-transparent rounded-[60px] text-[var(--black-text)] hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--primary)]/10 transition-all',
-  Skip: 'bg-[var(--background)] border-none rounded-[60px] text-[var(--grat-text)] hover:text-[var(--primary)] transition-all',
-  Disable: 'border-none rounded-[60px] bg-[var(--Disabled)] text-white cursor-not-allowed opacity-70',
+  primary: 'border-none rounded-[60px] overflow-hidden bg-[linear-gradient(to_bottom,var(--secondary-light),var(--primary-light))] text-white hover:opacity-90 transition-all shadow-md',
+  secondary: 'border-none rounded-[60px] overflow-hidden bg-[linear-gradient(to_left,var(--secondary-light),var(--primary-light))] text-white hover:opacity-90 transition-all shadow-md',
+  outline: 'border border-[var(--primary-light)] rounded-[60px] text-[var(--black-text)] hover:text-white hover:bg-[var(--primary-light)] bg-transparent transition-all',
+  danger: 'bg-[var(--whiteBackground)] border border-[var(--danger)] text-[var(--danger)] rounded-[60px] hover:text-white hover:bg-[var(--backgDanger)] transition-all',
+  skills: 'bg-[var(--whiteBackground)] border border-transparent rounded-[60px] text-[var(--black-text)] hover:border-[var(--primary-light)] hover:text-[var(--primary-light)] hover:bg-[var(--primary-light)]/10 transition-all',
+  Skip: 'bg-[var(--background-light)] border-none rounded-[60px] text-[var(--grat-text)] hover:text-[var(--primary-light)] transition-all',
+  Disable: 'border-none rounded-[60px] bg-[var(--Disabled)] text-white cursor-not-allowed opacity-50'
 };
 
   const sizes = {
