@@ -1,15 +1,15 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import Home from "../pages/Home";
-import { HashRouter } from "react-router-dom";
+import { fireEvent, render, screen } from '@testing-library/react'
+import Home from '../pages/Home'
+import { HashRouter } from 'react-router-dom'
 
-describe("Home Page", () => {
+describe('Home Page', () => {
   beforeEach(() => {
     render(
       <HashRouter>
-          <Home/>
-      </HashRouter>,
-    );
-  });
+        <Home />
+      </HashRouter>
+    )
+  })
 
   it("Should find first content section", () => {
     const firstSection = screen.getAllByText("Badilni");

@@ -1,7 +1,5 @@
 const SecondSection = () => {
-  return (
-    <div>Second Section</div>
-  )
+  return <div>Second Section</div>
 }
 
 export default SecondSection

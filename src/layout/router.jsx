@@ -1,16 +1,16 @@
-import { createHashRouter, Outlet, Navigate } from "react-router-dom";
-import MainLayout from "./MainLayout";
-import Home from "../pages/Home";
+import { createHashRouter, Outlet, Navigate } from 'react-router-dom'
+import MainLayout from './MainLayout'
+import Home from '../pages/Home'
 
 const RequireAuth = () => {
-  const user = localStorage.getItem("user");
-  if (!user) return "anything"; // <SignIn/>;
-  return <Outlet />;
-};
+  const user = localStorage.getItem('user')
+  if (!user) return 'anything' // <SignIn/>;
+  return <Outlet />
+}
 
 const router = createHashRouter([
   {
-    path: "/",
+    path: '/',
     element: <MainLayout />,
     children: [
       {
@@ -20,8 +20,8 @@ const router = createHashRouter([
     ],
   },
   {
-    path: "/signIn",
+    path: '/signIn',
     element: <div>Signin</div>,
   },
-]);
-export default router;
+])
+export default router
