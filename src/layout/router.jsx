@@ -1,6 +1,7 @@
-import { createHashRouter, Outlet, Navigate } from 'react-router-dom'
+import { createBrowserRouter, Outlet, Navigate } from 'react-router-dom'
 import MainLayout from './MainLayout'
 import Home from '../pages/Home'
+import ShowcasePage from '../components/common/test'
 
 const RequireAuth = () => {
   const user = localStorage.getItem('user')
@@ -8,20 +9,30 @@ const RequireAuth = () => {
   return <Outlet />
 }
 
-const router = createHashRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+      ],
+    },
+    {
+      path: '/test',
+      element: <ShowcasePage />,
+    },
+    {
+      path: '/signIn',
+      element: <div>Signin</div>,
+    },
+  ],
   {
-    path: '/',
-    element: <MainLayout />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-    ],
-  },
-  {
-    path: '/signIn',
-    element: <div>Signin</div>,
-  },
-])
+    basename: '/badilni-frontend',
+  }
+)
+
 export default router

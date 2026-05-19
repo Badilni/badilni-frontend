@@ -1,25 +1,56 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html,
+body {
+  background-color: var(--background-light);
+  color: var(--black-text);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
   /* light_mode */
-  --background-light: #f5f5f5;/*main color for background*/
-  --whiteBackground:#ffffff;/*ex:for any card background*/
+  --background-light: #f5f5f5; /*main color for background*/
+  --whiteBackground: #ffffff; /*ex:for any card background*/
   --primary-light: #3b82f6;
-  --secondary-light:#2f97e9;
+  --secondary-light: #2f97e9;
 
-  --warning:#F59E0B;/* ex: Alert*/
-  --backWarningOpacity:#F59E0B0d;/*with opacity 5% */
+  --warning: #f59e0b; /* ex: Alert*/
+  --backWarningOpacity: #f59e0b0d; /*with opacity 5% */
 
-  --danger:#FF6B6B;/* ex: Cancel or delete */
-  --backgDanger:#ef4444;/*without opacity*/
+  --danger: #ff6b6b; /* ex: Cancel or delete */
+  --backgDanger: #ef4444; /*without opacity*/
   --backgDangerOpacity: #ef44440d; /*with opacity 5% */
 
-  --success:#10B981;
-  --backgSuccessOpacity:#10B9810d;/*with opacity 5% */
-  --main-text:#3b82f6;/*for main title*/
+  --success: #10b981;
+  --backgSuccessOpacity: #10b9810d; /*with opacity 5% */
+  --main-text: #3b82f6; /*for main title*/
 
-  --black-text: #1A1D2E; /*any text 'll be black*/
-  --grat-text:#94a3b8;
-  --Disabled:#737373;
+  --black-text: #1a1d2e; /*any text 'll be black*/
+  --grat-text: #94a3b8;
+  --Disabled: #737373;
+}
+
+.dark {
+  /* dark_mode */
+  --background-light: #0f172a; /* Slate 900 requested color */
+  --whiteBackground: #1e293b; /* Slate 800 for card background */
+
+  --primary-light: #60a5fa; /* lighter contrast blue */
+  --secondary-light: #38bdf8; /* sky blue */
+  --main-text: #60a5fa; /* main blue title */
+
+  --black-text: #f8fafc; /* Slate 50 (light text in dark mode) */
+  --grat-text: #94a3b8; /* gray text */
+  --Disabled: #475569; /* Slate 600 */
+  --border-color: #334155; /* dark slate border */
+
+  --backWarningOpacity: rgba(245, 158, 11, 0.15);
+  --backgDangerOpacity: rgba(239, 68, 68, 0.15);
+  --backgSuccessOpacity: rgba(16, 185, 129, 0.15);
 }
