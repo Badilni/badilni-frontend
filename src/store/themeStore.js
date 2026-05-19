@@ -5,10 +5,10 @@ export const useThemeStore = create(
   persist(
     (set, get) => ({
       isDarkMode:
-        typeof window !== 'undefined'
+       typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function'
           ? window.matchMedia('(prefers-color-scheme: dark)').matches
           : false,
-
       toggleTheme: () => {
         const newMode = !get().isDarkMode
         set({ isDarkMode: newMode })
