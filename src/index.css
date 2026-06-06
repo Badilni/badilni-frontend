@@ -1,5 +1,5 @@
-@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
 
 html,
 body {
@@ -33,6 +33,7 @@ body {
 
   --black-text: #1a1d2e; /*any text 'll be black*/
   --grat-text: #94a3b8;
+  --gray-text: #94a3b8;
   --Disabled: #737373;
 }
 
@@ -47,6 +48,7 @@ body {
 
   --black-text: #f8fafc; /* Slate 50 (light text in dark mode) */
   --grat-text: #94a3b8; /* gray text */
+  --gray-text: #94a3b8;
   --Disabled: #475569; /* Slate 600 */
   --border-color: #334155; /* dark slate border */
 
