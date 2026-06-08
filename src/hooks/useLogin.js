@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { serverBaseUrl } from '../utils/constants'
 
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -15,7 +16,7 @@ export const useLogin = () => {
     }
 
     if (password.length < 6) {
-      const errMsg = 'Password must be at least 6 characters long'
+      const errMsg = 'Password must be at least 8 characters long'
       setError(errMsg)
       return { success: false, error: errMsg }
     }
@@ -23,13 +24,10 @@ export const useLogin = () => {
     setIsLoading(true)
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/v1/auth/login',
-        {
-          email: email,
-          password: password,
-        }
-      )
+      const response = await axios.post(`${serverBaseUrl}/auth/login`, {
+        email: email,
+        password: password,
+      })
 
       if (response.status === 200 || response.status === 201) {
         const userData = response.data
