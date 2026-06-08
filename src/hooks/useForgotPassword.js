@@ -1,0 +1,75 @@
+import { useState } from 'react';
+import axios from 'axios';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const emailSchema = z.object({
+  email: z.string()
+    .min(1, { message: 'Please enter your email address.' })
+    .email({ message: 'Please enter a valid email address (e.g., name@example.com).' })
+});
+
+export const useForgotPassword = (onNext) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(emailSchema),
+    defaultValues: { email: '' }
+  });
+
+  const onSubmit = async (data) => {
+    setServerError('');
+    setSuccessMessage('');
+    setIsLoading(true);
+
+    const typedEmail = data.email.trim();
+
+    try {
+      console.log('📤 Sending Request to:', 'http://localhost:3000/api/v1/auth/forgot-password');
+      console.log('📤 With Data:', { email: typedEmail });
+
+      const response = await axios.post('http://localhost:3000/api/v1/auth/forgot-password',
+      { email: typedEmail },  
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+      console.log('📨 Full Server Response Data:', response.data);
+
+      if (response.status === 200) {
+        setSuccessMessage('Verification code sent successfully!');
+
+        setTimeout(() => {
+          if (typeof onNext === 'function') {
+            onNext(typedEmail);
+          }
+        }, 1000);
+      } else {
+        setServerError(response.data?.message || 'Failed to send code.');
+      }
+
+    } catch (err) {
+      console.error('❌ API Error Detail:', err.response?.data || err.message);
+
+      const errorMsg = err.response?.data?.message || 'Something went wrong. Please check your network.';
+      setServerError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    register,
+    handleSubmit: handleSubmit(onSubmit),
+    errors,
+    isLoading,
+    serverError,
+    successMessage
+  };
+};
