@@ -3,9 +3,12 @@ import { serverBaseUrl } from '../../utils/constants'
 
 export const resendCode = async (email) => {
   try {
-    const response = await axios.post(`${serverBaseUrl}/auth/resend-verification`, {
-      email,
-    })
+    const response = await axios.post(
+      `${serverBaseUrl}/auth/resend-verification`,
+      {
+        email,
+      }
+    )
     return response.data
   } catch (error) {
     const serverMessage =
