@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import PasswordReset from '../../components/resetPassword/passwordReset'
+import PasswordReset from '../../components/auth/resetPassword/passwordReset'
 
 const ResetPassword = () => {
   const navigate = useNavigate()

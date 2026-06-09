@@ -1,7 +1,7 @@
-import { useForgotPassword } from '../../hooks/useForgotPassword'
+import { useForgotPassword } from '../../../hooks/useForgotPassword'
 import { IoIosArrowRoundBack } from 'react-icons/io'
-import HeadPasswordReset from '../common/HeadPasswordReset'
-import Button from '../common/Button'
+import HeadPasswordReset from '../../common/HeadPasswordReset'
+import Button from '../../common/Button'
 
 const ForgotPassword = ({ onNext, onBack }) => {
   const {

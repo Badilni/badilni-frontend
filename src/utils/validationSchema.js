@@ -57,4 +57,7 @@ const resetPasswordValidationSchema = z
     path: ['confirmPassword'],
   })
 
-export { signupFormValidationSchema, resetPasswordValidationSchema }
+
+  const signinFormValidationSchema = z.object({})
+
+export { signupFormValidationSchema, resetPasswordValidationSchema, signinFormValidationSchema }

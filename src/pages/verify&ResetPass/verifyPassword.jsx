@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import VerificationCode from '../../components/resetPassword/verifyPass'
+import VerificationCode from '../../components/auth/resetPassword/verifyPass'
 import { verifyCode } from '../../services/authentication'
 import { handleToastMessage } from '../../utils/helper'
 

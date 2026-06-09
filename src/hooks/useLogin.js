@@ -13,6 +13,7 @@ export const useLogin = () => {
     if (!email || !password) {
       const errMsg = 'Please fill in all fields'
       setError(errMsg)
+      handleToastMessage(errMsg, 'warning')
       return { success: false, error: errMsg }
     }
 

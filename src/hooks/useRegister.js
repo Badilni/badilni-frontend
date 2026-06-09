@@ -1,4 +1,3 @@
-//useRegister.js
 import { useState } from 'react'
 import { signupFormValidationSchema } from '../utils/validationSchema'
 import { register as registerUser } from '../services/authentication'

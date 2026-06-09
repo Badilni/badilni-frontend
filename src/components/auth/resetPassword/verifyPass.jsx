@@ -1,8 +1,8 @@
-import Spinner from '../common/Spinner'
-import { useVerificationCode } from '../../hooks/useVerificationCode'
+import Spinner from '../../common/Spinner'
+import { useVerificationCode } from '../../../hooks/useVerificationCode'
 import { IoIosArrowRoundBack } from 'react-icons/io'
-import Button from '../common/Button'
-import HeadPasswordReset from '../common/HeadPasswordReset'
+import Button from '../../common/Button'
+import HeadPasswordReset from '../../common/HeadPasswordReset'
 
 const VerificationCode = ({
   onNext,

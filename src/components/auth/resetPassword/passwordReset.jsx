@@ -1,7 +1,7 @@
-import { usePasswordReset } from '../../hooks/usePasswordReset'
+import { usePasswordReset } from '../../../hooks/usePasswordReset'
 import { IoIosArrowRoundBack } from 'react-icons/io'
-import Button from '../common/Button'
-import HeadPasswordReset from '../common/HeadPasswordReset'
+import Button from '../../common/Button'
+import HeadPasswordReset from '../../common/HeadPasswordReset'
 
 const PasswordReset = ({ email, verificationCode, onBack, onSuccess }) => {
   const {
