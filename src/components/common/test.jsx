@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import Button from '../common/Button'
 import Spinner from '../common/Spinner'
+import FirstSection from '../home/FirstSection'
+import SecondSection from '../home/SecondSection'
+import ThemeToggle from '../common/ThemeToggle'
 
 const ShowcasePage = () => {
   const [loading, setLoading] = useState(true)
@@ -33,6 +36,7 @@ const ShowcasePage = () => {
               Logout
             </Button>
           </div>
+          <ThemeToggle className="ml-2" />
         </div>
       </header>
 

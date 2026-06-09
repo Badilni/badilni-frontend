@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { serverBaseUrl } from '../utils/constants'
+import { serverBaseUrl } from '../../utils/constants'
 
 export const register = async (user) => {
   try {

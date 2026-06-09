@@ -1,6 +1,7 @@
 // src/hooks/usePasswordReset.js
 import { useState } from 'react'
 import axios from 'axios'
+import { serverBaseUrl } from '../utils/constants'
 import { z } from 'zod'
 
 const passwordResetSchema = z
@@ -80,7 +81,7 @@ export const usePasswordReset = (email, verificationCode, onSuccess) => {
       })
 
       const response = await axios.patch(
-        'http://localhost:3000/api/v1/auth/reset-password',
+        `${serverBaseUrl}/auth/reset-password`,
         {
           email: email,
           code: formattedCode,

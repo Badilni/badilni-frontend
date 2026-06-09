@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { serverBaseUrl } from '../utils/constants'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -37,12 +38,12 @@ export const useForgotPassword = (onNext) => {
     try {
       console.log(
         '📤 Sending Request to:',
-        'http://localhost:3000/api/v1/auth/forgot-password'
+        `${serverBaseUrl}/auth/forgot-password`
       )
       console.log('📤 With Data:', { email: typedEmail })
 
       const response = await axios.post(
-        'http://localhost:3000/api/v1/auth/forgot-password',
+        `${serverBaseUrl}/auth/forgot-password`,
         { email: typedEmail },
         { headers: { 'Content-Type': 'application/json' } }
       )

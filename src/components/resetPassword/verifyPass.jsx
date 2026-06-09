@@ -4,7 +4,12 @@ import { IoIosArrowRoundBack } from 'react-icons/io'
 import Button from '../common/Button'
 import HeadPasswordReset from '../common/HeadPasswordReset'
 
-const VerificationCode = ({ onNext, onBack }) => {
+const VerificationCode = ({
+  onNext,
+  onBack,
+  email = '',
+  isSubmitting = false,
+}) => {
   const {
     code,
     isLoading,
@@ -14,7 +19,7 @@ const VerificationCode = ({ onNext, onBack }) => {
     handleKeyDown,
     handleSubmit,
     handleResend,
-  } = useVerificationCode(onNext)
+  } = useVerificationCode(onNext, email)
 
   if (isLoading) {
     return (
@@ -93,9 +98,10 @@ const VerificationCode = ({ onNext, onBack }) => {
             variant="primary"
             size="lg"
             type="submit"
+            disabled={isSubmitting}
             className="w-full py-3.5 text-white rounded-2xl font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity mt-2"
           >
-            Continue
+            {isSubmitting ? 'Verifying...' : 'Continue'}
           </Button>
 
           <div className="text-center text-sm mt-6 transition-colors text-[var(--gray-text)]">

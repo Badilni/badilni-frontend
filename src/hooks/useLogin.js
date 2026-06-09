@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { serverBaseUrl } from '../utils/constants'
+import { handleToastMessage } from '../utils/helper'
 
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -15,9 +16,10 @@ export const useLogin = () => {
       return { success: false, error: errMsg }
     }
 
-    if (password.length < 6) {
+    if (password.length < 8) {
       const errMsg = 'Password must be at least 8 characters long'
       setError(errMsg)
+      handleToastMessage(errMsg, 'warning')
       return { success: false, error: errMsg }
     }
 
@@ -41,6 +43,7 @@ export const useLogin = () => {
         const userObj = userData.data?.user || userData
         localStorage.setItem('user', JSON.stringify(userObj))
 
+        handleToastMessage('Signed in successfully', 'success')
         return { success: true, data: userData }
       }
 
@@ -52,6 +55,7 @@ export const useLogin = () => {
       const errorMessage =
         err.response?.data?.message || 'Something went wrong. Please try again.'
       setError(errorMessage)
+      handleToastMessage(errorMessage, 'error')
       return { success: false, error: errorMessage }
     } finally {
       setIsLoading(false)

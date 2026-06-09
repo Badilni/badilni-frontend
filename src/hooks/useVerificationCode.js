@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
-import axios from 'axios'
 import { z } from 'zod'
+import { resendCode } from '../services/authentication'
+import { handleToastMessage } from '../utils/helper'
 
 const verificationCodeSchema = z
   .array(
@@ -13,7 +14,7 @@ const verificationCodeSchema = z
   )
   .length(6, { message: 'Please enter the complete 6-character code.' })
 
-export const useVerificationCode = (onNext) => {
+export const useVerificationCode = (onNext, email = '') => {
   const [code, setCode] = useState(['', '', '', '', '', ''])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -79,18 +80,24 @@ export const useVerificationCode = (onNext) => {
 
   const handleResend = async () => {
     setError('')
+    if (!email) {
+      const msg = 'Email not provided for resending code.'
+      setError(msg)
+      handleToastMessage(msg, 'error')
+      return
+    }
+
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/v1/auth/resend-code'
+      await resendCode(email)
+      handleToastMessage(
+        'A new code has been sent to your email! 📩',
+        'success'
       )
-      if (response.status === 200 || response.status === 201) {
-        alert('A new code has been sent to your email! 📩')
-      }
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message ||
-        'Failed to resend code. Please try again.'
+        err.message || 'Failed to resend code. Please try again.'
       setError(errorMessage)
+      handleToastMessage(errorMessage, 'error')
     }
   }
 

@@ -3,45 +3,25 @@ import ThemeToggle from '../../common/ThemeToggle'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useRegister from '../../../hooks/useRegister'
-import { handleToastMessage, onInvalid } from '../../../utils/helper'
-import { signupFormValidationSchema } from '../../../utils/validationSchema'
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const { register, isLoading, error } = useRegister()
   const navigate = useNavigate()
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    try {
-      signupFormValidationSchema.parse(formData)
-    } catch (validationError) {
-      const { fieldErrors } = validationError.flatten
-        ? validationError.flatten()
-        : { fieldErrors: {} }
-      onInvalid(fieldErrors || {})
-      return
-    }
-
+    const formData = { name, email, password, confirmPassword }
     const result = await register(formData)
 
     if (result.success) {
-      navigate('/signIn')
+      // navigate to verification screen with email context
+      navigate('/verifyCode', { state: { email, from: 'signup' } })
       return
-    }
-
-    if (result.error) {
-      handleToastMessage(result.error, 'error')
     }
   }
 
@@ -59,63 +39,159 @@ const SignUp = () => {
         </div>
       </header>
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-[480px] bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col gap-4"
+      <div
+        style={{ backgroundColor: 'var(--whiteBackground)' }}
+        className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300"
       >
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-          Create an Account
-        </h3>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-2">
+          <div>
+            <h2
+              style={{ color: 'var(--black-text)' }}
+              className="text-[26px] font-bold mb-2 tracking-tight transition-colors"
+            >
+              Create Account
+            </h2>
+            <p
+              style={{ color: 'var(--gray-text)' }}
+              className="text-sm leading-relaxed transition-colors"
+            >
+              Enter your details to create an account.
+            </p>
+          </div>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light transition-colors bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-        />
-        <input
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light transition-colors bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className=" w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light transition-colors bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          className=" w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light transition-colors bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-        />
+          {error && (
+            <div
+              className="p-3 text-sm rounded-xl font-medium transition-all"
+              style={{
+                backgroundColor: 'var(--backgDangerOpacity)',
+                color: 'var(--danger)',
+              }}
+            >
+              ⚠️ {error}
+            </div>
+          )}
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          <div className="space-y-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-semibold"
+              style={{ color: 'var(--black-text)' }}
+            >
+              Full Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={isLoading}
+              style={{
+                color: 'var(--black-text)',
+                backgroundColor: 'var(--whiteBackground)',
+                borderColor: 'var(--gray-text)',
+              }}
+              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+            />
+          </div>
 
-        <Button type="submit" variant="primary" size="md" disabled={isLoading}>
-          {isLoading ? 'Signing Up...' : 'Sign Up'}
-        </Button>
+          <div className="space-y-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-semibold"
+              style={{ color: 'var(--black-text)' }}
+            >
+              Email Address
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              style={{
+                color: 'var(--black-text)',
+                backgroundColor: 'var(--whiteBackground)',
+                borderColor: 'var(--gray-text)',
+              }}
+              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+            />
+          </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-          Already have an account?{' '}
-          <span
-            onClick={() => navigate('/signIn')}
-            className="text-primary-light cursor-pointer hover:underline"
+          <div className="space-y-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold"
+              style={{ color: 'var(--black-text)' }}
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              style={{
+                color: 'var(--black-text)',
+                backgroundColor: 'var(--whiteBackground)',
+                borderColor: 'var(--gray-text)',
+              }}
+              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-semibold"
+              style={{ color: 'var(--black-text)' }}
+            >
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={isLoading}
+              style={{
+                color: 'var(--black-text)',
+                backgroundColor: 'var(--whiteBackground)',
+                borderColor: 'var(--gray-text)',
+              }}
+              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            style={{ backgroundColor: 'var(--secondary-light)' }}
+            className="w-full py-3.5 text-white rounded-2xl font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 mt-2"
           >
-            Sign In
-          </span>
-        </p>
-      </form>
+            {isLoading ? 'Signing Up...' : 'Sign Up'}
+          </button>
+
+          <p
+            style={{ color: 'var(--gray-text)' }}
+            className="text-sm text-center mt-4 transition-colors"
+          >
+            Already have an account?{' '}
+            <button
+              type="button"
+              onClick={() => navigate('/signIn')}
+              style={{ color: 'var(--primary-light)' }}
+              className="font-semibold hover:underline cursor-pointer transition-all focus:outline-none"
+            >
+              Sign In
+            </button>
+          </p>
+        </form>
+      </div>
     </div>
   )
 }
