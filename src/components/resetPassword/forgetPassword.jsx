@@ -1,7 +1,7 @@
-import { useForgotPassword } from '../../hooks/useForgotPassword';
-import { IoIosArrowRoundBack } from "react-icons/io";
-import HeadPasswordReset from '../common/HeadPasswordReset';
-import Button from '../common/Button';
+import { useForgotPassword } from '../../hooks/useForgotPassword'
+import { IoIosArrowRoundBack } from 'react-icons/io'
+import HeadPasswordReset from '../common/HeadPasswordReset'
+import Button from '../common/Button'
 
 const ForgotPassword = ({ onNext, onBack }) => {
   const {
@@ -10,52 +10,66 @@ const ForgotPassword = ({ onNext, onBack }) => {
     errors,
     isLoading,
     serverError,
-    successMessage
-  } = useForgotPassword(onNext);
+    successMessage,
+  } = useForgotPassword(onNext)
 
   return (
     <div
       style={{ backgroundColor: 'var(--background-light)' }}
-      className="min-h-screen w-full flex flex-col items-center justify-center p-6 transition-colors duration-300">
+      className="min-h-screen w-full flex flex-col items-center justify-center p-6 transition-colors duration-300"
+    >
       <div className="w-full max-w-[480px] flex flex-col gap-2">
-
-        <HeadPasswordReset/>
+        <HeadPasswordReset />
 
         <div
           style={{ backgroundColor: 'var(--whiteBackground)' }}
           className="relative w-full rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)]
-          text-left transition-colors duration-300">
-
+          text-left transition-colors duration-300"
+        >
           <button
             type="button"
             onClick={onBack}
             className="absolute top-[35px] left-[35px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer
               opacity-80 hover:opacity-100 transition-all
-              border-[var(--gray-text)] bg-[var(--whiteBackground)]">
-
-            <IoIosArrowRoundBack className="text-[var(--secondary-light)]" size={28} />
+              border-[var(--gray-text)] bg-[var(--whiteBackground)]"
+          >
+            <IoIosArrowRoundBack
+              className="text-[var(--secondary-light)]"
+              size={28}
+            />
           </button>
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-12">
             <div>
-              <h2 style={{ color: 'var(--black-text)' }} className="text-[26px] font-bold mb-2 tracking-tight transition-colors">
+              <h2
+                style={{ color: 'var(--black-text)' }}
+                className="text-[26px] font-bold mb-2 tracking-tight transition-colors"
+              >
                 Forgot Password?
               </h2>
-              <p style={{ color: 'var(--gray-text)' }} className="text-sm leading-relaxed transition-colors">
-                Enter your email address below and we'll send you a 6-digit code to reset your password.
+              <p
+                style={{ color: 'var(--gray-text)' }}
+                className="text-sm leading-relaxed transition-colors"
+              >
+                Enter your email address below and we'll send you a 6-digit code
+                to reset your password.
               </p>
             </div>
 
             {serverError && (
-              <div className="p-3 text-sm rounded-xl font-medium transition-all
-              bg-[var(--backgDangerOpacity)] text-[var(--danger)]">
+              <div
+                className="p-3 text-sm rounded-xl font-medium transition-all
+              bg-[var(--backgDangerOpacity)] text-[var(--danger)]"
+              >
                 {serverError}
               </div>
             )}
 
             {errors.email && (
-              <div className="p-3 text-sm rounded-xl font-medium transition-all
-              bg-[var(--backgDangerOpacity)] text-[var(--danger)]">
+              <div
+                className="p-3 text-sm rounded-xl font-medium transition-all
+              bg-[var(--backgDangerOpacity)] text-[var(--danger)]"
+              >
                 {errors.email.message}
               </div>
             )}
@@ -94,10 +108,9 @@ const ForgotPassword = ({ onNext, onBack }) => {
             </Button>
           </form>
         </div>
-
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ForgotPassword;
+export default ForgotPassword

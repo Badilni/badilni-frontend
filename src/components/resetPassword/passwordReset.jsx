@@ -1,7 +1,7 @@
-import { usePasswordReset } from '../../hooks/usePasswordReset';
-import { IoIosArrowRoundBack } from "react-icons/io";
-import Button from '../common/Button';
-import HeadPasswordReset from '../common/HeadPasswordReset';
+import { usePasswordReset } from '../../hooks/usePasswordReset'
+import { IoIosArrowRoundBack } from 'react-icons/io'
+import Button from '../common/Button'
+import HeadPasswordReset from '../common/HeadPasswordReset'
 
 const PasswordReset = ({ email, verificationCode, onBack, onSuccess }) => {
   const {
@@ -13,12 +13,12 @@ const PasswordReset = ({ email, verificationCode, onBack, onSuccess }) => {
     error,
     handleSubmit,
     passwordCriteria,
-    isPasswordMismatched
-  } = usePasswordReset(email, verificationCode, onSuccess);
+    isPasswordMismatched,
+  } = usePasswordReset(email, verificationCode, onSuccess)
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 transition-colors duration-300 gap-6 relative bg-[var(--background-light)]">
-      <HeadPasswordReset/>
+      <HeadPasswordReset />
 
       <div className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300 bg-[var(--whiteBackground)]">
         <button
@@ -26,7 +26,10 @@ const PasswordReset = ({ email, verificationCode, onBack, onSuccess }) => {
           onClick={onBack}
           className="absolute top-[35px] left-[35px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 transition-all border-[var(--gray-text)] bg-[var(--whiteBackground)]"
         >
-          <IoIosArrowRoundBack className="text-[var(--secondary-light)]" size={28} />
+          <IoIosArrowRoundBack
+            className="text-[var(--secondary-light)]"
+            size={28}
+          />
         </button>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-12">
@@ -63,17 +66,28 @@ const PasswordReset = ({ email, verificationCode, onBack, onSuccess }) => {
                 <p className="font-semibold mb-1 opacity-90 text-[var(--black-text)]">
                   Password Requirements:
                 </p>
-                <p className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasMinLength ? "text-green-600" : "text-amber-600 opacity-80"}`}>
-                  {passwordCriteria.hasMinLength ? "✓" : "•"} At least 8 characters
+                <p
+                  className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasMinLength ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
+                >
+                  {passwordCriteria.hasMinLength ? '✓' : '•'} At least 8
+                  characters
                 </p>
-                <p className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasUppercase ? "text-green-600" : "text-amber-600 opacity-80"}`}>
-                  {passwordCriteria.hasUppercase ? "✓" : "•"} One uppercase letter (A-Z)
+                <p
+                  className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasUppercase ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
+                >
+                  {passwordCriteria.hasUppercase ? '✓' : '•'} One uppercase
+                  letter (A-Z)
                 </p>
-                <p className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasLowercase ? "text-green-600" : "text-amber-600 opacity-80"}`}>
-                  {passwordCriteria.hasLowercase ? "✓" : "•"} One lowercase letter (a-z)
+                <p
+                  className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasLowercase ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
+                >
+                  {passwordCriteria.hasLowercase ? '✓' : '•'} One lowercase
+                  letter (a-z)
                 </p>
-                <p className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasNumber ? "text-green-600" : "text-amber-600 opacity-80"}`}>
-                  {passwordCriteria.hasNumber ? "✓" : "•"} One number (0-9)
+                <p
+                  className={`flex items-center gap-1.5 font-medium transition-colors ${passwordCriteria.hasNumber ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
+                >
+                  {passwordCriteria.hasNumber ? '✓' : '•'} One number (0-9)
                 </p>
               </div>
             )}
@@ -111,7 +125,7 @@ const PasswordReset = ({ email, verificationCode, onBack, onSuccess }) => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PasswordReset;
+export default PasswordReset

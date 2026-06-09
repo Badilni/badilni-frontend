@@ -1,8 +1,8 @@
-import Spinner from '../common/Spinner';
-import { useVerificationCode } from '../../hooks/useVerificationCode';
-import { IoIosArrowRoundBack } from "react-icons/io";
-import Button from '../common/Button';
-import HeadPasswordReset from '../common/HeadPasswordReset';
+import Spinner from '../common/Spinner'
+import { useVerificationCode } from '../../hooks/useVerificationCode'
+import { IoIosArrowRoundBack } from 'react-icons/io'
+import Button from '../common/Button'
+import HeadPasswordReset from '../common/HeadPasswordReset'
 
 const VerificationCode = ({ onNext, onBack }) => {
   const {
@@ -13,8 +13,8 @@ const VerificationCode = ({ onNext, onBack }) => {
     handleChange,
     handleKeyDown,
     handleSubmit,
-    handleResend
-  } = useVerificationCode(onNext);
+    handleResend,
+  } = useVerificationCode(onNext)
 
   if (isLoading) {
     return (
@@ -23,7 +23,7 @@ const VerificationCode = ({ onNext, onBack }) => {
           <Spinner size="lg" />
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -36,11 +36,16 @@ const VerificationCode = ({ onNext, onBack }) => {
           onClick={onBack}
           className="absolute top-[35px] left-[35px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 transition-all border-[var(--gray-text)] bg-[var(--whiteBackground)]"
         >
-          <IoIosArrowRoundBack className="text-[var(--secondary-light)]" size={28} />
+          <IoIosArrowRoundBack
+            className="text-[var(--secondary-light)]"
+            size={28}
+          />
         </button>
 
         <div className="mt-11 mb-9">
-          <div className="text-sm font-semibold mb-2 text-[var(--secondary-light)]">Step 1/2</div>
+          <div className="text-sm font-semibold mb-2 text-[var(--secondary-light)]">
+            Step 1/2
+          </div>
           <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden transition-colors">
             <div className="w-1/2 h-full rounded-full bg-[var(--secondary-light)]"></div>
           </div>
@@ -52,7 +57,8 @@ const VerificationCode = ({ onNext, onBack }) => {
               Enter verification code
             </h2>
             <p className="text-sm leading-relaxed transition-colors text-[var(--gray-text)]">
-              We have sent a 6-digit security code to your registered email address.
+              We have sent a 6-digit security code to your registered email
+              address.
             </p>
           </div>
 
@@ -104,7 +110,7 @@ const VerificationCode = ({ onNext, onBack }) => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VerificationCode;
+export default VerificationCode
