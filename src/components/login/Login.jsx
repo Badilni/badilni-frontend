@@ -22,7 +22,7 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
     if (onForgotPassword) {
       onForgotPassword()
     } else {
-      navigate('/forgot-password')
+      navigate('/forgetPass')
     }
   }
 
