@@ -65,7 +65,7 @@ describe('Login Component', () => {
     })
   })
 
-  it('shows error if password is less than 6 characters', async () => {
+  it('shows error if password is less than 8 characters', async () => {
     renderLogin()
 
     const emailInput = screen.getByPlaceholderText('name@example.com')
@@ -78,7 +78,7 @@ describe('Login Component', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Password must be at least 6 characters long/i)
+        screen.getByText(/Password must be at least 8 characters long/i)
       ).toBeInTheDocument()
     })
   })

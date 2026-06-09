@@ -3,6 +3,7 @@ import MainLayout from './MainLayout'
 import Home from '../pages/Home'
 import ShowcasePage from '../components/common/test'
 import Login from '../components/login/Login'
+import Signup from '../pages/Signup'
 import VerificationPassword from '../pages/verify&ResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verify&ResetPass/forgetPass'
 import ResetPassword from '../pages/verify&ResetPass/ResetPassword'
@@ -33,6 +34,10 @@ const router = createHashRouter([
     element: <Login />,
   },
   {
+    path: '/signUp',
+    element: <Signup />,
+  },
+  {
     path: '/forgetPass',
     element: <ForgetPassPage />,
   },
@@ -43,6 +48,10 @@ const router = createHashRouter([
   {
     path: '/resetPassword',
     element: <ResetPassword />,
+  },
+  {
+    path: '*',
+    element: <h1>Not Found</h1>,
   },
 ])
 
