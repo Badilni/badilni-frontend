@@ -41,6 +41,7 @@ const FirstSection = () => {
             </Button>
 
             {/* Animated Theme Switcher placed directly next to Logout buttons */}
+
             <ThemeToggle className="ml-2" />
           </div>
         </header>
