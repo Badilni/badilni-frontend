@@ -4,9 +4,9 @@ import Home from '../pages/Home'
 import ShowcasePage from '../components/common/test'
 import LoginPage from '../pages/Login'
 import Signup from '../pages/Signup'
-import VerificationPassword from '../pages/verify&ResetPass/verifyPassword'
-import ForgetPassPage from '../pages/verify&ResetPass/forgetPass'
-import ResetPassword from '../pages/verify&ResetPass/ResetPassword'
+import VerificationPassword from '../pages/verifyResetPass/verifyPassword'
+import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
+
 
 const RequireAuth = () => {
   const user = localStorage.getItem('user')
@@ -44,10 +44,6 @@ const router = createHashRouter([
   {
     path: '/verifyCode',
     element: <VerificationPassword />,
-  },
-  {
-    path: '/resetPassword',
-    element: <ResetPassword />,
   },
   {
     path: '*',

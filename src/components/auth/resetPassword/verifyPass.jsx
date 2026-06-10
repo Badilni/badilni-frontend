@@ -1,29 +1,58 @@
+
 import Spinner from '../../common/Spinner'
-import { useVerificationCode } from '../../../hooks/useVerificationCode'
 import { IoIosArrowRoundBack } from 'react-icons/io'
 import Button from '../../common/Button'
 import HeadPasswordReset from '../../common/HeadPasswordReset'
+import { useCombinedResetPassword } from '../../../hooks/useVerificationCode'
+import { resetPasswordSubmitService } from '../../../services/authentication/ForgotPasswordAuth/forgotPassword'
+import { handleToastMessage } from '../../../utils/helper'
 
-const VerificationCode = ({
-  onNext,
-  onBack,
-  email = '',
-  isSubmitting = false,
-}) => {
+export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
   const {
     code,
-    isLoading,
-    error,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    isLoading: isCodeLoading,
+    error: combinedError,
+    setError: setCombinedError,
+    setIsLoading: setIsFinalSubmitting,
     inputRefs,
+    passwordCriteria,
+    isPasswordMismatched,
     handleChange,
     handleKeyDown,
-    handleSubmit,
     handleResend,
-  } = useVerificationCode(onNext, email)
+    validateForm,
+  } = useCombinedResetPassword(email)
 
-  if (isLoading) {
+  const handleFinalSubmit = async (e) => {
+    e.preventDefault()
+    setCombinedError('')
+
+    if (!validateForm()) return
+
+    setIsFinalSubmitting(true)
+    try {
+      const finalCode = code.join('')
+
+      await resetPasswordSubmitService(email, finalCode, password, confirmPassword)
+
+      handleToastMessage('Password reset successfully! 🎉', 'success')
+      setIsFinalSubmitting(false)
+
+      if (typeof onSuccess === 'function') onSuccess()
+    } catch (err) {
+      setIsFinalSubmitting(false)
+      const backendError = err.response?.data?.errors?.[0]?.message || err.response?.data?.message
+      setCombinedError(backendError || 'Failed to reset password. Please try again.')
+    }
+  }
+
+  if (isCodeLoading) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center transition-colors duration-300 bg-[var(--background-light)]">
+      <div className="min-h-screen w-full flex items-center justify-center bg-[var(--background-light)]">
         <div className="text-[var(--secondary-light)]">
           <Spinner size="lg" />
         </div>
@@ -34,51 +63,25 @@ const VerificationCode = ({
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 transition-colors duration-300 gap-6 relative bg-[var(--background-light)]">
       <HeadPasswordReset />
+      <form onSubmit={handleFinalSubmit} className="relative w-full max-w-[520px] flex flex-col gap-8 rounded-[24px] p-6 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300 bg-[var(--whiteBackground)]">
 
-      <div className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300 bg-[var(--whiteBackground)]">
         <button
           type="button"
           onClick={onBack}
-          className="absolute top-[35px] left-[35px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 transition-all border-[var(--gray-text)] bg-[var(--whiteBackground)]"
+          className="absolute top-[25px] left-[25px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 transition-all border-[var(--gray-text)] bg-[var(--whiteBackground)] z-10"
         >
-          <IoIosArrowRoundBack
-            className="text-[var(--secondary-light)]"
-            size={28}
-          />
+          <IoIosArrowRoundBack className="text-[var(--secondary-light)]" size={28} />
         </button>
 
-        <div className="mt-11 mb-9">
-          <div className="text-sm font-semibold mb-2 text-[var(--secondary-light)]">
-            Step 1/2
-          </div>
-          <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden transition-colors">
-            <div className="w-1/2 h-full rounded-full bg-[var(--secondary-light)]"></div>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4 mt-8">
           <div>
-            <h2 className="text-[26px] font-bold mb-2 tracking-tight transition-colors text-[var(--black-text)]">
-              Enter verification code
-            </h2>
-            <p className="text-sm leading-relaxed transition-colors text-[var(--gray-text)]">
-              We have sent a 6-digit security code to your registered email
-              address.
-            </p>
+            <h2 className="text-[24px] font-bold mb-1 tracking-tight text-[var(--black-text)]">1. Verification Code</h2>
+            <p className="text-sm leading-relaxed text-[var(--gray-text)]">Enter the 6-digit security code sent to your email.</p>
           </div>
-
-          {error && (
-            <div className="p-3 text-sm rounded-xl font-medium transition-all bg-[var(--backgDangerOpacity)] text-[var(--danger)]">
-              ⚠️ {error}
-            </div>
-          )}
 
           <div className="space-y-3">
-            <label className="block text-sm font-semibold transition-colors text-[var(--black-text)]">
-              Verification Code
-            </label>
-
-            <div className="flex justify-between gap-2.5">
+            <label className="block text-sm font-semibold text-[var(--black-text)]">Verification Code</label>
+            <div className="flex justify-between gap-2">
               {code.map((num, index) => (
                 <input
                   key={index}
@@ -88,35 +91,94 @@ const VerificationCode = ({
                   onChange={(e) => handleChange(e.target, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   autoFocus={index === 0}
-                  className="w-[52px] h-14 text-center text-2xl font-bold border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 uppercase select-all border-[var(--gray-text)] bg-[var(--whiteBackground)] text-[var(--black-text)]"
+                  autoComplete="one-time-code"
+                  className="w-[45px] h-12 text-center text-xl font-bold border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 uppercase border-[var(--gray-text)] bg-[var(--whiteBackground)] text-[var(--black-text)]"
                 />
               ))}
             </div>
+          </div>
+
+          <div className="text-sm text-[var(--gray-text)] pt-1">
+            Didn't get the code?{' '}
+            <span onClick={handleResend} className="font-semibold cursor-pointer hover:underline text-[var(--secondary-light)]">
+              Resend Code
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-[24px] font-bold mb-1 tracking-tight text-[var(--black-text)]">2. New Password</h2>
+            <p className="text-sm leading-relaxed text-[var(--gray-text)]">Enter and confirm your new strong password.</p>
+          </div>
+
+          {combinedError && (
+            <div className="p-3 text-sm rounded-xl font-medium bg-[var(--backgDangerOpacity)] text-[var(--danger)]">
+              ⚠️ {combinedError}
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-[var(--black-text)]">New Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+              className="w-full h-12 px-4 border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 text-[var(--black-text)] bg-[var(--whiteBackground)] border-[var(--gray-text)]"
+            />
+
+            {password.length > 0 && (
+              <div className="text-xs space-y-1.5 p-4 rounded-xl mt-2 border border-dashed bg-[var(--background-light)] border-[var(--gray-text)]">
+                <p className="font-semibold mb-1 opacity-90 text-[var(--black-text)]">Password Requirements:</p>
+                <p className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasMinLength ? 'text-green-600' : 'text-amber-600 opacity-80'}`}>
+                  {passwordCriteria.hasMinLength ? '✓' : '•'} At least 8 characters
+                </p>
+                <p className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasUppercase ? 'text-green-600' : 'text-amber-600 opacity-80'}`}>
+                  {passwordCriteria.hasUppercase ? '✓' : '•'} One uppercase letter (A-Z)
+                </p>
+                <p className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasLowercase ? 'text-green-600' : 'text-amber-600 opacity-80'}`}>
+                  {passwordCriteria.hasLowercase ? '✓' : '•'} One lowercase letter (a-z)
+                </p>
+                <p className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasNumber ? 'text-green-600' : 'text-amber-600 opacity-80'}`}>
+                  {passwordCriteria.hasNumber ? '✓' : '•'} One number (0-9)
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-[var(--black-text)]">Confirm New Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
+              className="w-full h-12 px-4 border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 text-[var(--black-text)] bg-[var(--whiteBackground)] border-[var(--gray-text)]"
+            />
+
+            {isPasswordMismatched && (
+              <p className="text-[var(--danger)] text-xs font-semibold flex items-center gap-1 mt-1">
+                ❌ Passwords do not match yet.
+              </p>
+            )}
           </div>
 
           <Button
             variant="primary"
             size="lg"
             type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3.5 text-white rounded-2xl font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity mt-2"
+            disabled={isCodeLoading}
+            className="w-full py-3.5 text-white rounded-2xl font-semibold text-base mt-2"
           >
-            {isSubmitting ? 'Verifying...' : 'Continue'}
+            {isCodeLoading ? 'Submitting Everything...' : 'Submit & Reset Password'}
           </Button>
-
-          <div className="text-center text-sm mt-6 transition-colors text-[var(--gray-text)]">
-            Didn't get the code?{' '}
-            <span
-              onClick={handleResend}
-              className="font-semibold cursor-pointer hover:underline text-[var(--secondary-light)]"
-            >
-              Resend Code
-            </span>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   )
 }
 
-export default VerificationCode
+export default CombinedPasswordReset;
