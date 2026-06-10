@@ -102,7 +102,8 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               Please enter your details to sign in to your account.
             </p>
           </div>
-{/* 
+
+{/*
           {error && (
             <div
               className="p-3 text-sm rounded-xl font-medium transition-all"
@@ -113,7 +114,8 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
             >
               ⚠️ {error}
             </div>
-          )} */}
+          )}
+*/}
 
           <div className="space-y-2">
             <label
