@@ -1,14 +1,22 @@
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { IoIosArrowRoundBack } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../../common/ThemeToggle'
 import useLogin from '../../../hooks/useLogin'
+import { signinFormValidationSchema } from '../../../utils/validationSchema'
 
 const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const { login, isLoading, error, setError } = useLogin()
+  const { login, isLoading, error } = useLogin()
   const navigate = useNavigate()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signinFormValidationSchema),
+  })
 
   const handleBack = () => {
     if (onBack) {
@@ -34,9 +42,8 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
     }
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const result = await login(email, password)
+  const onSubmit = async (data) => {
+    const result = await login(data.email, data.password)
 
     if (result.success) {
       if (onSuccess) {
@@ -80,7 +87,7 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
           />
         </button>
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-12">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-12">
           <div>
             <h2
               style={{ color: 'var(--black-text)' }}
@@ -95,7 +102,7 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               Please enter your details to sign in to your account.
             </p>
           </div>
-
+{/* 
           {error && (
             <div
               className="p-3 text-sm rounded-xl font-medium transition-all"
@@ -106,7 +113,7 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
             >
               ⚠️ {error}
             </div>
-          )}
+          )} */}
 
           <div className="space-y-2">
             <label
@@ -120,16 +127,20 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               id="email"
               type="email"
               placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              {...register('email')}
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: 'var(--gray-text)',
+                borderColor: errors.email ? 'var(--danger)' : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
+            {errors.email && (
+              <p className="text-xs font-medium mt-1" style={{ color: 'var(--danger)' }}>
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -154,16 +165,20 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               id="password"
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              {...register('password')}
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: 'var(--gray-text)',
+                borderColor: errors.password ? 'var(--danger)' : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
+            {errors.password && (
+              <p className="text-xs font-medium mt-1" style={{ color: 'var(--danger)' }}>
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <button
@@ -196,3 +211,4 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
 }
 
 export default Login
+
