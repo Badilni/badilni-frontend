@@ -1,34 +1,26 @@
-import { useState, useRef, useEffect } from 'react'
-import { z } from 'zod'
-import { resendCode } from '../services/authentication'
-  import { handleToastMessage } from '../utils/helper'
+import { useState, useRef } from 'react'
+import { handleToastMessage } from '../utils/helper'
+import { resendCode } from '../services/authentication/ForgotPasswordAuth/forgotPassword'
+import { resetPasswordValidationSchema, verificationCodeSchema } from '../utils/validationSchema'
 
-const verificationCodeSchema = z
-  .array(
-    z
-      .string()
-      .length(1, { message: 'Each field must have exactly 1 character.' })
-      .regex(/^[a-zA-Z0-9]$/, {
-        message: 'Only alphanumeric characters are allowed.',
-      })
-  )
-  .length(6, { message: 'Please enter the complete 6-character code.' })
-
-export const useVerificationCode = (onNext, email = '') => {
+export const useCombinedResetPassword = (email) => {
   const [code, setCode] = useState(['', '', '', '', '', ''])
-  const [isLoading, setIsLoading] = useState(true)
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const inputRefs = useRef([])
+  const passwordCriteria = {
+    hasMinLength: password.length >= 8,
+    hasUppercase: /[A-Z]/.test(password),
+    hasLowercase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+  }
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [])
+  const isPasswordMismatched = password && confirmPassword && password !== confirmPassword
 
-  const handleChange = (element, index) => {
-    const value = element.value.slice(-1)
+  const handleChange = (target, index) => {
+    const value = target.value.slice(-1)
 
     if (value === '') {
       let newCode = [...code]
@@ -37,78 +29,71 @@ export const useVerificationCode = (onNext, email = '') => {
       return
     }
 
-    const alphanumericRegex = /^[a-zA-Z0-9]$/
-    if (!alphanumericRegex.test(value)) {
-      return
-    }
+    if (!/^[a-zA-Z0-9]$/.test(value)) return
 
     let newCode = [...code]
     newCode[index] = value.toUpperCase()
     setCode(newCode)
 
     if (index < 5) {
-      setTimeout(() => {
-        inputRefs.current[index + 1]?.focus()
-      }, 10)
+      setTimeout(() => inputRefs.current[index + 1]?.focus(), 10)
     }
   }
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
-      setTimeout(() => {
-        inputRefs.current[index - 1]?.focus()
-      }, 10)
-    }
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setError('')
-
-    const result = verificationCodeSchema.safeParse(code)
-
-    if (!result.success) {
-      setError(result.error.errors[0].message)
-      return
-    }
-
-    const finalCode = code.join('')
-    if (typeof onNext === 'function') {
-      onNext(finalCode)
+      setTimeout(() => inputRefs.current[index - 1]?.focus(), 10)
     }
   }
 
   const handleResend = async () => {
-    setError('')
     if (!email) {
-      const msg = 'Email not provided for resending code.'
-      setError(msg)
-      handleToastMessage(msg, 'error')
+      handleToastMessage('Email is required to resend code.', 'warning')
       return
     }
-
     try {
       await resendCode(email)
-      handleToastMessage(
-        'A new code has been sent to your email! 📩',
-        'success'
-      )
+      handleToastMessage('A new code has been sent! 📩', 'success')
     } catch (err) {
-      const errorMessage =
-        err.message || 'Failed to resend code. Please try again.'
-      setError(errorMessage)
-      handleToastMessage(errorMessage, 'error')
+      handleToastMessage(err.response?.data?.message || 'Failed to resend code.', 'error')
     }
+  }
+
+  const validateForm = () => {
+    const codeResult = verificationCodeSchema.safeParse(code)
+    if (!codeResult.success) {
+      setError('Please enter the complete 6-digit verification code.')
+      return false
+    }
+
+    const passwordResult = resetPasswordValidationSchema.safeParse({
+      password,
+      confirmPassword,
+    })
+    if (!passwordResult.success) {
+      setError(passwordResult.error.errors[0].message)
+      return false
+    }
+
+    return true
   }
 
   return {
     code,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
     isLoading,
+    setIsLoading,
     error,
+    setError,
     inputRefs,
+    passwordCriteria,
+    isPasswordMismatched,
     handleChange,
     handleKeyDown,
-    handleSubmit,
     handleResend,
+    validateForm,
   }
 }

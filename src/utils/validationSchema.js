@@ -70,4 +70,14 @@ const signinFormValidationSchema = z.object({
     .min(1, { message: 'Password is required.' }),
 })
 
-export { signupFormValidationSchema, resetPasswordValidationSchema, signinFormValidationSchema }
+const verificationCodeSchema = z
+  .array(
+    z
+      .string()
+      .trim()
+      .min(1, { message: 'Required' })
+      .regex(/^[a-zA-Z0-9]$/, { message: 'Must be a single alphanumeric character' })
+  )
+  .length(6, { message: 'Verification code must be exactly 6 digits' })
+  .transform((val) => val.join(''));
+export { signupFormValidationSchema, resetPasswordValidationSchema, signinFormValidationSchema, verificationCodeSchema }
