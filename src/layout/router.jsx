@@ -2,7 +2,7 @@ import { createHashRouter, Outlet, Navigate } from 'react-router-dom'
 import MainLayout from './MainLayout'
 import Home from '../pages/Home'
 import ShowcasePage from '../components/common/test'
-import Login from '../components/auth/login/Login'
+import LoginPage from '../pages/Login'
 import Signup from '../pages/Signup'
 import VerificationPassword from '../pages/verify&ResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verify&ResetPass/forgetPass'
@@ -31,7 +31,7 @@ const router = createHashRouter([
   },
   {
     path: '/signIn',
-    element: <Login />,
+    element: <LoginPage />,
   },
   {
     path: '/signUp',
