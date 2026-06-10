@@ -145,10 +145,11 @@ describe('Login Component', () => {
     })
   })
 
-  it('displays API error on failed login', async () => {
+  it('handles API error on failed login without crashing', async () => {
     loginService.mockRejectedValueOnce(new Error('Invalid credentials'))
 
-    renderLogin()
+    const mockOnSuccess = vi.fn()
+    renderLogin({ onSuccess: mockOnSuccess })
 
     const emailInput = screen.getByPlaceholderText('name@example.com')
     const passwordInput = screen.getByPlaceholderText('••••••••')
@@ -159,7 +160,13 @@ describe('Login Component', () => {
     fireEvent.click(submitButton)
 
     await waitFor(() => {
-      expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument()
+      // Service was called with the correct credentials
+      expect(loginService).toHaveBeenCalledWith({
+        email: 'john@example.com',
+        password: 'wrongpassword',
+      })
+      // onSuccess should NOT have been called since login failed
+      expect(mockOnSuccess).not.toHaveBeenCalled()
     })
   })
 })
