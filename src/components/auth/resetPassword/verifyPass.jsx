@@ -1,12 +1,35 @@
+import { useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import Spinner from '../../common/Spinner'
 import { IoIosArrowRoundBack } from 'react-icons/io'
 import Button from '../../common/Button'
+import ShowPassword from '../../common/ShowPassword'
+import ErrorMessage from '../../common/ErrorMessage'
 import HeadPasswordReset from '../../common/HeadPasswordReset'
 import { useCombinedResetPassword } from '../../../hooks/useVerificationCode'
 import { resetPasswordSubmitService } from '../../../services/authentication/ForgotPasswordAuth/forgotPassword'
+import { resetPasswordValidationSchema } from '../../../utils/validationSchema'
 import { handleToastMessage } from '../../../utils/helper'
 
 export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isFinalSubmitting, setIsFinalSubmitting] = useState(false)
+
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(resetPasswordValidationSchema),
+    mode: 'onChange',
+  })
+
+  // Watch RHF values so we can sync them into the hook's state
+  const watchedPassword = watch('password')
+  const watchedConfirmPassword = watch('confirmPassword')
+
   const {
     code,
     password,
@@ -16,7 +39,6 @@ export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
     isLoading: isCodeLoading,
     error: combinedError,
     setError: setCombinedError,
-    setIsLoading: setIsFinalSubmitting,
     inputRefs,
     passwordCriteria,
     isPasswordMismatched,
@@ -25,6 +47,15 @@ export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
     handleResend,
     validateForm,
   } = useCombinedResetPassword(email)
+
+  // Sync RHF values → hook state so validateForm() and isPasswordMismatched work correctly
+  useEffect(() => {
+    if (watchedPassword !== undefined) setPassword(watchedPassword)
+  }, [watchedPassword])
+
+  useEffect(() => {
+    if (watchedConfirmPassword !== undefined) setConfirmPassword(watchedConfirmPassword)
+  }, [watchedConfirmPassword])
 
   const handleFinalSubmit = async (e) => {
     e.preventDefault()
@@ -43,18 +74,18 @@ export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
         confirmPassword
       )
 
-      handleToastMessage('Password reset successfully! 🎉', 'success')
-      setIsFinalSubmitting(false)
+      handleToastMessage('Password reset successfully!', 'success')
 
       if (typeof onSuccess === 'function') onSuccess()
     } catch (err) {
-      setIsFinalSubmitting(false)
       const backendError =
         err.response?.data?.errors?.[0]?.message || err.response?.data?.message
       const finalError =
         backendError || 'Failed to reset password. Please try again.'
       setCombinedError(finalError)
       handleToastMessage(finalError, 'error')
+    } finally {
+      setIsFinalSubmitting(false)
     }
   }
 
@@ -137,86 +168,75 @@ export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
               Enter and confirm your new strong password.
             </p>
           </div>
-{/* 
-          {combinedError && (
-            <div className="p-3 text-sm rounded-xl font-medium bg-[var(--backgDangerOpacity)] text-[var(--danger)]">
-              ⚠️ {combinedError}
-            </div>
-          )} */}
 
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-[var(--black-text)]">
               New Password
             </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-              className="w-full h-12 px-4 border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 text-[var(--black-text)] bg-[var(--whiteBackground)] border-[var(--gray-text)]"
-            />
-
-            {password.length > 0 && (
-              <div className="text-xs space-y-1.5 p-4 rounded-xl mt-2 border border-dashed bg-[var(--background-light)] border-[var(--gray-text)]">
-                <p className="font-semibold mb-1 opacity-90 text-[var(--black-text)]">
-                  Password Requirements:
-                </p>
-                <p
-                  className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasMinLength ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
-                >
-                  {passwordCriteria.hasMinLength ? '✓' : '•'} At least 8
-                  characters
-                </p>
-                <p
-                  className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasUppercase ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
-                >
-                  {passwordCriteria.hasUppercase ? '✓' : '•'} One uppercase
-                  letter (A-Z)
-                </p>
-                <p
-                  className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasLowercase ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
-                >
-                  {passwordCriteria.hasLowercase ? '✓' : '•'} One lowercase
-                  letter (a-z)
-                </p>
-                <p
-                  className={`flex items-center gap-1.5 font-medium ${passwordCriteria.hasNumber ? 'text-green-600' : 'text-amber-600 opacity-80'}`}
-                >
-                  {passwordCriteria.hasNumber ? '✓' : '•'} One number (0-9)
-                </p>
-              </div>
-            )}
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                {...register('password')}
+                style={{
+                  color: 'var(--black-text)',
+                  backgroundColor: 'var(--whiteBackground)',
+                  borderColor: errors.password
+                    ? 'var(--danger)'
+                    : 'var(--gray-text)',
+                }}
+                autoComplete="new-password"
+                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 text-[var(--black-text)] bg-[var(--whiteBackground)] border-[var(--gray-text)]"
+              />
+              <ShowPassword
+                isVisible={showPassword}
+                toggleVisibility={() => setShowPassword(!showPassword)}
+              />
+            </div>
+            <ErrorMessage message={errors.password?.message} />
           </div>
 
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-[var(--black-text)]">
               Confirm New Password
             </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              autoComplete="new-password"
-              className="w-full h-12 px-4 border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 text-[var(--black-text)] bg-[var(--whiteBackground)] border-[var(--gray-text)]"
-            />
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                {...register('confirmPassword')}
+                style={{
+                  color: 'var(--black-text)',
+                  backgroundColor: 'var(--whiteBackground)',
+                  borderColor: errors.confirmPassword
+                    ? 'var(--danger)'
+                    : 'var(--gray-text)',
+                }}
+                autoComplete="new-password"
+                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none focus:ring-4 focus:ring-blue-500/10 text-[var(--black-text)] bg-[var(--whiteBackground)] border-[var(--gray-text)]"
+              />
+              <ShowPassword
+                isVisible={showConfirmPassword}
+                toggleVisibility={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              />
+            </div>
 
             {isPasswordMismatched && (
-              <p className="text-[var(--danger)] text-xs font-semibold flex items-center gap-1 mt-1">
-                ❌ Passwords do not match yet.
-              </p>
+              <ErrorMessage message="Passwords do not match yet." />
             )}
+            <ErrorMessage message={errors.confirmPassword?.message} />
           </div>
 
           <Button
             variant="primary"
             size="lg"
             type="submit"
-            disabled={isCodeLoading}
+            disabled={isFinalSubmitting}
             className="w-full py-3.5 text-white rounded-2xl font-semibold text-base mt-2"
           >
-            {isCodeLoading
+            {isFinalSubmitting
               ? 'Submitting Everything...'
               : 'Submit & Reset Password'}
           </Button>

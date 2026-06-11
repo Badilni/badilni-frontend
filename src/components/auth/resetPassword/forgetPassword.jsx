@@ -67,12 +67,6 @@ const ForgotPassword = ({ onNext, onBack }) => {
                 to reset your password.
               </p>
             </div>
-{/* 
-            {successMessage && (
-              <div className="p-3 text-sm rounded-xl font-medium transition-all bg-green-500/10 text-green-500">
-                {successMessage}
-              </div>
-            )} */}
 
             <div className="space-y-2">
               <label className="block text-sm font-semibold transition-colors text-[var(--black-text)]">

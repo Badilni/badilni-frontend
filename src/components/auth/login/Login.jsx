@@ -1,21 +1,31 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { IoIosArrowRoundBack } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
+import { handleToastMessage } from '../../../utils/helper'
 import ThemeToggle from '../../common/ThemeToggle'
+import ShowPassword from '../../common/ShowPassword'
+import ErrorMessage from '../../common/ErrorMessage'
 import useLogin from '../../../hooks/useLogin'
 import { signinFormValidationSchema } from '../../../utils/validationSchema'
 
 const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
+  const [showPassword, setShowPassword] = useState(false)
   const { login, isLoading, error } = useLogin()
   const navigate = useNavigate()
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
+    register,
   } = useForm({
     resolver: zodResolver(signinFormValidationSchema),
+     mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
   const handleBack = () => {
@@ -54,6 +64,13 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
     }
   }
 
+  const onErrors = (fieldErrors) => {
+    const firstError = Object.values(fieldErrors)[0]?.message
+    if (firstError) {
+      handleToastMessage(firstError, 'warning')
+    }
+  }
+
   return (
     <div
       style={{ backgroundColor: 'var(--background-light)' }}
@@ -87,7 +104,10 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
           />
         </button>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-12">
+        <form
+          onSubmit={handleSubmit(onSubmit, onErrors)}
+          className="space-y-6 mt-12"
+        >
           <div>
             <h2
               style={{ color: 'var(--black-text)' }}
@@ -102,20 +122,6 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               Please enter your details to sign in to your account.
             </p>
           </div>
-
-{/*
-          {error && (
-            <div
-              className="p-3 text-sm rounded-xl font-medium transition-all"
-              style={{
-                backgroundColor: 'var(--backgDangerOpacity)',
-                color: 'var(--danger)',
-              }}
-            >
-              ⚠️ {error}
-            </div>
-          )}
-*/}
 
           <div className="space-y-2">
             <label
@@ -134,12 +140,17 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: errors.email ? 'var(--danger)' : 'var(--gray-text)',
+                borderColor: errors.email
+                  ? 'var(--danger)'
+                  : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
             {errors.email && (
-              <p className="text-xs font-medium mt-1" style={{ color: 'var(--danger)' }}>
+              <p
+                className="text-xs font-medium mt-1"
+                style={{ color: 'var(--danger)' }}
+              >
                 {errors.email.message}
               </p>
             )}
@@ -163,25 +174,32 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
                 Forgot password?
               </button>
             </div>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              disabled={isLoading}
-              {...register('password')}
-              style={{
-                color: 'var(--black-text)',
-                backgroundColor: 'var(--whiteBackground)',
-                borderColor: errors.password ? 'var(--danger)' : 'var(--gray-text)',
-              }}
-              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
-            />
-            {errors.password && (
-              <p className="text-xs font-medium mt-1" style={{ color: 'var(--danger)' }}>
-                {errors.password.message}
-              </p>
-            )}
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                disabled={isLoading}
+                {...register('password')}
+                style={{
+                  color: 'var(--black-text)',
+                  backgroundColor: 'var(--whiteBackground)',
+                  borderColor: errors.password
+                    ? 'var(--danger)'
+                    : 'var(--gray-text)',
+                }}
+                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+              />
+              <ShowPassword
+                isVisible={showPassword}
+                toggleVisibility={() => setShowPassword(!showPassword)}
+              />
+            </div>
+            <ErrorMessage message={errors.password?.message} />
           </div>
+
+          {/* ✅ Fix: display backend/login error to the user */}
+          {error && <ErrorMessage message={error} />}
 
           <button
             type="submit"
@@ -213,4 +231,3 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
 }
 
 export default Login
-

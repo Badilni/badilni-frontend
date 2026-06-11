@@ -1,8 +1,7 @@
-
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import CombinedPasswordReset from '../resetPassword/verifyPass'
-import VerificationCode from '../signup/SignUp'
+import VerifyEmail from '../signup/VerifyEmail'
 import { verifyCode } from '../../../services/authentication'
 import { handleToastMessage } from '../../../utils/helper'
 
@@ -21,7 +20,8 @@ const VerfyAndReset = () => {
       handleToastMessage('Email verified successfully!', 'success')
       navigate('/signIn')
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Verification failed.'
+      const msg =
+        err.response?.data?.message || err.message || 'Verification failed.'
       handleToastMessage(msg, 'error')
     } finally {
       setIsVerifying(false)
@@ -39,15 +39,13 @@ const VerfyAndReset = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <VerificationCode
-        email={email}
-        isSubmitting={isVerifying}
-        onNext={handleNext}
-        onBack={() => navigate('/forgetPass')}
-      />
-    </div>
+    <VerifyEmail
+      email={email}
+      isSubmitting={isVerifying}
+      onNext={handleNext}
+      onBack={() => navigate('/signUp')}
+    />
   )
 }
 
-export default VerfyAndReset;
+export default VerfyAndReset

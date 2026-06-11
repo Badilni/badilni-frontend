@@ -1,13 +1,18 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import Button from '../../common/Button'
 import ThemeToggle from '../../common/ThemeToggle'
+import ShowPassword from '../../common/ShowPassword'
+import ErrorMessage from '../../common/ErrorMessage'
 import { useNavigate } from 'react-router-dom'
 import useRegister from '../../../hooks/useRegister'
 import { signupFormValidationSchema } from '../../../utils/validationSchema'
 import { handleToastMessage } from '../../../utils/helper'
 
 const SignUp = () => {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const {
     register,
     handleSubmit,
@@ -151,29 +156,28 @@ const SignUp = () => {
             >
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              disabled={isLoading}
-              {...register('password')}
-              style={{
-                color: 'var(--black-text)',
-                backgroundColor: 'var(--whiteBackground)',
-                borderColor: errors.password
-                  ? 'var(--danger)'
-                  : 'var(--gray-text)',
-              }}
-              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
-            />
-            {errors.password && (
-              <p
-                className="text-xs font-medium mt-1"
-                style={{ color: 'var(--danger)' }}
-              >
-                {errors.password.message}
-              </p>
-            )}
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                disabled={isLoading}
+                {...register('password')}
+                style={{
+                  color: 'var(--black-text)',
+                  backgroundColor: 'var(--whiteBackground)',
+                  borderColor: errors.password
+                    ? 'var(--danger)'
+                    : 'var(--gray-text)',
+                }}
+                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+              />
+              <ShowPassword
+                isVisible={showPassword}
+                toggleVisibility={() => setShowPassword(!showPassword)}
+              />
+            </div>
+            <ErrorMessage message={errors.password?.message} />
           </div>
 
           <div className="space-y-2">
@@ -184,29 +188,30 @@ const SignUp = () => {
             >
               Confirm Password
             </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              disabled={isLoading}
-              {...register('confirmPassword')}
-              style={{
-                color: 'var(--black-text)',
-                backgroundColor: 'var(--whiteBackground)',
-                borderColor: errors.confirmPassword
-                  ? 'var(--danger)'
-                  : 'var(--gray-text)',
-              }}
-              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
-            />
-            {errors.confirmPassword && (
-              <p
-                className="text-xs font-medium mt-1"
-                style={{ color: 'var(--danger)' }}
-              >
-                {errors.confirmPassword.message}
-              </p>
-            )}
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                disabled={isLoading}
+                {...register('confirmPassword')}
+                style={{
+                  color: 'var(--black-text)',
+                  backgroundColor: 'var(--whiteBackground)',
+                  borderColor: errors.confirmPassword
+                    ? 'var(--danger)'
+                    : 'var(--gray-text)',
+                }}
+                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+              />
+              <ShowPassword
+                isVisible={showConfirmPassword}
+                toggleVisibility={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              />
+            </div>
+            <ErrorMessage message={errors.confirmPassword?.message} />
           </div>
 
           <button
