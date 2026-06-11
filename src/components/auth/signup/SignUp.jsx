@@ -1,18 +1,25 @@
+// SignUp.jsx
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import Button from '../../common/Button'
+import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../../common/ThemeToggle'
 import ShowPassword from '../../common/ShowPassword'
 import ErrorMessage from '../../common/ErrorMessage'
-import { useNavigate } from 'react-router-dom'
 import useRegister from '../../../hooks/useRegister'
 import { signupFormValidationSchema } from '../../../utils/validationSchema'
 import { handleToastMessage } from '../../../utils/helper'
+import OwlLogo from '../OwlLogo'
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [passwordFocused, setPasswordFocused] = useState(false)
+  const [submitHovered, setSubmitHovered] = useState(false)
+  const { register: registerUser, isLoading, error } = useRegister()
+
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -20,20 +27,11 @@ const SignUp = () => {
   } = useForm({
     resolver: zodResolver(signupFormValidationSchema),
     mode: 'onChange',
-    defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   })
-
-  const { register: registerUser, isLoading, error } = useRegister()
-  const navigate = useNavigate()
 
   const onSubmit = async (formData) => {
     const result = await registerUser(formData)
-
     if (result.success) {
       navigate('/verifyCode', {
         state: { email: formData.email, from: 'signup' },
@@ -43,201 +41,223 @@ const SignUp = () => {
 
   const onErrors = (fieldErrors) => {
     const firstError = Object.values(fieldErrors)[0]?.message
-    if (firstError) {
-      handleToastMessage(firstError, 'warning')
-    }
+    if (firstError) handleToastMessage(firstError, 'warning')
   }
 
+  const errorMessage = error ||Object.values(errors)[0]?.message || '';
+  console.log('Combined Error Message:', errorMessage);
+  
+
   return (
-    <div
-      style={{ backgroundColor: 'var(--background-light)' }}
-      className="min-h-screen w-full flex flex-col items-center justify-center p-4 transition-colors duration-300 gap-6 relative"
-    >
-      <header className="w-full max-w-[480px] flex justify-between items-center mb-4 px-2">
+    <div className="min-h-screen w-full bg-[var(--background-light)] flex flex-col transition-colors duration-300">
+      <header className="w-full max-w-7xl mx-auto flex justify-between items-center p-4 lg:px-8">
         <h2 className="text-3xl font-extrabold tracking-wider bg-gradient-to-r from-[var(--primary-light)] to-[var(--secondary-light)] bg-clip-text text-transparent">
           Badilni
         </h2>
-        <div className="flex gap-2 items-center">
-          <ThemeToggle />
-        </div>
+        <ThemeToggle />
       </header>
 
-      <div
-        style={{ backgroundColor: 'var(--whiteBackground)' }}
-        className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300"
-      >
-        <form
-          onSubmit={handleSubmit(onSubmit, onErrors)}
-          className="space-y-6 mt-2"
-        >
-          <div>
-            <h2
-              style={{ color: 'var(--black-text)' }}
-              className="text-[26px] font-bold mb-2 tracking-tight transition-colors"
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 w-full max-w-6xl">
+          {/* Form Column */}
+          <div className="w-full lg:w-1/2 flex justify-center order-2 lg:order-1">
+            <div
+              style={{ backgroundColor: 'var(--whiteBackground)' }}
+              className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300"
             >
-              Create Account
-            </h2>
-            <p
-              style={{ color: 'var(--gray-text)' }}
-              className="text-sm leading-relaxed transition-colors"
-            >
-              Enter your details to create an account.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <label
-              htmlFor="name"
-              className="block text-sm font-semibold"
-              style={{ color: 'var(--black-text)' }}
-            >
-              Full Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              placeholder="Full Name"
-              disabled={isLoading}
-              {...register('name')}
-              style={{
-                color: 'var(--black-text)',
-                backgroundColor: 'var(--whiteBackground)',
-                borderColor: errors.name ? 'var(--danger)' : 'var(--gray-text)',
-              }}
-              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
-            />
-            {errors.name && (
-              <p
-                className="text-xs font-medium mt-1"
-                style={{ color: 'var(--danger)' }}
+              <form
+                onSubmit={handleSubmit(onSubmit, onErrors)}
+                className="space-y-6 mt-2"
               >
-                {errors.name.message}
-              </p>
-            )}
+                <div>
+                  <h2
+                    style={{ color: 'var(--black-text)' }}
+                    className="text-[26px] font-bold mb-2 tracking-tight"
+                  >
+                    Create Account
+                  </h2>
+                  <p
+                    style={{ color: 'var(--gray-text)' }}
+                    className="text-sm leading-relaxed"
+                  >
+                    Enter your details to create an account.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="name"
+                    style={{ color: 'var(--black-text)' }}
+                    className="block text-sm font-semibold"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Full Name"
+                    disabled={isLoading}
+                    {...register('name')}
+                    style={{
+                      color: 'var(--black-text)',
+                      backgroundColor: 'var(--whiteBackground)',
+                      borderColor: errors.name
+                        ? 'var(--danger)'
+                        : 'var(--gray-text)',
+                    }}
+                    className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+                  />
+                  {errors.name && (
+                    <p
+                      className="text-xs font-medium mt-1"
+                      style={{ color: 'var(--danger)' }}
+                    >
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="email"
+                    style={{ color: 'var(--black-text)' }}
+                    className="block text-sm font-semibold"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    disabled={isLoading}
+                    {...register('email')}
+                    style={{
+                      color: 'var(--black-text)',
+                      backgroundColor: 'var(--whiteBackground)',
+                      borderColor: errors.email
+                        ? 'var(--danger)'
+                        : 'var(--gray-text)',
+                    }}
+                    className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+                  />
+                  {errors.email && (
+                    <p
+                      className="text-xs font-medium mt-1"
+                      style={{ color: 'var(--danger)' }}
+                    >
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="password"
+                    style={{ color: 'var(--black-text)' }}
+                    className="block text-sm font-semibold"
+                  >
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      disabled={isLoading}
+                      onFocus={() => setPasswordFocused(true)}
+                      onBlur={() => setPasswordFocused(false)}
+                      {...register('password')}
+                      style={{
+                        color: 'var(--black-text)',
+                        backgroundColor: 'var(--whiteBackground)',
+                        borderColor: errors.password
+                          ? 'var(--danger)'
+                          : 'var(--gray-text)',
+                      }}
+                      className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+                    />
+                    <ShowPassword
+                      isVisible={showPassword}
+                      toggleVisibility={() => setShowPassword(!showPassword)}
+                    />
+                  </div>
+                  <ErrorMessage message={errors.password?.message} />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="confirmPassword"
+                    style={{ color: 'var(--black-text)' }}
+                    className="block text-sm font-semibold"
+                  >
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      disabled={isLoading}
+                      {...register('confirmPassword')}
+                      style={{
+                        color: 'var(--black-text)',
+                        backgroundColor: 'var(--whiteBackground)',
+                        borderColor: errors.confirmPassword
+                          ? 'var(--danger)'
+                          : 'var(--gray-text)',
+                      }}
+                      className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+                    />
+                    <ShowPassword
+                      isVisible={showConfirmPassword}
+                      toggleVisibility={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    />
+                  </div>
+                  <ErrorMessage message={errors.confirmPassword?.message} />
+                </div>
+
+                {error && <ErrorMessage message={error} />}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  onMouseEnter={() => setSubmitHovered(true)}
+                  onMouseLeave={() => setSubmitHovered(false)}
+                  style={{ backgroundColor: 'var(--secondary-light)' }}
+                  className="w-full py-3.5 text-white rounded-2xl font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 mt-2"
+                >
+                  {isLoading ? 'Signing Up...' : 'Sign Up'}
+                </button>
+
+                <p
+                  style={{ color: 'var(--gray-text)' }}
+                  className="text-sm text-center mt-4"
+                >
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/signIn')}
+                    style={{ color: 'var(--primary-light)' }}
+                    className="font-semibold hover:underline cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                </p>
+              </form>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold"
-              style={{ color: 'var(--black-text)' }}
-            >
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              disabled={isLoading}
-              {...register('email')}
-              style={{
-                color: 'var(--black-text)',
-                backgroundColor: 'var(--whiteBackground)',
-                borderColor: errors.email
-                  ? 'var(--danger)'
-                  : 'var(--gray-text)',
-              }}
-              className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
+          {/* Owl Column */}
+          <div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
+            <OwlLogo
+              errorMessage={errorMessage}
+              passwordFocused={passwordFocused}
+              submitHovered={submitHovered}
             />
-            {errors.email && (
-              <p
-                className="text-xs font-medium mt-1"
-                style={{ color: 'var(--danger)' }}
-              >
-                {errors.email.message}
-              </p>
-            )}
           </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="block text-sm font-semibold"
-              style={{ color: 'var(--black-text)' }}
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                disabled={isLoading}
-                {...register('password')}
-                style={{
-                  color: 'var(--black-text)',
-                  backgroundColor: 'var(--whiteBackground)',
-                  borderColor: errors.password
-                    ? 'var(--danger)'
-                    : 'var(--gray-text)',
-                }}
-                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
-              />
-              <ShowPassword
-                isVisible={showPassword}
-                toggleVisibility={() => setShowPassword(!showPassword)}
-              />
-            </div>
-            <ErrorMessage message={errors.password?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-semibold"
-              style={{ color: 'var(--black-text)' }}
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                disabled={isLoading}
-                {...register('confirmPassword')}
-                style={{
-                  color: 'var(--black-text)',
-                  backgroundColor: 'var(--whiteBackground)',
-                  borderColor: errors.confirmPassword
-                    ? 'var(--danger)'
-                    : 'var(--gray-text)',
-                }}
-                className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
-              />
-              <ShowPassword
-                isVisible={showConfirmPassword}
-                toggleVisibility={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
-                }
-              />
-            </div>
-            <ErrorMessage message={errors.confirmPassword?.message} />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{ backgroundColor: 'var(--secondary-light)' }}
-            className="w-full py-3.5 text-white rounded-2xl font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 mt-2"
-          >
-            {isLoading ? 'Signing Up...' : 'Sign Up'}
-          </button>
-
-          <p
-            style={{ color: 'var(--gray-text)' }}
-            className="text-sm text-center mt-4 transition-colors"
-          >
-            Already have an account?{' '}
-            <button
-              type="button"
-              onClick={() => navigate('/signIn')}
-              style={{ color: 'var(--primary-light)' }}
-              className="font-semibold hover:underline cursor-pointer transition-all focus:outline-none"
-            >
-              Sign In
-            </button>
-          </p>
-        </form>
+        </div>
       </div>
     </div>
   )

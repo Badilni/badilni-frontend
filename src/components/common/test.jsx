@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Button from '../common/Button'
 import Spinner from '../common/Spinner'
 import FirstSection from '../home/FirstSection'
 import SecondSection from '../home/SecondSection'
 import ThemeToggle from '../common/ThemeToggle'
+import OwlLogo from '../auth/OwlLogo'
 
 const ShowcasePage = () => {
   const [loading, setLoading] = useState(true)
-
+  const passwordRef = useRef(null)
+  const submitRef = useRef(null)
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000)
     return () => clearTimeout(timer)
@@ -161,6 +163,11 @@ const ShowcasePage = () => {
           </div>
         </section>
       </main>
+      <div>
+        <div>
+          <OwlLogin />
+        </div>
+      </div>
     </div>
   )
 }
