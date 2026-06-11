@@ -4,6 +4,7 @@ import { serverBaseUrl } from '../utils/constants'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { handleToastMessage } from '../utils/helper'
 
 const emailSchema = z.object({
   email: z
@@ -25,6 +26,7 @@ export const useForgotPassword = (onNext) => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(emailSchema),
+    mode: 'onChange',
     defaultValues: { email: '' },
   })
 
@@ -51,7 +53,9 @@ export const useForgotPassword = (onNext) => {
       console.log('📨 Full Server Response Data:', response.data)
 
       if (response.status === 200) {
-        setSuccessMessage('Verification code sent successfully!')
+        const success = 'Verification code sent successfully!'
+        setSuccessMessage(success)
+        handleToastMessage(success, 'success')
 
         setTimeout(() => {
           if (typeof onNext === 'function') {
@@ -59,7 +63,9 @@ export const useForgotPassword = (onNext) => {
           }
         }, 1000)
       } else {
-        setServerError(response.data?.message || 'Failed to send code.')
+        const errorMsg = response.data?.message || 'Failed to send code.'
+        setServerError(errorMsg)
+        handleToastMessage(errorMsg, 'error')
       }
     } catch (err) {
       console.error('❌ API Error Detail:', err.response?.data || err.message)
@@ -68,6 +74,7 @@ export const useForgotPassword = (onNext) => {
         err.response?.data?.message ||
         'Something went wrong. Please check your network.'
       setServerError(errorMsg)
+      handleToastMessage(errorMsg, 'error')
     } finally {
       setIsLoading(false)
     }
@@ -75,7 +82,8 @@ export const useForgotPassword = (onNext) => {
 
   return {
     register,
-    handleSubmit: handleSubmit(onSubmit),
+    handleSubmit,
+    onSubmit,
     errors,
     isLoading,
     serverError,

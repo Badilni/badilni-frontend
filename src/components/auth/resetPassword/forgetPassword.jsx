@@ -2,16 +2,25 @@ import { useForgotPassword } from '../../../hooks/useForgotPassword'
 import { IoIosArrowRoundBack } from 'react-icons/io'
 import HeadPasswordReset from '../../common/HeadPasswordReset'
 import Button from '../../common/Button'
+import { handleToastMessage } from '../../../utils/helper'
 
 const ForgotPassword = ({ onNext, onBack }) => {
   const {
     register,
     handleSubmit,
+    onSubmit,
     errors,
     isLoading,
     serverError,
     successMessage,
   } = useForgotPassword(onNext)
+
+  const onErrors = (fieldErrors) => {
+    const firstError = Object.values(fieldErrors)[0]?.message
+    if (firstError) {
+      handleToastMessage(firstError, 'warning')
+    }
+  }
 
   return (
     <div
@@ -39,7 +48,10 @@ const ForgotPassword = ({ onNext, onBack }) => {
             />
           </button>
 
-          <form onSubmit={handleSubmit} className="space-y-6 mt-12">
+          <form
+            onSubmit={handleSubmit(onSubmit, onErrors)}
+            className="space-y-6 mt-12"
+          >
             <div>
               <h2
                 style={{ color: 'var(--black-text)' }}
@@ -55,30 +67,12 @@ const ForgotPassword = ({ onNext, onBack }) => {
                 to reset your password.
               </p>
             </div>
-
-            {serverError && (
-              <div
-                className="p-3 text-sm rounded-xl font-medium transition-all
-              bg-[var(--backgDangerOpacity)] text-[var(--danger)]"
-              >
-                {serverError}
-              </div>
-            )}
-
-            {errors.email && (
-              <div
-                className="p-3 text-sm rounded-xl font-medium transition-all
-              bg-[var(--backgDangerOpacity)] text-[var(--danger)]"
-              >
-                {errors.email.message}
-              </div>
-            )}
-
+{/* 
             {successMessage && (
               <div className="p-3 text-sm rounded-xl font-medium transition-all bg-green-500/10 text-green-500">
                 {successMessage}
               </div>
-            )}
+            )} */}
 
             <div className="space-y-2">
               <label className="block text-sm font-semibold transition-colors text-[var(--black-text)]">
@@ -94,6 +88,14 @@ const ForgotPassword = ({ onNext, onBack }) => {
                   text-[var(--black-text)] bg-[var(--whiteBackground)]
                   ${errors.email ? 'border-[var(--danger)]' : 'border-[var(--gray-text)]'}`}
               />
+              {errors.email && (
+                <p
+                  className="text-xs font-medium mt-1"
+                  style={{ color: 'var(--danger)' }}
+                >
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <Button

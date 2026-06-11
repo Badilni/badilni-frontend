@@ -1,27 +1,45 @@
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import Button from '../../common/Button'
 import ThemeToggle from '../../common/ThemeToggle'
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useRegister from '../../../hooks/useRegister'
+import { signupFormValidationSchema } from '../../../utils/validationSchema'
+import { handleToastMessage } from '../../../utils/helper'
 
 const SignUp = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const { register, isLoading, error } = useRegister()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupFormValidationSchema),
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  const { register: registerUser, isLoading, error } = useRegister()
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const formData = { name, email, password, confirmPassword }
-    const result = await register(formData)
+  const onSubmit = async (formData) => {
+    const result = await registerUser(formData)
 
     if (result.success) {
-      // navigate to verification screen with email context
-      navigate('/verifyCode', { state: { email, from: 'signup' } })
-      return
+      navigate('/verifyCode', {
+        state: { email: formData.email, from: 'signup' },
+      })
+    }
+  }
+
+  const onErrors = (fieldErrors) => {
+    const firstError = Object.values(fieldErrors)[0]?.message
+    if (firstError) {
+      handleToastMessage(firstError, 'warning')
     }
   }
 
@@ -43,7 +61,10 @@ const SignUp = () => {
         style={{ backgroundColor: 'var(--whiteBackground)' }}
         className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300"
       >
-        <form onSubmit={handleSubmit} className="space-y-6 mt-2">
+        <form
+          onSubmit={handleSubmit(onSubmit, onErrors)}
+          className="space-y-6 mt-2"
+        >
           <div>
             <h2
               style={{ color: 'var(--black-text)' }}
@@ -58,19 +79,6 @@ const SignUp = () => {
               Enter your details to create an account.
             </p>
           </div>
-
-          {error && (
-            <div
-              className="p-3 text-sm rounded-xl font-medium transition-all"
-              style={{
-                backgroundColor: 'var(--backgDangerOpacity)',
-                color: 'var(--danger)',
-              }}
-            >
-              ⚠️ {error}
-            </div>
-          )}
-
           <div className="space-y-2">
             <label
               htmlFor="name"
@@ -83,16 +91,23 @@ const SignUp = () => {
               id="name"
               type="text"
               placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
+              {...register('name')}
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: 'var(--gray-text)',
+                borderColor: errors.name ? 'var(--danger)' : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
+            {errors.name && (
+              <p
+                className="text-xs font-medium mt-1"
+                style={{ color: 'var(--danger)' }}
+              >
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -107,16 +122,25 @@ const SignUp = () => {
               id="email"
               type="email"
               placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              {...register('email')}
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: 'var(--gray-text)',
+                borderColor: errors.email
+                  ? 'var(--danger)'
+                  : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
+            {errors.email && (
+              <p
+                className="text-xs font-medium mt-1"
+                style={{ color: 'var(--danger)' }}
+              >
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -131,16 +155,25 @@ const SignUp = () => {
               id="password"
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              {...register('password')}
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: 'var(--gray-text)',
+                borderColor: errors.password
+                  ? 'var(--danger)'
+                  : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
+            {errors.password && (
+              <p
+                className="text-xs font-medium mt-1"
+                style={{ color: 'var(--danger)' }}
+              >
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -155,16 +188,25 @@ const SignUp = () => {
               id="confirmPassword"
               type="password"
               placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
+              {...register('confirmPassword')}
               style={{
                 color: 'var(--black-text)',
                 backgroundColor: 'var(--whiteBackground)',
-                borderColor: 'var(--gray-text)',
+                borderColor: errors.confirmPassword
+                  ? 'var(--danger)'
+                  : 'var(--gray-text)',
               }}
               className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
             />
+            {errors.confirmPassword && (
+              <p
+                className="text-xs font-medium mt-1"
+                style={{ color: 'var(--danger)' }}
+              >
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
 
           <button
