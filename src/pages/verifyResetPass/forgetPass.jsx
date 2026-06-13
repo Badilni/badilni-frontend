@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom'
 import ForgotPassword from '../../components/auth/resetPassword/forgetPassword'
 

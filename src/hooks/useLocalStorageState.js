@@ -1,3 +1,25 @@
+/**
+ * src/hooks/useLocalStorageState.js
+ *
+ * ── Audit result: NO logic changes needed. ──────────────────────────────────
+ *
+ * The hook itself is correct. The risk was purely in what was stored in it.
+ *
+ * ✅  KEEP using this hook for UI preferences:
+ *      useLocalStorageState('ui:theme', 'light')
+ *      useLocalStorageState('ui:language', 'en')
+ *      useLocalStorageState('ui:sidebarOpen', true)
+ *      useLocalStorageState('ui:tablePageSize', 20)
+ *
+ * ❌  NEVER use for auth data:
+ *      'token', 'accessToken', 'refreshToken', 'user', 'session'
+ *      — those belong in HttpOnly cookies (tokens) or Zustand (user object).
+ *
+ * localStorage is readable by any JS on the page, including injected scripts.
+ * HttpOnly cookies are completely invisible to JS by design.
+ * ───────────────────────────────────────────────────────────────────────────
+ */
+
 import { useState, useEffect } from 'react'
 
 export default function useLocalStorageState(key, initialValue) {

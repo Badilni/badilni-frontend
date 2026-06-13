@@ -24,7 +24,8 @@ const signupFormValidationSchema = z
         message: 'Password must contain at least one number.',
       })
       .regex(/[@$!%*?&]/, {
-        message: 'Password must contain at least one special character (@$!%*?&).',
+        message:
+          'Password must contain at least one special character (@$!%*?&).',
       }),
 
     confirmPassword: z
@@ -51,7 +52,8 @@ const resetPasswordValidationSchema = z
         message: 'Password must contain at least one number.',
       })
       .regex(/[@$!%*?&]/, {
-        message: 'Password must contain at least one special character (@$!%*?&).',
+        message:
+          'Password must contain at least one special character (@$!%*?&).',
       }),
 
     confirmPassword: z
@@ -63,7 +65,6 @@ const resetPasswordValidationSchema = z
     path: ['confirmPassword'],
   })
 
-
 const signinFormValidationSchema = z.object({
   email: z
     .string()
@@ -71,9 +72,7 @@ const signinFormValidationSchema = z.object({
     .min(1, { message: 'Email is required.' })
     .email({ message: 'Invalid email address.' }),
 
-  password: z
-    .string()
-    .min(1, { message: 'Password is required.' }),
+  password: z.string().min(1, { message: 'Password is required.' }),
 })
 
 const verificationCodeSchema = z
@@ -82,8 +81,15 @@ const verificationCodeSchema = z
       .string()
       .trim()
       .min(1, { message: 'Required' })
-      .regex(/^[a-zA-Z0-9]$/, { message: 'Must be a single alphanumeric character' })
+      .regex(/^[a-zA-Z0-9]$/, {
+        message: 'Must be a single alphanumeric character',
+      })
   )
   .length(6, { message: 'Verification code must be exactly 6 digits' })
-  .transform((val) => val.join(''));
-export { signupFormValidationSchema, resetPasswordValidationSchema, signinFormValidationSchema, verificationCodeSchema }
+  .transform((val) => val.join(''))
+export {
+  signupFormValidationSchema,
+  resetPasswordValidationSchema,
+  signinFormValidationSchema,
+  verificationCodeSchema,
+}
