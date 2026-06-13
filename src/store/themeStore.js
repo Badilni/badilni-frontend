@@ -29,7 +29,7 @@ export const useThemeStore = create(
       },
     }),
     {
-      name: 'theme-preference', // key in localStorage
+      name: 'theme-preference',
       onRehydrateStorage: () => (state) => {
         if (state) {
           if (state.isDarkMode) {

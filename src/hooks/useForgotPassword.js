@@ -38,19 +38,11 @@ export const useForgotPassword = (onNext) => {
     const typedEmail = data.email.trim()
 
     try {
-      console.log(
-        '📤 Sending Request to:',
-        `${serverBaseUrl}/auth/forgot-password`
-      )
-      console.log('📤 With Data:', { email: typedEmail })
-
       const response = await axios.post(
         `${serverBaseUrl}/auth/forgot-password`,
         { email: typedEmail },
         { headers: { 'Content-Type': 'application/json' } }
       )
-
-      console.log('📨 Full Server Response Data:', response.data)
 
       if (response.status === 200) {
         const success = 'Verification code sent successfully!'
@@ -68,8 +60,6 @@ export const useForgotPassword = (onNext) => {
         handleToastMessage(errorMsg, 'error')
       }
     } catch (err) {
-      console.error('❌ API Error Detail:', err.response?.data || err.message)
-
       const errorMsg =
         err.response?.data?.message ||
         'Something went wrong. Please check your network.'

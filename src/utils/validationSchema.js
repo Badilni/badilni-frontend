@@ -22,6 +22,9 @@ const signupFormValidationSchema = z
       })
       .regex(/[0-9]/, {
         message: 'Password must contain at least one number.',
+      })
+      .regex(/[@$!%*?&]/, {
+        message: 'Password must contain at least one special character (@$!%*?&).',
       }),
 
     confirmPassword: z
@@ -46,6 +49,9 @@ const resetPasswordValidationSchema = z
       })
       .regex(/[0-9]/, {
         message: 'Password must contain at least one number.',
+      })
+      .regex(/[@$!%*?&]/, {
+        message: 'Password must contain at least one special character (@$!%*?&).',
       }),
 
     confirmPassword: z

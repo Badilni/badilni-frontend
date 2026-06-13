@@ -56,18 +56,14 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
     const firstError = Object.values(fieldErrors)[0]?.message
     if (firstError) handleToastMessage(firstError, 'warning')
   }
-  const errorMessage = Object.values(errors)[0]?.message
+  const errorMessage = errors.password || errors.email || ''
 
   return (
-    <div className="min-h-screen w-full bg-[var(--background-light)] flex flex-col transition-colors duration-300">
-      <header className="w-full max-w-7xl mx-auto flex justify-between items-center p-4 lg:px-8">
-        <h2 className="text-3xl font-extrabold tracking-wider bg-gradient-to-r from-[var(--primary-light)] to-[var(--secondary-light)] bg-clip-text text-transparent">
-          Badilni
-        </h2>
+    <div className="min-h-screen m-auto w-full lg:w-5/6 bg-[var(--background-light)] flex flex-col transition-colors duration-300">
+      <div className="flex justify-end p-4">
         <ThemeToggle />
-      </header>
-
-      <div className="flex-1 flex items-center justify-center p-4">
+      </div>
+      <div className="flex-1 flex items-center justify-center p-4 pt-2">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 w-full max-w-6xl">
           {/* Form Column */}
           <div className="w-full lg:w-1/2 flex justify-center order-2 lg:order-1">
@@ -75,24 +71,9 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               style={{ backgroundColor: 'var(--whiteBackground)' }}
               className="relative w-full max-w-[480px] rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] text-left transition-colors duration-300"
             >
-              <button
-                type="button"
-                onClick={handleBack}
-                style={{
-                  borderColor: 'var(--gray-text)',
-                  backgroundColor: 'var(--whiteBackground)',
-                }}
-                className="absolute top-[35px] left-[35px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 transition-all"
-              >
-                <IoIosArrowRoundBack
-                  style={{ color: 'var(--secondary-light)' }}
-                  size={28}
-                />
-              </button>
-
               <form
                 onSubmit={handleSubmit(onSubmit, onErrors)}
-                className="space-y-6 mt-12"
+                className="space-y-6 mt-2"
               >
                 <div>
                   <h2
@@ -218,12 +199,15 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
           </div>
 
           {/* Owl Column */}
-          <div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
+          <div className="w-full lg:w-1/2 justify-center text-center order-1 lg:order-2">
             <OwlLogo
               errorMessage={errorMessage}
               passwordFocused={passwordFocused}
               submitHovered={submitHovered}
             />
+            <h2 className="text-6xl font-extrabold tracking-wider bg-gradient-to-r from-[var(--primary-light)] to-[var(--secondary-light)] bg-clip-text text-transparent">
+              Badilni
+            </h2>
           </div>
         </div>
       </div>

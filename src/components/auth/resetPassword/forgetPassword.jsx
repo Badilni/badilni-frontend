@@ -3,6 +3,7 @@ import { IoIosArrowRoundBack } from 'react-icons/io'
 import HeadPasswordReset from '../../common/HeadPasswordReset'
 import Button from '../../common/Button'
 import { handleToastMessage } from '../../../utils/helper'
+import { useNavigate } from 'react-router-dom'
 
 const ForgotPassword = ({ onNext, onBack }) => {
   const {
@@ -14,6 +15,8 @@ const ForgotPassword = ({ onNext, onBack }) => {
     serverError,
     successMessage,
   } = useForgotPassword(onNext)
+
+  const navigate = useNavigate()
 
   const onErrors = (fieldErrors) => {
     const firstError = Object.values(fieldErrors)[0]?.message
@@ -35,7 +38,7 @@ const ForgotPassword = ({ onNext, onBack }) => {
           className="relative w-full rounded-[24px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.04)]
           text-left transition-colors duration-300"
         >
-          <button
+          {/* <button
             type="button"
             onClick={onBack}
             className="absolute top-[35px] left-[35px] w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer
@@ -46,11 +49,11 @@ const ForgotPassword = ({ onNext, onBack }) => {
               className="text-[var(--secondary-light)]"
               size={28}
             />
-          </button>
+          </button> */}
 
           <form
             onSubmit={handleSubmit(onSubmit, onErrors)}
-            className="space-y-6 mt-12"
+            className="space-y-6 mt-2"
           >
             <div>
               <h2
@@ -102,6 +105,20 @@ const ForgotPassword = ({ onNext, onBack }) => {
             >
               {isLoading ? 'Sending Code...' : 'Send Code'}
             </Button>
+            <p
+              style={{ color: 'var(--gray-text)' }}
+              className="text-sm text-center mt-1"
+            >
+              Back to {' '}
+              <button
+                type="button"
+                onClick={() => navigate('/signIn')}
+                style={{ color: 'var(--primary-light)' }}
+                className="font-semibold hover:underline cursor-pointer"
+              >
+                Sign In
+              </button>
+            </p>
           </form>
         </div>
       </div>

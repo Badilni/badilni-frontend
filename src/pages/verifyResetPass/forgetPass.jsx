@@ -9,7 +9,6 @@ const ForgetPassPage = () => {
     <div className="w-full min-h-screen flex items-center justify-center transition-all duration-500">
       <ForgotPassword
         onNext={(submittedEmail) => {
-          console.log('✅ Email captured:', submittedEmail)
           navigate('/verifyCode', { state: { email: submittedEmail } })
         }}
         onBack={() => navigate('/signIn')}

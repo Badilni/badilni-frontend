@@ -24,14 +24,14 @@ export const useLogin = () => {
     try {
       const userData = await loginService({ email, password })
 
-      // Save access token if present
-      if (userData.accessToken) {
-        localStorage.setItem('token', userData.accessToken)
-      }
+      // // Save access token if present
+      // if (userData.accessToken) {
+      //   localStorage.setItem('token', userData.accessToken)
+      // }
 
-      // Save user details in 'user' key as expected by RequireAuth
-      const userObj = userData.data?.user || userData
-      localStorage.setItem('user', JSON.stringify(userObj))
+      // // Save user details in 'user' key as expected by RequireAuth
+      // const userObj = userData.data?.user || userData
+      // localStorage.setItem('user', JSON.stringify(userObj))
 
       handleToastMessage('Signed in successfully', 'success')
       return { success: true, data: userData }
