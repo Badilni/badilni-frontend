@@ -6,6 +6,8 @@ import LoginPage from '../pages/Login'
 import Signup from '../pages/Signup'
 import VerificationPassword from '../pages/verifyResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
+import AdvancedResultsView from '../components/AdvancedSearch/searchResultView'
+import AdvancedSearchSystem from '../components/AdvancedSearch/AdvancedSearchSystem'
 
 
 const RequireAuth = () => {
@@ -44,6 +46,14 @@ const router = createHashRouter([
   {
     path: '/verifyCode',
     element: <VerificationPassword />,
+  },
+  {
+    path:'/search',
+    element:<AdvancedSearchSystem/>
+  },
+  {
+    path:'/searchResult',
+    element:<AdvancedResultsView/>
   },
   {
     path: '*',

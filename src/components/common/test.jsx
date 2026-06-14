@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Button from '../common/Button'
 import Spinner from '../common/Spinner'
-import FirstSection from '../home/FirstSection'
-import SecondSection from '../home/SecondSection'
 import ThemeToggle from '../common/ThemeToggle'
 import OwlLogo from '../auth/OwlLogo'
 
@@ -165,7 +163,7 @@ const ShowcasePage = () => {
       </main>
       <div>
         <div>
-          <OwlLogin />
+          <OwlLogo />
         </div>
       </div>
     </div>
