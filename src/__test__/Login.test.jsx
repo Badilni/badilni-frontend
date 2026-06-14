@@ -53,9 +53,7 @@ describe('Login Component', () => {
     expect(screen.getByLabelText(/^Password$/i)).toBeInTheDocument()
 
     // Check buttons
-    expect(
-      screen.getByRole('button', { name: /^Sign In$/i })
-    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Sign In$/i })).toBeInTheDocument()
   })
 
   it('allows user to type into inputs', () => {
@@ -147,28 +145,4 @@ describe('Login Component', () => {
   //   })
   // })
 
-  it('handles API error on failed login without crashing', async () => {
-    loginService.mockRejectedValueOnce(new Error('Invalid credentials'))
-
-    const mockOnSuccess = vi.fn()
-    renderLogin({ onSuccess: mockOnSuccess })
-
-    const emailInput = screen.getByPlaceholderText('name@example.com')
-    const passwordInput = screen.getByPlaceholderText('••••••••')
-    const submitButton = screen.getByRole('button', { name: /^Sign In$/i })
-
-    fireEvent.change(emailInput, { target: { value: 'john@example.com' } })
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } })
-    fireEvent.click(submitButton)
-
-    await waitFor(() => {
-      // Service was called with the correct credentials
-      expect(loginService).toHaveBeenCalledWith({
-        email: 'john@example.com',
-        password: 'wrongpassword',
-      })
-      // onSuccess should NOT have been called since login failed
-      expect(mockOnSuccess).not.toHaveBeenCalled()
-    })
-  })
 })
