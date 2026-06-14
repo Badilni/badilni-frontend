@@ -1,7 +1,10 @@
 import { useState, useRef } from 'react'
 import { handleToastMessage } from '../utils/helper'
 import { resendCode } from '../services/authentication/ForgotPasswordAuth/forgotPassword'
-import { resetPasswordValidationSchema, verificationCodeSchema } from '../utils/validationSchema'
+import {
+  resetPasswordValidationSchema,
+  verificationCodeSchema,
+} from '../utils/validationSchema'
 
 export const useCombinedResetPassword = (email) => {
   const [code, setCode] = useState(['', '', '', '', '', ''])
@@ -17,7 +20,8 @@ export const useCombinedResetPassword = (email) => {
     hasNumber: /[0-9]/.test(password),
   }
 
-  const isPasswordMismatched = password && confirmPassword && password !== confirmPassword
+  const isPasswordMismatched =
+    password && confirmPassword && password !== confirmPassword
 
   const handleChange = (target, index) => {
     const value = target.value.slice(-1)
@@ -55,7 +59,10 @@ export const useCombinedResetPassword = (email) => {
       await resendCode(email)
       handleToastMessage('A new code has been sent! 📩', 'success')
     } catch (err) {
-      handleToastMessage(err.response?.data?.message || 'Failed to resend code.', 'error')
+      handleToastMessage(
+        err.response?.data?.message || 'Failed to resend code.',
+        'error'
+      )
     }
   }
 

@@ -5,7 +5,7 @@ const OwlLogo = ({
   passwordFocused = false,
   submitHovered = false,
 }) => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })  
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -42,22 +42,10 @@ const OwlLogo = ({
       <div className="w-[220px] h-[220px] md:w-[250px] md:h-[250px]">
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           {/* Graduation Cap */}
-          <rect
-            x="20"
-            y="30"
-            width="80"
-            height="25"
-            fill="var(--owl-logo)"
-          />
+          <rect x="20" y="30" width="80" height="25" fill="var(--owl-logo)" />
           <rect x="100" y="30" width="80" height="25" fill="#3B96EC" />
           <rect x="45" y="55" width="55" height="30" fill="#3B96EC" />
-          <rect
-            x="100"
-            y="55"
-            width="55"
-            height="30"
-            fill="var(--owl-logo)"
-          />
+          <rect x="100" y="55" width="55" height="30" fill="var(--owl-logo)" />
           <rect x="165" y="40" width="6" height="55" fill="#4A5568" />
           <polygon points="160,95 176,95 180,120 156,120" fill="#FF3B00" />
 
@@ -73,7 +61,7 @@ const OwlLogo = ({
                 x="65"
                 y="122"
                 textAnchor="middle"
-                fill='#DC2626'
+                fill="#DC2626"
                 fontSize="20"
                 fontWeight="bold"
                 fontFamily="s"

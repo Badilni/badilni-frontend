@@ -220,9 +220,6 @@ const SignUp = () => {
                   </div>
                   <ErrorMessage message={errors.confirmPassword?.message} />
                 </div>
-
-                {error && <ErrorMessage message={error} />}
-
                 <button
                   type="submit"
                   disabled={isLoading}

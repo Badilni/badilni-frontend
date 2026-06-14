@@ -109,7 +109,7 @@ const ForgotPassword = ({ onNext, onBack }) => {
               style={{ color: 'var(--gray-text)' }}
               className="text-sm text-center mt-1"
             >
-              Back to {' '}
+              Back to{' '}
               <button
                 type="button"
                 onClick={() => navigate('/signIn')}
