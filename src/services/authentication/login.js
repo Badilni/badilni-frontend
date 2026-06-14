@@ -1,25 +1,14 @@
-import axios from 'axios'
-import { serverBaseUrl } from '../../utils/constants'
+import { loginRequest } from '../../api/authApi'
 
-export const login = async ({ email, password }) => {
+export const login = async (email, password) => {
   try {
-    const response = await axios.post(
-      `${serverBaseUrl}/auth/login`,
-      { email, password },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    return response.data
+    return await loginRequest(email, password)
   } catch (error) {
-    const serverMessage =
+    const message =
       error.response?.data?.message ||
       error.response?.data ||
       error.message ||
       'Failed to sign in.'
-    throw new Error(serverMessage)
+    throw new Error(message)
   }
 }

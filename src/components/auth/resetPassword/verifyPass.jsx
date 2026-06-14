@@ -54,7 +54,8 @@ export const CombinedPasswordReset = ({ onBack, email = '', onSuccess }) => {
   }, [watchedPassword])
 
   useEffect(() => {
-    if (watchedConfirmPassword !== undefined) setConfirmPassword(watchedConfirmPassword)
+    if (watchedConfirmPassword !== undefined)
+      setConfirmPassword(watchedConfirmPassword)
   }, [watchedConfirmPassword])
 
   const handleFinalSubmit = async (e) => {

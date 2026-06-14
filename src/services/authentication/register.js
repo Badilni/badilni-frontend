@@ -3,7 +3,6 @@ import { serverBaseUrl } from '../../utils/constants'
 
 export const register = async (user) => {
   try {
-    console.log('Registering user with data:', user)
     const response = await axios.post(`${serverBaseUrl}/auth/signup`, user, {
       headers: {
         'Content-Type': 'application/json',

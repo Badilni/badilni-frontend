@@ -53,7 +53,9 @@ describe('Login Component', () => {
     expect(screen.getByLabelText(/^Password$/i)).toBeInTheDocument()
 
     // Check buttons
-    expect(screen.getByRole('button', { name: /^Sign In$/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /^Sign In$/i })
+    ).toBeInTheDocument()
   })
 
   it('allows user to type into inputs', () => {

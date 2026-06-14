@@ -10,7 +10,12 @@ export const forgotPasswordService = async (email) => {
   return response.data
 }
 
-export const resetPasswordSubmitService = async (email, code, password, confirmPassword) => {
+export const resetPasswordSubmitService = async (
+  email,
+  code,
+  password,
+  confirmPassword
+) => {
   const response = await axios.patch(
     `${serverBaseUrl}/auth/reset-password`,
     { email, code, password, confirmPassword },

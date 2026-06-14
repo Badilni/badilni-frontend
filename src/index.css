@@ -35,6 +35,8 @@ body {
   --grat-text: #94a3b8;
   --gray-text: #94a3b8;
   --Disabled: #737373;
+
+  --owl-logo: #0a1930;
 }
 
 .dark {
@@ -55,4 +57,5 @@ body {
   --backWarningOpacity: rgba(245, 158, 11, 0.15);
   --backgDangerOpacity: rgba(239, 68, 68, 0.15);
   --backgSuccessOpacity: rgba(16, 185, 129, 0.15);
+  --owl-logo: #2d324bf3;
 }

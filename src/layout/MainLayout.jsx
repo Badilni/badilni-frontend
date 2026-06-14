@@ -11,24 +11,24 @@ const MainLayout = () => {
   useEffect(() => {
     // Show spinner on initial load and on every route change
     setLoading(true)
-    const t = setTimeout(() => setLoading(false), 600)
+    const t = setTimeout(() => setLoading(false), 3000) // Lowered from 6000ms
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
   return (
     <div className="flex flex-col items-center">
-      <NavBar />
-
       {loading ? (
         <div className="w-full">
           <Spinner />
         </div>
       ) : (
-        <Outlet />
+        <>
+          <NavBar />
+          <Outlet />
+          <Footer />
+        </>
       )}
-
-      <Footer />
     </div>
   )
 }
