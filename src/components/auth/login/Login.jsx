@@ -48,7 +48,7 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
     const result = await login(data.email, data.password)
     if (result.success) {
       if (onSuccess) onSuccess(result.data)
-      else navigate('/')
+      else navigate('/profile')
     }
   }
 
@@ -166,8 +166,6 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
                   </div>
                   <ErrorMessage message={errors.password?.message} />
                 </div>
-
-                {error && <ErrorMessage message={error} />}
 
                 <button
                   type="submit"

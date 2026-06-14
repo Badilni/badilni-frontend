@@ -18,17 +18,17 @@ const MainLayout = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <NavBar />
-
       {loading ? (
         <div className="w-full">
           <Spinner />
         </div>
       ) : (
-        <Outlet />
+        <>
+          <NavBar />
+          <Outlet />
+          <Footer />
+        </>
       )}
-
-      <Footer />
     </div>
   )
 }

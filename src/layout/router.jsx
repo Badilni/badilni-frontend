@@ -39,7 +39,21 @@ const router = createHashRouter([
       {
         path: '/',
         element: <MainLayout />,
-        children: [{ index: true, element: <Home /> }],
+        children: [
+          { index: true, element: <Home /> },
+          {
+            element: <RequireAuth />,
+            children: [
+              {
+                children: [
+                  { path: 'profile', element: <div>profile</div> },
+                  { path: 'chat', element: <div>chat</div> },
+                  { path: 'settings', element: <div>settings</div> },
+                ],
+              },
+            ],
+          },
+        ],
       },
 
       // ── Auth pages (no MainLayout — they have their own full-page design) ──
@@ -53,18 +67,6 @@ const router = createHashRouter([
       //   isLoading = true  → spinner (waiting for GET /auth/me)
       //   isAuthenticated   → render the child route
       //   !isAuthenticated  → redirect to /signIn
-      {
-        element: <RequireAuth />,
-        children: [
-          {
-            children: [
-              { path: 'profile', element: <div>profile</div> },
-              { path: 'chat', element: <div>chat</div> },
-              { path: 'settings', element: <div>settings</div> },
-            ],
-          },
-        ],
-      },
 
       // ── Misc ──────────────────────────────────────────────────────────────
       { path: '/test', element: <ShowcasePage /> },
