@@ -9,6 +9,8 @@ import LoginPage from '../pages/Login'
 import Signup from '../pages/Signup'
 import VerificationPassword from '../pages/verifyResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
+import AdvancedResultsView from '../components/AdvancedSearch/searchResultView'
+import AdvancedSearchSystem from '../components/AdvancedSearch/AdvancedSearchSystem'
 
 // Example protected pages — replace with your real ones
 
@@ -49,6 +51,14 @@ const router = createHashRouter([
                   { path: 'profile', element: <div>profile</div> },
                   { path: 'chat', element: <div>chat</div> },
                   { path: 'settings', element: <div>settings</div> },
+             {
+    path:'/search',
+    element:<AdvancedSearchSystem/>
+  },
+  {
+    path:'/searchResult',
+    element:<AdvancedResultsView/>
+  },
                 ],
               },
             ],

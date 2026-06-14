@@ -18,8 +18,9 @@ const Button = ({
       'bg-[var(--whiteBackground)] border border-transparent rounded-[60px] text-[var(--black-text)] hover:border-[var(--primary-light)] hover:text-[var(--primary-light)] hover:bg-[var(--primary-light)]/10 transition-all',
     Skip: 'bg-[var(--background-light)] border-none rounded-[60px] text-[var(--grat-text)] hover:text-[var(--primary-light)] transition-all',
     Disable:
-      'border-none rounded-[60px] bg-[var(--Disabled)] text-white cursor-not-allowed opacity-50',
-  }
+      'border-none rounded-[60px] bg-[var(--Disabled)] text-white cursor-not-allowed opacity-50'}
+
+
 
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
@@ -29,7 +30,7 @@ const Button = ({
 
   return (
     <button
-      className={`font-poppins font-medium transition-all duration-300 shadow-sm active:scale-95 
+      className={`font-poppins font-medium transition-all duration-300 shadow-sm active:scale-95
         ${variants[variant]}
         ${sizes[size]}
         ${className}`}
