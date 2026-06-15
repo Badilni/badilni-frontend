@@ -1,8 +1,7 @@
-import { useSearchParams } from 'react-router-dom';
-import AdvancedResultsView from '../AdvancedSearch/searchResultView';
-import useAdvancedSearch from '../../hooks/AdvancedSearch/useSearchHeader';
-import HeadPasswordReset from '../common/HeadPasswordReset';
-
+import { useSearchParams } from 'react-router-dom'
+import AdvancedResultsView from '../AdvancedSearch/searchResultView'
+import useAdvancedSearch from '../../hooks/AdvancedSearch/useSearchHeader'
+import HeadPasswordReset from '../common/HeadPasswordReset'
 
 export default function AdvancedSearchSystem() {
   const {
@@ -17,11 +16,11 @@ export default function AdvancedSearchSystem() {
     handleSearchSubmit,
     handlePageChange,
     handleFilterAll,
-    handleFilterPeople
-  } = useAdvancedSearch();
+    handleFilterPeople,
+  } = useAdvancedSearch()
 
-  const [searchParams] = useSearchParams();
-  const hasSearched = searchParams.has('keyword');
+  const [searchParams] = useSearchParams()
+  const hasSearched = searchParams.has('keyword')
 
   return (
     <div className="bg-[var(--whiteBackground)] dark:bg-[#0f172a] min-h-screen pb-12 transition-colors duration-200">
@@ -29,7 +28,10 @@ export default function AdvancedSearchSystem() {
         <div className="max-w-7xl mx-auto px-4 items-center">
           <HeadPasswordReset />
 
-          <form onSubmit={handleSearchSubmit} className="relative w-full max-w-3xl mx-auto mt-4">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative w-full max-w-3xl mx-auto mt-4"
+          >
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
               🔍
             </div>
@@ -67,10 +69,14 @@ export default function AdvancedSearchSystem() {
       ) : (
         <div className="text-center py-20">
           <div className="text-5xl mb-4">🔍</div>
-          <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">Advanced Search System</h3>
-          <p className="text-sm text-gray-400 mt-1">Type your keyword above and press Enter to discover speakers.</p>
+          <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">
+            Advanced Search System
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">
+            Type your keyword above and press Enter to discover speakers.
+          </p>
         </div>
       )}
     </div>
-  );
+  )
 }

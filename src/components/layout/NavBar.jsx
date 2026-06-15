@@ -13,30 +13,33 @@ const NavBar = () => {
     await logout(navigate)
   }
   return (
-    <div className="min-h-screen w-full">
-      <header className="w-full flex justify-end p-4">
-        {!user ? (
-          <div className="flex gap-2">
-            <Button variant="primary" size="lg" onClick={handleLogin}>
-              Sign In
-            </Button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-4">
+    <header className="w-full flex justify-end p-4">
+      {!user ? (
+        <div className="flex gap-2">
+          <Button variant="primary" size="lg" onClick={handleLogin}>
+            Sign In
+          </Button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate('/profile')}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <img
               src={user.avatar?.url}
               alt="Avatar"
               className="w-10 h-10 rounded-full"
             />
-            <div>{user.name?.toUpperCase() || 'User'}</div>
+            <span>{user.name?.toUpperCase() || 'User'}</span>
+          </button>
 
-            <Button variant="outline" size="md" onClick={handleSignOut}>
-              Sign Out
-            </Button>
-          </div>
-        )}
-      </header>
-    </div>
+          <Button variant="outline" size="md" onClick={handleSignOut}>
+            Sign Out
+          </Button>
+        </div>
+      )}
+    </header>
   )
 }
 
