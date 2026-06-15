@@ -1,9 +1,8 @@
 import { useSearchParams } from 'react-router-dom'
 import AdvancedResultsView from '../AdvancedSearch/searchResultView'
 import useAdvancedSearch from '../../hooks/AdvancedSearch/useSearchHeader'
-import HeadPasswordReset from '../common/HeadPasswordReset'
 
-export default function AdvancedSearchSystem() {
+export default function AdvancedSearchSystem({ compact = false }) {
   const {
     queryPage,
     currentFilter,
@@ -23,38 +22,71 @@ export default function AdvancedSearchSystem() {
   const hasSearched = searchParams.has('keyword')
 
   return (
-    <div className="bg-[var(--whiteBackground)] dark:bg-[#0f172a] min-h-screen pb-12 transition-colors duration-200">
-      <div className="bg-white dark:bg-[#1e293b] border-b border-gray-100 dark:border-[#334155] py-6 mb-6 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 items-center">
-          <HeadPasswordReset />
+    <div style={{ width: '100%', fontFamily: 'Poppins, sans-serif' }}>
+      <form
+        onSubmit={handleSearchSubmit}
+        style={{ position: 'relative', width: '100%' }}
+      >
+        {/* Search icon */}
+        <span style={{
+          position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)',
+          pointerEvents: 'none', display: 'flex', alignItems: 'center',
+        }}>
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--gray-text)" strokeWidth={2}>
+            <circle cx="11" cy="11" r="8" />
+            <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
+          </svg>
+        </span>
 
-          <form
-            onSubmit={handleSearchSubmit}
-            className="relative w-full max-w-3xl mx-auto mt-4"
+        <input
+          type="text"
+          value={keywordInput}
+          onChange={(e) => setKeywordInput(e.target.value)}
+          placeholder="Search skills, people…"
+          style={{
+            width: '100%',
+            padding: compact ? '7px 36px 7px 32px' : '10px 36px 10px 32px',
+            backgroundColor: 'var(--background-light)',
+            border: '1px solid var(--border-color, #e2e8f0)',
+            borderRadius: '10px',
+            fontSize: '13px',
+            color: 'var(--black-text)',
+            outline: 'none',
+            transition: 'border-color 0.15s, background 0.15s',
+            fontFamily: 'Poppins, sans-serif',
+            boxSizing: 'border-box',
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = 'var(--primary-light)'
+            e.target.style.backgroundColor = 'var(--whiteBackground)'
+            e.target.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--primary-light) 12%, transparent)'
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--border-color, #e2e8f0)'
+            e.target.style.backgroundColor = 'var(--background-light)'
+            e.target.style.boxShadow = 'none'
+          }}
+        />
+
+        {/* Submit arrow — visible only when there's input */}
+        {keywordInput && (
+          <button
+            type="submit"
+            aria-label="Submit search"
+            style={{
+              position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)',
+              background: 'none', border: 'none', cursor: 'pointer', padding: '4px',
+              display: 'flex', alignItems: 'center', color: 'var(--primary-light)',
+            }}
           >
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-              🔍
-            </div>
-            <input
-              type="text"
-              value={keywordInput}
-              onChange={(e) => setKeywordInput(e.target.value)}
-              placeholder="Search by keyword and press Enter..."
-              className="w-full pl-12 pr-24 py-3 bg-gray-50 dark:bg-[#1e293b] border border-gray-200 dark:border-[#334155] rounded-xl text-sm font-medium text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-[#0f172a] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all text-left"
-            />
-            <div className="absolute inset-y-0 right-0 pr-2 flex items-center">
-              <button
-                type="submit"
-                className="px-5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors"
-              >
-                Search
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        )}
+      </form>
 
-      {hasSearched ? (
+      {!compact && hasSearched && (
         <AdvancedResultsView
           searchResults={searchResults}
           resultsLoading={resultsLoading}
@@ -66,16 +98,6 @@ export default function AdvancedSearchSystem() {
           onFilterPeople={handleFilterPeople}
           currentFilter={currentFilter}
         />
-      ) : (
-        <div className="text-center py-20">
-          <div className="text-5xl mb-4">🔍</div>
-          <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">
-            Advanced Search System
-          </h3>
-          <p className="text-sm text-gray-400 mt-1">
-            Type your keyword above and press Enter to discover speakers.
-          </p>
-        </div>
       )}
     </div>
   )

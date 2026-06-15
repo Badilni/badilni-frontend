@@ -17,7 +17,7 @@ const MainLayout = () => {
   }, [location.pathname])
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       {loading ? (
         <div className="w-full">
           <Spinner />
