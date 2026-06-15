@@ -46,20 +46,12 @@ const router = createHashRouter([
           {
             element: <RequireAuth />,
             children: [
+              { path: 'profile', element: <div>profile</div> },
+              { path: 'chat', element: <div>chat</div> },
+              { path: 'settings', element: <div>settings</div> },
               {
-                children: [
-                  { path: 'profile', element: <div>profile</div> },
-                  { path: 'chat', element: <div>chat</div> },
-                  { path: 'settings', element: <div>settings</div> },
-             {
-    path:'/search',
-    element:<AdvancedSearchSystem/>
-  },
-  {
-    path:'/searchResult',
-    element:<AdvancedResultsView/>
-  },
-                ],
+                path: 'search',
+                element: <AdvancedSearchSystem />,
               },
             ],
           },
@@ -71,6 +63,10 @@ const router = createHashRouter([
       { path: '/signUp', element: <Signup /> },
       { path: '/forgetPass', element: <ForgetPassPage /> },
       { path: '/verifyCode', element: <VerificationPassword /> },
+      {
+        path: 'searchResult',
+        element: <AdvancedResultsView />,
+      },
 
       // ── Protected routes ──────────────────────────────────────────────────
       // RequireAuth handles three states:

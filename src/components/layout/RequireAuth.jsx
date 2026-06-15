@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
+import { Outlet } from 'react-router-dom'
 
 export default function RequireAuth({ children }) {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -12,5 +13,5 @@ export default function RequireAuth({ children }) {
     return <Navigate to="/signIn" replace />
   }
 
-  return children
+  return <Outlet />
 }

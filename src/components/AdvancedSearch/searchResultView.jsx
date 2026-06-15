@@ -56,9 +56,8 @@ export default function AdvancedResultsView({
             People
           </button>
 
-          {/* زر Skills */}
           <button
-            onClick={() => { /* تفاعلات المستقبل */ }}
+            onClick={() => { /* future actions  */ }}
             className="px-5 py-2 border rounded-full text-xs font-bold shadow-sm transition-all flex items-center gap-1 cursor-pointer hover:opacity-80"
             style={{
               backgroundColor: 'var(--whiteBackground)',

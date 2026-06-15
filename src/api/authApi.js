@@ -21,3 +21,6 @@ export const getMeRequest = () =>
 
 export const refreshRequest = () =>
   api.post('/auth/refresh').then((r) => r.data)
+
+export const getUsersRequest = (params) =>
+  api.get('/users', { params }).then((r) => r.data)
