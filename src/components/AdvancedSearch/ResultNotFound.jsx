@@ -1,4 +1,3 @@
-
 export default function NoResults() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in">
@@ -10,8 +9,9 @@ export default function NoResults() {
         No Speakers Found
       </h3>
       <p className="text-sm text-gray-400 max-w-sm">
-        We couldn't find any speakers matching your exact search criteria. Try adjusting your filters or spelling.
+        We couldn't find any speakers matching your exact search criteria. Try
+        adjusting your filters or spelling.
       </p>
     </div>
-  );
+  )
 }

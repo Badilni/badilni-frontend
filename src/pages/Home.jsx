@@ -2,10 +2,10 @@ import FirstSection from '../components/home/FirstSection'
 import SecondSection from '../components/home/SecondSection'
 
 const Home = () => {
-  
-
   return (
-    <div>Home</div>
+    <div className="min-h-screen w-full flex justify-center items-center">
+      Home
+    </div>
   )
 }
 
