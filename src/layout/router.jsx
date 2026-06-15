@@ -11,6 +11,8 @@ import VerificationPassword from '../pages/verifyResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
 import AdvancedResultsView from '../components/AdvancedSearch/searchResultView'
 import AdvancedSearchSystem from '../components/AdvancedSearch/AdvancedSearchSystem'
+import ProfilePage from '../pages/profile/profile'
+import EditProfilePage from '../pages/profile/EditProfile'
 
 // Example protected pages — replace with your real ones
 
@@ -67,6 +69,9 @@ const router = createHashRouter([
         path: 'searchResult',
         element: <AdvancedResultsView />,
       },
+      { path: '/profile', element: <ProfilePage /> },
+      { path: '/profile/edit', element: <EditProfilePage /> },
+
 
       // ── Protected routes ──────────────────────────────────────────────────
       // RequireAuth handles three states:

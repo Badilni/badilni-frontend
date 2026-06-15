@@ -48,7 +48,7 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
     const result = await login(data.email, data.password)
     if (result.success) {
       if (onSuccess) onSuccess(result.data)
-      else navigate('/profile')
+      else navigate('/')
     }
   }
 

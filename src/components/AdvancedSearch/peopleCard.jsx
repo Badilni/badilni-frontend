@@ -1,12 +1,12 @@
-import { BsChat, BsStarFill } from "react-icons/bs";
+import { BsChat, BsStarFill } from 'react-icons/bs'
 
 export default function UserCard({ user }) {
   const getAvatarUrl = (avatar) => {
-    if (!avatar) return null;
-    return typeof avatar === 'object' ? avatar.url : avatar;
-  };
+    if (!avatar) return null
+    return typeof avatar === 'object' ? avatar.url : avatar
+  }
 
-  const avatarUrl = getAvatarUrl(user.avatar);
+  const avatarUrl = getAvatarUrl(user.avatar)
 
   return (
     <div
@@ -17,13 +17,12 @@ export default function UserCard({ user }) {
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)'
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'
       }}
     >
-
       <div
         className="relative w-full aspect-square rounded-xl overflow-visible shadow-inner border-none group/img"
         style={{
@@ -39,7 +38,9 @@ export default function UserCard({ user }) {
             src={avatarUrl}
             alt={user.name}
             className="absolute inset-0 w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105 z-10"
-            onError={(e) => { e.target.style.display = 'none'; }}
+            onError={(e) => {
+              e.target.style.display = 'none'
+            }}
           />
         )}
 
@@ -80,7 +81,9 @@ export default function UserCard({ user }) {
 
       <div className="w-full pt-1">
         <button
-          onClick={() => { /* openChat(user._id); */ }}
+          onClick={() => {
+            /* openChat(user._id); */
+          }}
           className="w-full py-2.5 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-all duration-200 border"
           style={{
             backgroundColor: 'var(--background-light)',
@@ -88,12 +91,12 @@ export default function UserCard({ user }) {
             borderColor: 'var(--border-color)',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'var(--primary-light)';
-            e.currentTarget.style.color = 'white';
+            e.currentTarget.style.backgroundColor = 'var(--primary-light)'
+            e.currentTarget.style.color = 'white'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'var(--background-light)';
-            e.currentTarget.style.color = 'var(--black-text)';
+            e.currentTarget.style.backgroundColor = 'var(--background-light)'
+            e.currentTarget.style.color = 'var(--black-text)'
           }}
         >
           <BsChat className="w-3.5 h-3.5" />
@@ -101,5 +104,5 @@ export default function UserCard({ user }) {
         </button>
       </div>
     </div>
-  );
+  )
 }
