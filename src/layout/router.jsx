@@ -9,24 +9,10 @@ import LoginPage from '../pages/Login'
 import Signup from '../pages/Signup'
 import VerificationPassword from '../pages/verifyResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
-import AdvancedResultsView from '../components/AdvancedSearch/searchResultView'
-import AdvancedSearchSystem from '../components/AdvancedSearch/AdvancedSearchSystem'
 import ProfilePage from '../pages/profile/profile'
 import EditProfilePage from '../pages/profile/EditProfile'
+import SearchPage from '../pages/Search'
 
-// Example protected pages — replace with your real ones
-
-/**
- * RootLayout
- *
- * Wraps the entire app. AuthInitializer sits here so it runs once on mount,
- * regardless of which route the user lands on — including deep links and
- * hard refreshes on protected pages.
- *
- * createHashRouter does not use a top-level <BrowserRouter>, but it still
- * provides a router context, so useNavigate / useLocation work fine inside
- * AuthInitializer and RequireAuth.
- */
 const RootLayout = () => (
   <>
     <AuthInitializer />
@@ -36,10 +22,8 @@ const RootLayout = () => (
 
 const router = createHashRouter([
   {
-    // RootLayout wraps everything — AuthInitializer fires once here.
     element: <RootLayout />,
     children: [
-      // ── Public routes with MainLayout (NavBar + Footer + route spinner) ──
       {
         path: '/',
         element: <MainLayout />,
@@ -48,38 +32,22 @@ const router = createHashRouter([
           {
             element: <RequireAuth />,
             children: [
-              { path: 'profile', element: <div>profile</div> },
-              { path: 'chat', element: <div>chat</div> },
-              { path: 'settings', element: <div>settings</div> },
               {
-                path: 'search',
-                element: <AdvancedSearchSystem />,
+                path: 'profile',
+                element: <ProfilePage />,
               },
+              { path: 'profile/edit', element: <EditProfilePage /> },
+              { path: 'chat', element: <div>chat</div> },
+              { path: 'settings', element: <EditProfilePage /> },
+              { path: 'search', element: <SearchPage /> }, // Renders the dedicated page now
             ],
           },
         ],
       },
-
-      // ── Auth pages (no MainLayout — they have their own full-page design) ──
       { path: '/signIn', element: <LoginPage /> },
       { path: '/signUp', element: <Signup /> },
       { path: '/forgetPass', element: <ForgetPassPage /> },
       { path: '/verifyCode', element: <VerificationPassword /> },
-      {
-        path: 'searchResult',
-        element: <AdvancedResultsView />,
-      },
-      { path: '/profile', element: <ProfilePage /> },
-      { path: '/profile/edit', element: <EditProfilePage /> },
-
-
-      // ── Protected routes ──────────────────────────────────────────────────
-      // RequireAuth handles three states:
-      //   isLoading = true  → spinner (waiting for GET /auth/me)
-      //   isAuthenticated   → render the child route
-      //   !isAuthenticated  → redirect to /signIn
-
-      // ── Misc ──────────────────────────────────────────────────────────────
       { path: '/test', element: <ShowcasePage /> },
       { path: '*', element: <h1>Not Found</h1> },
     ],

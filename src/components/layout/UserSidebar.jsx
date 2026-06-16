@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const TABS = [
   {
@@ -30,7 +31,6 @@ const TABS = [
   },
 ]
 
-/* ── shared token shortcuts ── */
 const S = {
   card: {
     backgroundColor: 'var(--whiteBackground)',
@@ -56,7 +56,8 @@ const S = {
 }
 
 /* ── Profile tab ── */
-const ProfileTab = ({ user }) => (
+// FIX: accept navigate as a prop instead of using undefined `navigation`
+const ProfileTab = ({ user, navigate }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
     {/* Avatar */}
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', padding: '12px 0' }}>
@@ -88,6 +89,7 @@ const ProfileTab = ({ user }) => (
             justifyContent: 'center',
             cursor: 'pointer',
           }}
+          onClick={() => navigate('/profile/edit')}  // FIX: was navigation.navigate('/#/profile/edit')
         >
           <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="var(--gray-text)" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -106,7 +108,6 @@ const ProfileTab = ({ user }) => (
         { label: 'Full name', value: user.name || '—' },
         { label: 'Email', value: user.email || '—' },
         { label: 'Member since', value: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—' },
-        { label: 'Role', value: user.role || 'Member' },
       ].map(({ label, value }) => (
         <div key={label}>
           <p style={S.label}>{label}</p>
@@ -131,6 +132,29 @@ const ProfileTab = ({ user }) => (
       }}
       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--background-light)')}
       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+      onClick={() => navigate('/profile')}
+    >
+      Show profile
+    </button>
+
+    <button
+      style={{
+        width: '100%',
+        padding: '9px',
+        border: '1px solid var(--border-color, #e2e8f0)',
+        borderRadius: '9px',
+        backgroundColor: 'transparent',
+        color: 'var(--black-text)',
+        fontSize: '13px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontFamily: 'Poppins, sans-serif',
+        transition: 'background 0.15s',
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--background-light)')}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+      // onClick={() => navigate('/profile').navigate('/edit')}
+      onClick={() => navigate('/profile/edit')}  // FIX: was navigation.navigate('/#/profile/edit')
     >
       Edit profile
     </button>
@@ -140,7 +164,6 @@ const ProfileTab = ({ user }) => (
 /* ── Credits tab ── */
 const CreditsTab = () => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-    {/* Balance card — uses brand colors, intentional non-variable gradient */}
     <div style={{
       borderRadius: '12px',
       background: 'linear-gradient(135deg, var(--primary-light), var(--secondary-light))',
@@ -152,7 +175,6 @@ const CreditsTab = () => (
       <p style={{ fontSize: '11px', opacity: 0.65, margin: '4px 0 0' }}>Resets Jul 1, 2026</p>
     </div>
 
-    {/* Usage bar */}
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--gray-text)', marginBottom: '6px' }}>
         <span>Used this month</span><span>60 / 300</span>
@@ -162,7 +184,6 @@ const CreditsTab = () => (
       </div>
     </div>
 
-    {/* Transactions */}
     <div>
       <p style={{ ...S.label, marginBottom: '8px' }}>Recent transactions</p>
       {[
@@ -270,6 +291,7 @@ const SessionsTab = () => (
 /* ── Main Sidebar ── */
 const UserSidebar = ({ open, onClose, user, onSignOut }) => {
   const [activeTab, setActiveTab] = useState('profile')
+  const navigate = useNavigate()  // FIX: moved here so it can be passed to ProfileTab
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose() }
@@ -370,7 +392,8 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
 
         {/* Tab content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '18px' }}>
-          {activeTab === 'profile' && <ProfileTab user={user} />}
+          {/* FIX: pass navigate down to ProfileTab */}
+          {activeTab === 'profile' && <ProfileTab user={user} navigate={navigate} />}
           {activeTab === 'credits' && <CreditsTab />}
           {activeTab === 'sessions' && <SessionsTab />}
         </div>

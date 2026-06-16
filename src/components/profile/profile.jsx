@@ -171,8 +171,6 @@ const ProfileScreen = () => {
   const visibleReviews = MOCK_REVIEWS.slice(0, visibleCount)
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <NavBar />
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
         {/* Hero header */}
         <ProfileHeader />
@@ -264,8 +262,6 @@ const ProfileScreen = () => {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   )
 }
 

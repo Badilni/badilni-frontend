@@ -1,32 +1,40 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { fetchUsersService } from '../../services/authentication/AdvancedSearch/search'
 
 export default function useSearchHeader() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
 
-  const queryKeyword = searchParams.get('keyword') || ''
+  // Track state against standard 'q' key query parameter
+  const queryKeyword = searchParams.get('q') || ''
   const queryPage = parseInt(searchParams.get('page')) || 1
   const currentFilter = searchParams.get('type') || 'all'
 
   const [keywordInput, setKeywordInput] = useState(queryKeyword)
-
   const [searchResults, setSearchResults] = useState([])
   const [resultsLoading, setResultsLoading] = useState(false)
   const [totalPages, setTotalPages] = useState(1)
   const [totalResults, setTotalResults] = useState(0)
+  const [searchError, setSearchError] = useState(null)
+
+  // Synchronize input bar state when user uses browser back/forward buttons
+  useEffect(() => {
+    setKeywordInput(queryKeyword)
+  }, [queryKeyword])
 
   useEffect(() => {
-    if (
-      !searchParams.has('keyword') &&
-      !searchParams.has('page') &&
-      !searchParams.has('type')
-    ) {
+    // If no active search query exists in the URL parameters, clear out elements safely
+    if (!searchParams.has('q')) {
+      setSearchResults([])
+      setTotalResults(0)
+      setTotalPages(1)
       return
     }
 
     const fetchResults = async () => {
       setResultsLoading(true)
+      setSearchError(null)
       try {
         const resData = await fetchUsersService({
           keyword: queryKeyword.trim() || undefined,
@@ -43,9 +51,7 @@ export default function useSearchHeader() {
             (Array.isArray(resData) ? resData : [])
 
           setSearchResults(usersList)
-          setTotalPages(
-            resData.pagination?.totalPages || resData.totalPages || 1
-          )
+          setTotalPages(resData.pagination?.totalPages || resData.totalPages || 1)
           setTotalResults(
             resData.pagination?.totalCount ||
               resData.totalCount ||
@@ -59,6 +65,7 @@ export default function useSearchHeader() {
         }
       } catch (error) {
         console.error('Fetch error using service:', error)
+        setSearchError('Failed to fetch data. Please check your internet connection.')
         setSearchResults([])
         setTotalResults(0)
         setTotalPages(1)
@@ -72,23 +79,28 @@ export default function useSearchHeader() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
-    setSearchParams({ keyword: keywordInput.trim(), page: 1, type: 'all' })
+    const trimmed = keywordInput.trim()
+    if (trimmed) {
+      // Force navigation onto our dedicated search dashboard view with clean state params
+      navigate(`/search?q=${encodeURIComponent(trimmed)}&page=1&type=all`)
+    } else {
+      navigate('/search')
+    }
   }
 
   const handleFilterAll = () => {
-    setSearchParams({ keyword: queryKeyword, page: 1, type: 'all' })
+    setSearchParams({ q: queryKeyword, page: '1', type: 'all' })
   }
 
   const handleFilterPeople = () => {
-    setSearchParams({ keyword: queryKeyword, page: 1, type: 'people' })
+    setSearchParams({ q: queryKeyword, page: '1', type: 'people' })
   }
 
   const handlePageChange = (pageAction) => {
-    const nextPage =
-      typeof pageAction === 'function' ? pageAction(queryPage) : pageAction
+    const nextPage = typeof pageAction === 'function' ? pageAction(queryPage) : pageAction
     setSearchParams({
-      keyword: queryKeyword,
-      page: nextPage,
+      q: queryKeyword,
+      page: String(nextPage),
       type: currentFilter,
     })
   }
@@ -103,6 +115,7 @@ export default function useSearchHeader() {
     resultsLoading,
     totalPages,
     totalResults,
+    searchError,
     handleSearchSubmit,
     handlePageChange,
     handleFilterAll,
