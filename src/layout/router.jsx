@@ -12,6 +12,8 @@ import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
 import ProfilePage from '../pages/profile/profile'
 import EditProfilePage from '../pages/profile/EditProfile'
 import SearchPage from '../pages/Search'
+import ContactPage from '../pages/contactUs/contact'
+import AboutPage from '../pages/about/about'
 import ExplorePage from '../pages/Explore'
 import RequestsPage from '../pages/Requests'
 
@@ -43,7 +45,9 @@ const router = createHashRouter([
               { path: 'profile/edit', element: <EditProfilePage /> },
               { path: 'chat', element: <div>chat</div> },
               { path: 'settings', element: <EditProfilePage /> },
-              { path: 'search', element: <SearchPage /> }, // Renders the dedicated page now
+              { path: 'search', element: <SearchPage /> },
+              { path: 'contact', element: <ContactPage /> },
+              { path: 'about', element:<AboutPage /> } // Renders the dedicated page now
             ],
           },
         ],

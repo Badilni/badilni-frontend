@@ -8,7 +8,7 @@
 //           <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded-md w-1/2" />
 //         </div>
 //       </div>
-      
+
 //       <div className="flex gap-3 mb-4">
 //         <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded-lg w-12" />
 //         <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded-lg w-16" />

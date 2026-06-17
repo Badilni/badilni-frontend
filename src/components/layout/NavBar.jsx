@@ -20,7 +20,7 @@ const NAV_ITEMS = [
 export default function NavBar() {
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
 
@@ -33,7 +33,7 @@ export default function NavBar() {
   }, [location.pathname])
 
   const handleLogin = () => navigate('/SignIn')
-  
+
   const handleSignOut = async () => {
     setSidebarOpen(false)
     await logout(navigate)
@@ -51,21 +51,27 @@ export default function NavBar() {
     <>
       <header className="w-full sticky top-0 z-40 transition-colors duration-200 border-b border-gray-200/80 dark:border-slate-800/80 bg-[var(--whiteBackground)]/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          
           {/* Brand Logo Group */}
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 shrink-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 p-1 hover:opacity-90 transition-all duration-200"
             aria-label="Go to homepage"
           >
-            <img src={Logo} alt="Badilni Logo" className="w-9 h-9 object-contain" />
+            <img
+              src={Logo}
+              alt="Badilni Logo"
+              className="w-9 h-9 object-contain"
+            />
             <span className="text-2xl font-black tracking-tight hidden sm:block bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-300 font-sans">
               Badilni
             </span>
           </button>
 
           {/* Desktop Links (Hidden below Large Viewports to secure room for inputs) */}
-          <nav className="hidden xl:flex items-center gap-1" aria-label="Main navigation">
+          <nav
+            className="hidden xl:flex items-center gap-1"
+            aria-label="Main navigation"
+          >
             {NAV_ITEMS.map((item) => {
               const active = isActiveRoute(item.path)
               return (
@@ -91,15 +97,25 @@ export default function NavBar() {
 
           {/* Header Action Utilities */}
           <div className="flex items-center gap-2 shrink-0">
-            
             {/* Inbox Chat Triggers */}
             <button
               onClick={() => navigate('/chat')}
               className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
               aria-label="Open chat application wrapper"
             >
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                />
               </svg>
             </button>
 
@@ -119,14 +135,32 @@ export default function NavBar() {
             <button
               className="xl:hidden p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
               onClick={() => setMenuOpen((prev) => !prev)}
-              aria-label={menuOpen ? 'Close system navigation menu' : 'Open system navigation menu'}
+              aria-label={
+                menuOpen
+                  ? 'Close system navigation menu'
+                  : 'Open system navigation menu'
+              }
               aria-expanded={menuOpen}
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 {menuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 )}
               </svg>
             </button>
@@ -136,13 +170,15 @@ export default function NavBar() {
         {/* Responsive Drawer Menu Expansion Panel */}
         {menuOpen && (
           <div className="xl:hidden border-t border-gray-100 dark:border-slate-800 bg-[var(--whiteBackground)] dark:bg-slate-900 transition-all duration-300 ease-in-out px-4 py-4 space-y-4 shadow-inner">
-            
             {/* Mobile View Standalone Search Input Overlay */}
             <div className="md:hidden">
               <AdvancedSearchSystem compact />
             </div>
 
-            <nav className="flex flex-col gap-1" aria-label="Mobile navigation configuration context">
+            <nav
+              className="flex flex-col gap-1"
+              aria-label="Mobile navigation configuration context"
+            >
               {NAV_ITEMS.map((item) => {
                 const active = isActiveRoute(item.path)
                 return (
@@ -163,7 +199,12 @@ export default function NavBar() {
 
             {!user && (
               <div className="pt-3 border-t border-gray-100 dark:border-slate-800">
-                <Button variant="outline" size="sm" onClick={handleLogin} className="w-full justify-center py-2.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogin}
+                  className="w-full justify-center py-2.5"
+                >
                   Sign In
                 </Button>
               </div>
