@@ -12,6 +12,8 @@ import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
 import ProfilePage from '../pages/profile/profile'
 import EditProfilePage from '../pages/profile/EditProfile'
 import SearchPage from '../pages/Search'
+import ExplorePage from '../pages/Explore'
+import RequestsPage from '../pages/Requests'
 
 const RootLayout = () => (
   <>
@@ -29,6 +31,8 @@ const router = createHashRouter([
         element: <MainLayout />,
         children: [
           { index: true, element: <Home /> },
+          { path: 'explore', element: <ExplorePage /> },
+          { path: 'requests', element: <RequestsPage /> },
           {
             element: <RequireAuth />,
             children: [
