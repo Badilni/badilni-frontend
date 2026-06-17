@@ -188,10 +188,13 @@ describe('ProfileHeader', () => {
 describe('ProfileScreen', () => {
   beforeEach(() => mockNavigate.mockClear())
 
-  it('renders NavBar and Footer', () => {
+  it('renders the profile page core content', () => {
     renderWithRouter(<ProfileScreen />)
-    expect(screen.getByTestId('navbar')).toBeInTheDocument()
-    expect(screen.getByTestId('footer')).toBeInTheDocument()
+    // NavBar & Footer live in MainLayout (the router wrapper), not in ProfileScreen.
+    // This test verifies the page itself renders its primary sections.
+    expect(screen.getByRole('heading', { name: /Sohila/i })).toBeInTheDocument()
+    expect(screen.getByText('Account Settings')).toBeInTheDocument()
+    expect(screen.getByText(/Recent Feedback/i)).toBeInTheDocument()
   })
 
   it('renders Skills section', () => {
