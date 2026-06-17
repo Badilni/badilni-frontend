@@ -1,7 +1,8 @@
 import useAdvancedSearch from '../../hooks/AdvancedSearch/useSearchHeader'
 
 export default function AdvancedSearchSystem({ compact = false }) {
-  const { keywordInput, setKeywordInput, handleSearchSubmit } = useAdvancedSearch()
+  const { keywordInput, setKeywordInput, handleSearchSubmit } =
+    useAdvancedSearch()
 
   return (
     <div className="w-full font-sans">
@@ -11,7 +12,14 @@ export default function AdvancedSearchSystem({ compact = false }) {
       >
         {/* Search Icon Left */}
         <span className="absolute left-3.5 z-10 pointer-events-none flex items-center justify-center text-gray-400 dark:text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors duration-200">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
             <circle cx="11" cy="11" r="8" />
             <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
           </svg>
@@ -47,8 +55,19 @@ export default function AdvancedSearchSystem({ compact = false }) {
             ${keywordInput ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}
           `}
         >
-          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          <svg
+            width="15"
+            height="15"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
           </svg>
         </button>
       </form>

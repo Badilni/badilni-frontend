@@ -14,11 +14,11 @@
 //       try {
 //         setLoading(true)
 //         setError(false)
-        
+
 //         // Adjust endpoint path matching your project's server configuration
 //         const response = await api.get()
 //         if (!response.ok) throw new Error('API Execution Error')
-        
+
 //         const data = await response.json()
 //         const userList = Array.isArray(data) ? data : (data.users || [])
 
@@ -42,7 +42,7 @@
 //   return (
 //     <section className="w-full py-16 bg-slate-50 dark:bg-slate-950/40 transition-colors duration-200">
 //       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        
+
 //         {/* Section Header Text Blocks */}
 //         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
 //           <div>
@@ -53,7 +53,7 @@
 //               Discover the highest-rated members of the Badilni community.
 //             </p>
 //           </div>
-          
+
 //           {!loading && !error && users.length > 0 && (
 //             <button
 //               onClick={() => navigate('/users')}

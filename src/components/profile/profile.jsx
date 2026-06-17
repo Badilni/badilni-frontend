@@ -171,97 +171,95 @@ const ProfileScreen = () => {
   const visibleReviews = MOCK_REVIEWS.slice(0, visibleCount)
 
   return (
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
-        {/* Hero header */}
-        <ProfileHeader />
+    <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
+      {/* Hero header */}
+      <ProfileHeader />
 
-        {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left column */}
-          <div className="lg:col-span-4 space-y-5">
-            <AccountCard />
-            <SkillsCard skills={MOCK_SKILLS} />
+      {/* Main grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left column */}
+        <div className="lg:col-span-4 space-y-5">
+          <AccountCard />
+          <SkillsCard skills={MOCK_SKILLS} />
 
-            {/* CTA Card */}
-            <div className="bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] rounded-2xl p-6 text-white shadow-lg">
-              <p className="font-semibold mb-1">
-                Ready to share your knowledge?
-              </p>
-              <p className="text-sm opacity-80 mb-4">
-                Start a live session and help others grow.
-              </p>
-              <button className="w-full bg-white text-[var(--primary-light)] font-bold py-2.5 rounded-xl hover:bg-[var(--background-light)] transition-colors active:scale-95 text-sm">
-                Start a Session
-              </button>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="lg:col-span-8 space-y-6">
-            <RatingsCard />
-
-            {/* Reviews list */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-[var(--black-text)] text-lg">
-                  Recent Feedback
-                </h3>
-
-                {/* Custom Sort Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setSortOpen((o) => !o)}
-                    className="flex items-center gap-2 bg-[var(--whiteBackground)] border border-[var(--gray-text)]/20 rounded-xl text-sm text-[var(--black-text)] px-4 py-2 hover:border-[var(--primary-light)]/40 hover:bg-[var(--primary-light)]/5 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]/20"
-                  >
-                    <span className="font-medium">{sortBy}</span>
-                    <FiChevronDown
-                      size={14}
-                      className={`text-[var(--gray-text)] transition-transform duration-200 ${
-                        sortOpen ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </button>
-
-                  {sortOpen && (
-                    <div className="absolute right-0 mt-2 w-44 bg-[var(--whiteBackground)] border border-[var(--gray-text)]/15 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] overflow-hidden z-20">
-                      {sortOptions.map((opt) => (
-                        <button
-                          key={opt}
-                          onClick={() => {
-                            setSortBy(opt)
-                            setSortOpen(false)
-                          }}
-                          className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
-                            sortBy === opt
-                              ? 'bg-[var(--primary-light)]/10 text-[var(--primary-light)] font-semibold'
-                              : 'text-[var(--black-text)] hover:bg-[var(--background-light)]'
-                          }`}
-                        >
-                          {opt}
-                          {sortBy === opt && <FiCheck size={13} />}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {visibleReviews.map((r) => (
-                <ReviewCard key={r.id} {...r} />
-              ))}
-
-              {visibleCount < MOCK_REVIEWS.length && (
-                <button
-                  onClick={() => setVisibleCount((c) => c + 2)}
-                  className="w-full py-3.5 text-[var(--primary-light)] font-semibold text-sm hover:bg-[var(--primary-light)]/5 transition-colors rounded-xl border border-dashed border-[var(--primary-light)]/30 active:scale-95"
-                >
-                  Load More Reviews
-                </button>
-              )}
-            </div>
+          {/* CTA Card */}
+          <div className="bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] rounded-2xl p-6 text-white shadow-lg">
+            <p className="font-semibold mb-1">Ready to share your knowledge?</p>
+            <p className="text-sm opacity-80 mb-4">
+              Start a live session and help others grow.
+            </p>
+            <button className="w-full bg-white text-[var(--primary-light)] font-bold py-2.5 rounded-xl hover:bg-[var(--background-light)] transition-colors active:scale-95 text-sm">
+              Start a Session
+            </button>
           </div>
         </div>
-      </main>
+
+        {/* Right column */}
+        <div className="lg:col-span-8 space-y-6">
+          <RatingsCard />
+
+          {/* Reviews list */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-[var(--black-text)] text-lg">
+                Recent Feedback
+              </h3>
+
+              {/* Custom Sort Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setSortOpen((o) => !o)}
+                  className="flex items-center gap-2 bg-[var(--whiteBackground)] border border-[var(--gray-text)]/20 rounded-xl text-sm text-[var(--black-text)] px-4 py-2 hover:border-[var(--primary-light)]/40 hover:bg-[var(--primary-light)]/5 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]/20"
+                >
+                  <span className="font-medium">{sortBy}</span>
+                  <FiChevronDown
+                    size={14}
+                    className={`text-[var(--gray-text)] transition-transform duration-200 ${
+                      sortOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {sortOpen && (
+                  <div className="absolute right-0 mt-2 w-44 bg-[var(--whiteBackground)] border border-[var(--gray-text)]/15 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] overflow-hidden z-20">
+                    {sortOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => {
+                          setSortBy(opt)
+                          setSortOpen(false)
+                        }}
+                        className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
+                          sortBy === opt
+                            ? 'bg-[var(--primary-light)]/10 text-[var(--primary-light)] font-semibold'
+                            : 'text-[var(--black-text)] hover:bg-[var(--background-light)]'
+                        }`}
+                      >
+                        {opt}
+                        {sortBy === opt && <FiCheck size={13} />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {visibleReviews.map((r) => (
+              <ReviewCard key={r.id} {...r} />
+            ))}
+
+            {visibleCount < MOCK_REVIEWS.length && (
+              <button
+                onClick={() => setVisibleCount((c) => c + 2)}
+                className="w-full py-3.5 text-[var(--primary-light)] font-semibold text-sm hover:bg-[var(--primary-light)]/5 transition-colors rounded-xl border border-dashed border-[var(--primary-light)]/30 active:scale-95"
+              >
+                Load More Reviews
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
   )
 }
 

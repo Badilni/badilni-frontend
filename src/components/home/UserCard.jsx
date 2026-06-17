@@ -3,7 +3,7 @@
 
 // const UserCard = React.memo(({ user }) => {
 //   const navigate = useNavigate()
-  
+
 //   // Safe extraction of nested profile parameters
 //   const userId = user?._id || user?.id
 //   const avatarUrl = user?.avatar?.url || user?.profilePicture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150'
@@ -19,7 +19,7 @@
 
 //   return (
 //     <article className="flex flex-col h-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-      
+
 //       {/* Top Meta: Avatar & Location info */}
 //       <div className="flex items-start gap-4 mb-4">
 //         <img

@@ -51,7 +51,9 @@ export default function useSearchHeader() {
             (Array.isArray(resData) ? resData : [])
 
           setSearchResults(usersList)
-          setTotalPages(resData.pagination?.totalPages || resData.totalPages || 1)
+          setTotalPages(
+            resData.pagination?.totalPages || resData.totalPages || 1
+          )
           setTotalResults(
             resData.pagination?.totalCount ||
               resData.totalCount ||
@@ -65,7 +67,9 @@ export default function useSearchHeader() {
         }
       } catch (error) {
         console.error('Fetch error using service:', error)
-        setSearchError('Failed to fetch data. Please check your internet connection.')
+        setSearchError(
+          'Failed to fetch data. Please check your internet connection.'
+        )
         setSearchResults([])
         setTotalResults(0)
         setTotalPages(1)
@@ -97,7 +101,8 @@ export default function useSearchHeader() {
   }
 
   const handlePageChange = (pageAction) => {
-    const nextPage = typeof pageAction === 'function' ? pageAction(queryPage) : pageAction
+    const nextPage =
+      typeof pageAction === 'function' ? pageAction(queryPage) : pageAction
     setSearchParams({
       q: queryKeyword,
       page: String(nextPage),

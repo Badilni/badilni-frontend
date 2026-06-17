@@ -53,9 +53,14 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative border-t transition-colors duration-300 overflow-hidden w-full"
-            style={{ backgroundColor: 'var(--background-light)', borderColor: 'var(--border-color)', color: 'var(--black-text)' }}>
-
+    <footer
+      className="relative border-t transition-colors duration-300 overflow-hidden w-full"
+      style={{
+        backgroundColor: 'var(--background-light)',
+        borderColor: 'var(--border-color)',
+        color: 'var(--black-text)',
+      }}
+    >
       {/* Background Text */}
       <div
         className="absolute bottom-0 left-0 right-0 pointer-events-none opacity-5 text-center"
