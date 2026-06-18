@@ -29,15 +29,6 @@ export default function SearchPage() {
       className="w-full min-h-screen flex flex-col"
       style={{ backgroundColor: 'var(--background-light, #f8fafc)' }}
     >
-      {/* Dynamic Header Section */}
-      <SearchHeader searchResults={searchResults} totalResults={totalResults} />
-
-      <div className="max-w-4xl w-full mx-auto px-4 pt-6">
-        {/* Persistent top query management search field */}
-        <AdvancedSearchSystem compact={false} />
-      </div>
-
-      {/* Main Results Board Context */}
       <div className="flex-grow">
         {searchError ? (
           <div className="max-w-4xl mx-auto px-4 py-12 text-center">

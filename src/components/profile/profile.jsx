@@ -3,6 +3,7 @@ import ProfileHeader from './ProfileHeader'
 import ReviewCard, { StarRating } from './ReviewCard'
 import { useProfile } from '../../hooks/Profile/useProfile'
 import { FaGraduationCap } from 'react-icons/fa'
+import { motion } from "motion/react";
 import {
   FiSettings,
   FiLock,
@@ -59,7 +60,10 @@ const RATING_BARS = [
 
 const SkillsCard = ({ skills }) => {
   return (
-    <div className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
       <div className="flex justify-between items-center mb-5">
         <h2 className="font-bold text-[var(--black-text)] text-lg flex items-center gap-2">
           <FaGraduationCap className="text-[var(--primary-light)]" /> Skills
@@ -81,13 +85,16 @@ const SkillsCard = ({ skills }) => {
           No skills added yet.
         </p>
       )}
-    </div>
+    </motion.div>
   )
 }
 
 const AccountCard = ({ email }) => {
   return (
-    <div className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
       <h2 className="font-bold text-[var(--black-text)] text-lg flex items-center gap-2 mb-5">
         <FiSettings className="text-[var(--primary-light)]" /> Account Settings
       </h2>
@@ -109,12 +116,15 @@ const AccountCard = ({ email }) => {
           <FiKey size={15} /> Reset Password
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
 const RatingsCard = () => (
-  <div className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
+  <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
     <h2 className="font-bold text-[var(--black-text)] text-lg mb-6">
       Ratings &amp; Reviews
     </h2>
@@ -146,7 +156,7 @@ const RatingsCard = () => (
         ))}
       </div>
     </div>
-  </div>
+  </motion.div>
 )
 
 // ─── Main Profile Component ───────────────────────────────────────────────────
@@ -170,7 +180,10 @@ const ProfileScreen = () => {
   if (isError) {
     return (
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16">
-        <div className="bg-[var(--whiteBackground)] border border-red-200 rounded-2xl p-8 text-center max-w-md mx-auto">
+        <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] border border-red-200 rounded-2xl p-8 text-center max-w-md mx-auto">
           <FiAlertTriangle className="mx-auto text-red-500 mb-3" size={28} />
           <p className="text-[var(--black-text)] font-semibold mb-1">
             Couldn&apos;t load your profile
@@ -185,7 +198,7 @@ const ProfileScreen = () => {
           >
             Try Again
           </button>
-        </div>
+        </motion.div>
       </main>
     )
   }

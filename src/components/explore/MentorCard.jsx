@@ -12,7 +12,7 @@ export default function MentorCard({ mentor }) {
   const [hovered, setHovered] = useState(false)
 
   return (
-    <div
+    <div transition={{ duration: 0.5 }}
       className={`relative bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl overflow-hidden border flex flex-col transition-all duration-300 cursor-pointer ${
         hovered
           ? 'shadow-2xl -translate-y-2 border-blue-200 dark:border-blue-800'

@@ -11,7 +11,7 @@ export default function AdvancedSearchSystem({ compact = false }) {
         className="relative w-full flex items-center group"
       >
         {/* Search Icon Left */}
-        {/* <span className="absolute left-3.5 z-10 pointer-events-none flex items-center justify-center text-gray-400 dark:text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors duration-200">
+        <span className="absolute left-3.5 z-10 pointer-events-none flex items-center justify-center text-gray-400 dark:text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors duration-200">
           <svg
             width="16"
             height="16"
@@ -23,9 +23,9 @@ export default function AdvancedSearchSystem({ compact = false }) {
             <circle cx="11" cy="11" r="8" />
             <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
           </svg>
-        </span> */}
+        </span>
 
-        {/* Stable Search Input field
+        {/* Stable Search Input field */}
         <input
           type="text"
           value={keywordInput}
@@ -41,10 +41,10 @@ export default function AdvancedSearchSystem({ compact = false }) {
             focus:ring-4 focus:ring-blue-500/15 dark:focus:ring-blue-400/10
             ${compact ? 'py-2 pl-10 pr-10' : 'py-2.5 pl-10 pr-10'}
           `}
-        /> */}
+        />
 
         {/* Submit Action Button Arrow (Fades in without moving the layout container) */}
-        {/* <button
+        <button
           type="submit"
           aria-label="Submit search"
           className={`absolute right-2 p-1.5 rounded-lg flex items-center justify-center 
@@ -69,7 +69,7 @@ export default function AdvancedSearchSystem({ compact = false }) {
               d="M13 7l5 5m0 0l-5 5m5-5H6"
             />
           </svg>
-        </button> */}
+        </button>
       </form>
     </div>
   )
