@@ -7,7 +7,7 @@ const Home = () => {
     <>
       <HeroSlider />
       {/* <TopRatedUsersSection /> */}
-      <SecondSection />
+      {/* <SecondSection /> */}
     </>
   )
 }

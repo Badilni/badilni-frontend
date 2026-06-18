@@ -1,4 +1,5 @@
 import { BsChat, BsStarFill } from 'react-icons/bs'
+import { IoPersonOutline } from "react-icons/io5";
 
 export default function UserCard({ user }) {
   const getAvatarUrl = (avatar) => {
@@ -6,11 +7,16 @@ export default function UserCard({ user }) {
     return typeof avatar === 'object' ? avatar.url : avatar
   }
 
-  const avatarUrl = getAvatarUrl(user.avatar)
+  const avatarUrl = getAvatarUrl(user?.avatar)
+
+  // Safe fallback wrapper to prevent undefined crashes if a user profile lacks a bio
+  const displayBio = user?.bio 
+    ? (user.bio.length > 18 ? `${user.bio.slice(0, 18)}...` : user.bio) 
+    : "Badilni User"
 
   return (
     <div
-      className="rounded-2xl border shadow-sm transition-all duration-300 hover:shadow-md flex flex-col justify-between overflow-visible relative group p-4 gap-4"
+      className="rounded-2xl border shadow-sm transition-all duration-300 flex flex-col justify-between overflow-visible relative group p-4 gap-4"
       style={{
         backgroundColor: 'var(--whiteBackground)',
         borderColor: 'var(--border-color)',
@@ -30,13 +36,13 @@ export default function UserCard({ user }) {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-tr from-[var(--primary-light)] to-[var(--secondary-light)] flex items-center justify-center text-white font-bold text-2xl rounded-xl z-0">
-          {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+          {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
         </div>
 
         {avatarUrl && (
           <img
             src={avatarUrl}
-            alt={user.name}
+            alt={user?.name}
             className="absolute inset-0 w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105 z-10"
             onError={(e) => {
               e.target.style.display = 'none'
@@ -55,7 +61,7 @@ export default function UserCard({ user }) {
         >
           <BsStarFill className="w-2.5 h-2.5" />
           <span style={{ color: 'var(--black-text)' }}>
-            {Number(user.averageRating ?? 0).toFixed(1)}
+            {Number(user?.averageRating ?? 0).toFixed(1)}
           </span>
         </div>
       </div>
@@ -67,7 +73,7 @@ export default function UserCard({ user }) {
             color: 'var(--black-text)',
           }}
         >
-          {user.name || 'Unknown User'}
+          {user?.name || 'Unknown User'}
         </h3>
         <p
           className="text-[10px] font-bold tracking-wide uppercase"
@@ -75,14 +81,15 @@ export default function UserCard({ user }) {
             color: 'var(--primary-light)',
           }}
         >
-          Speaker / Consultant
+          {displayBio}
         </p>
       </div>
 
-      <div className="w-full pt-1">
+      {/* Button Layout Wrap */}
+      <div className="w-full flex flex-col gap-2 pt-1">
         <button
           onClick={() => {
-            /* openChat(user._id); */
+            /* openChat(user?._id); */
           }}
           className="w-full py-2.5 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-all duration-200 border"
           style={{
@@ -101,6 +108,29 @@ export default function UserCard({ user }) {
         >
           <BsChat className="w-3.5 h-3.5" />
           <span className="text-sm">Chat</span>
+        </button>
+
+        <button
+          onClick={() => {
+            /* openChat(user?._id); */
+          }}
+          className="w-full py-2.5 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-all duration-200 border"
+          style={{
+            backgroundColor: 'var(--background-light)',
+            color: 'var(--black-text)',
+            borderColor: 'var(--border-color)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--primary-light)'
+            e.currentTarget.style.color = 'white'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--background-light)'
+            e.currentTarget.style.color = 'var(--black-text)'
+          }}
+        >
+          <IoPersonOutline className="w-3.5 h-3.5" />
+          <span className="text-sm">Show Profile</span>
         </button>
       </div>
     </div>

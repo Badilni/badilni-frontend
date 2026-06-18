@@ -1,10 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import useAuthStore from '../../store/authStore'
 import ProfileHeader from './ProfileHeader'
 import ReviewCard, { StarRating } from './ReviewCard'
-import NavBar from '../layout/NavBar'
-import Footer from '../layout/Footer'
+import { useProfile } from '../../hooks/Profile/useProfile'
 import { FaGraduationCap } from 'react-icons/fa'
 import {
   FiSettings,
@@ -12,17 +9,11 @@ import {
   FiKey,
   FiChevronDown,
   FiCheck,
+  FiAlertTriangle,
 } from 'react-icons/fi'
 
-// ─── Static mock data (replace with API calls when backend is ready) ─────────
-const MOCK_SKILLS = [
-  'UI/UX Design',
-  'Tailwind CSS',
-  'React Architecture',
-  'Design Systems',
-  'Typography',
-]
-
+// Reviews aren't part of the backend schema we integrated against yet,
+// so this stays mocked until a reviews endpoint exists.
 const MOCK_REVIEWS = [
   {
     id: 1,
@@ -73,31 +64,28 @@ const SkillsCard = ({ skills }) => {
         <h2 className="font-bold text-[var(--black-text)] text-lg flex items-center gap-2">
           <FaGraduationCap className="text-[var(--primary-light)]" /> Skills
         </h2>
-        <button className="text-[var(--primary-light)] font-semibold text-sm hover:underline transition-all">
-          Manage
-        </button>
       </div>
-      <div className="flex flex-wrap gap-2">
-        {skills.map((skill) => (
-          <span
-            key={skill}
-            className="px-4 py-1.5 bg-[var(--primary-light)]/10 text-[var(--primary-light)] rounded-full text-sm font-medium border border-[var(--primary-light)]/20 hover:bg-[var(--primary-light)]/20 transition-colors cursor-default"
-          >
-            {skill}
-          </span>
-        ))}
-        <button className="px-4 py-1.5 bg-transparent border border-dashed border-[var(--gray-text)]/40 text-[var(--gray-text)] rounded-full text-sm font-medium hover:border-[var(--primary-light)] hover:text-[var(--primary-light)] transition-all flex items-center gap-1">
-          + Add New
-        </button>
-      </div>
+      {skills.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {skills.map((skill) => (
+            <span
+              key={skill}
+              className="px-4 py-1.5 bg-[var(--primary-light)]/10 text-[var(--primary-light)] rounded-full text-sm font-medium border border-[var(--primary-light)]/20 hover:bg-[var(--primary-light)]/20 transition-colors cursor-default"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-[var(--gray-text)]">
+          No skills added yet.
+        </p>
+      )}
     </div>
   )
 }
 
-const AccountCard = () => {
-  const user = useAuthStore((s) => s.user)
-  const email = user?.email || 'user@badilni.com'
-
+const AccountCard = ({ email }) => {
   return (
     <div className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
       <h2 className="font-bold text-[var(--black-text)] text-lg flex items-center gap-2 mb-5">
@@ -109,7 +97,9 @@ const AccountCard = () => {
             Email Address
           </label>
           <div className="p-3 bg-[var(--background-light)] rounded-lg border border-[var(--gray-text)]/20 flex justify-between items-center">
-            <span className="text-sm text-[var(--black-text)]">{email}</span>
+            <span className="text-sm text-[var(--black-text)]">
+              {email || '—'}
+            </span>
             <span className="text-[var(--gray-text)]">
               <FiLock size={14} />
             </span>
@@ -129,7 +119,6 @@ const RatingsCard = () => (
       Ratings &amp; Reviews
     </h2>
     <div className="flex flex-col sm:flex-row gap-8 items-center">
-      {/* Big score */}
       <div className="text-center shrink-0">
         <div className="text-6xl font-extrabold text-[var(--primary-light)] leading-none mb-2">
           4.8
@@ -140,7 +129,6 @@ const RatingsCard = () => (
         </div>
       </div>
 
-      {/* Bars */}
       <div className="flex-1 w-full space-y-2">
         {RATING_BARS.map(({ stars, pct }) => (
           <div key={stars} className="flex items-center gap-3">
@@ -164,23 +152,57 @@ const RatingsCard = () => (
 // ─── Main Profile Component ───────────────────────────────────────────────────
 
 const ProfileScreen = () => {
+  const { profile, isLoading, isError, error, refetch } = useProfile()
   const [visibleCount, setVisibleCount] = useState(2)
   const [sortBy, setSortBy] = useState('Most Recent')
   const [sortOpen, setSortOpen] = useState(false)
   const sortOptions = ['Most Recent', 'Highest Rated']
   const visibleReviews = MOCK_REVIEWS.slice(0, visibleCount)
 
+  if (isLoading) {
+    return (
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 flex items-center justify-center">
+        <p className="text-[var(--gray-text)] text-sm">Loading your profile…</p>
+      </main>
+    )
+  }
+
+  if (isError) {
+    return (
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16">
+        <div className="bg-[var(--whiteBackground)] border border-red-200 rounded-2xl p-8 text-center max-w-md mx-auto">
+          <FiAlertTriangle className="mx-auto text-red-500 mb-3" size={28} />
+          <p className="text-[var(--black-text)] font-semibold mb-1">
+            Couldn&apos;t load your profile
+          </p>
+          <p className="text-sm text-[var(--gray-text)] mb-5">
+            {error?.response?.data?.message ||
+              'Something went wrong. Please try again.'}
+          </p>
+          <button
+            onClick={() => refetch()}
+            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[var(--secondary-light)] to-[var(--primary-light)] text-white text-sm font-semibold hover:opacity-90 transition-all active:scale-95"
+          >
+            Try Again
+          </button>
+        </div>
+      </main>
+    )
+  }
+
+  const skillTags = Array.isArray(profile?.skillTags) ? profile.skillTags : []
+
   return (
     <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
       {/* Hero header */}
-      <ProfileHeader />
+      <ProfileHeader profile={profile} />
 
       {/* Main grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column */}
         <div className="lg:col-span-4 space-y-5">
-          <AccountCard />
-          <SkillsCard skills={MOCK_SKILLS} />
+          <AccountCard email={profile?.email} />
+          <SkillsCard skills={skillTags} />
 
           {/* CTA Card */}
           <div className="bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] rounded-2xl p-6 text-white shadow-lg">

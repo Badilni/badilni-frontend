@@ -6,7 +6,7 @@ export default function NoResults() {
       </div>
 
       <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">
-        No Speakers Found
+        No Results
       </h3>
       <p className="text-sm text-gray-400 max-w-sm">
         We couldn't find any speakers matching your exact search criteria. Try

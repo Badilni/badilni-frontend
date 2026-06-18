@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { fetchUsersService } from '../../services/authentication/AdvancedSearch/search'
+import { fetchUsersService } from '../../services/AdvancedSearch/search'
 
 export default function useSearchHeader() {
   const [searchParams, setSearchParams] = useSearchParams()

@@ -35,6 +35,8 @@ const router = createHashRouter([
           { index: true, element: <Home /> },
           { path: 'explore', element: <ExplorePage /> },
           { path: 'requests', element: <RequestsPage /> },
+          { path: 'contact', element: <ContactPage /> },
+          { path: 'about', element: <AboutPage /> },
           {
             element: <RequireAuth />,
             children: [
@@ -46,8 +48,7 @@ const router = createHashRouter([
               { path: 'chat', element: <div>chat</div> },
               { path: 'settings', element: <EditProfilePage /> },
               { path: 'search', element: <SearchPage /> },
-              { path: 'contact', element: <ContactPage /> },
-              { path: 'about', element:<AboutPage /> } // Renders the dedicated page now
+              { path: 'chat', element: <div>chat</div> },
             ],
           },
         ],
