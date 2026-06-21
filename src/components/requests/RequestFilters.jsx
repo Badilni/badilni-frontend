@@ -10,7 +10,6 @@ const CATEGORIES = [
   'Languages',
 ]
 
-
 export default function RequestFilters({
   activeCategory,
   onCategoryChange,
@@ -20,14 +19,25 @@ export default function RequestFilters({
 }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-10">
-
       {/* ── Category chips ──────────────────────────────── */}
       <div className="lg:col-span-8 bg-[var(--whiteBackground)] dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
         <div className="flex items-center gap-2 mb-5">
-          <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+          <svg
+            className="w-4 h-4 text-blue-600 dark:text-blue-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"
+            />
           </svg>
-          <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300">Categories</h3>
+          <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300">
+            Categories
+          </h3>
         </div>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
@@ -57,7 +67,10 @@ export default function RequestFilters({
             { value: 'open', label: 'Open', count: 142 },
             { value: 'filled', label: 'Filled', count: 89 },
           ].map((opt) => (
-            <label key={opt.value} className="flex items-center gap-3 cursor-pointer group">
+            <label
+              key={opt.value}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
               <div
                 onClick={() => onStatusChange(opt.value)}
                 className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
@@ -71,14 +84,17 @@ export default function RequestFilters({
                 )}
               </div>
               <span className="text-sm font-semibold">
-                {opt.label} <span className="opacity-70 font-normal">({opt.count})</span>
+                {opt.label}{' '}
+                <span className="opacity-70 font-normal">({opt.count})</span>
               </span>
             </label>
           ))}
         </div>
 
         <div className="pt-5 border-t border-white/20">
-          <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-3">Your Match Potential</p>
+          <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-3">
+            Your Match Potential
+          </p>
           <div className="flex items-center gap-4">
             <span className="text-3xl font-black">{matchScore}%</span>
             <div className="flex-1 h-2 bg-white/20 rounded-full overflow-hidden">

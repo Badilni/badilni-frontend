@@ -3,7 +3,7 @@ import ProfileHeader from './ProfileHeader'
 import ReviewCard, { StarRating } from './ReviewCard'
 import { useProfile } from '../../hooks/Profile/useProfile'
 import { FaGraduationCap } from 'react-icons/fa'
-import { motion } from "motion/react";
+import { motion } from 'motion/react'
 import {
   FiSettings,
   FiLock,
@@ -63,7 +63,9 @@ const SkillsCard = ({ skills }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
+      transition={{ duration: 0.5 }}
+      className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]"
+    >
       <div className="flex justify-between items-center mb-5">
         <h2 className="font-bold text-[var(--black-text)] text-lg flex items-center gap-2">
           <FaGraduationCap className="text-[var(--primary-light)]" /> Skills
@@ -81,9 +83,7 @@ const SkillsCard = ({ skills }) => {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-[var(--gray-text)]">
-          No skills added yet.
-        </p>
+        <p className="text-sm text-[var(--gray-text)]">No skills added yet.</p>
       )}
     </motion.div>
   )
@@ -94,7 +94,9 @@ const AccountCard = ({ email }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
+      transition={{ duration: 0.5 }}
+      className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]"
+    >
       <h2 className="font-bold text-[var(--black-text)] text-lg flex items-center gap-2 mb-5">
         <FiSettings className="text-[var(--primary-light)]" /> Account Settings
       </h2>
@@ -122,9 +124,11 @@ const AccountCard = ({ email }) => {
 
 const RatingsCard = () => (
   <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]">
+    initial={{ opacity: 0, scale: 0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5 }}
+    className="bg-[var(--whiteBackground)] rounded-2xl p-6 border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)]"
+  >
     <h2 className="font-bold text-[var(--black-text)] text-lg mb-6">
       Ratings &amp; Reviews
     </h2>
@@ -181,9 +185,11 @@ const ProfileScreen = () => {
     return (
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }} className="bg-[var(--whiteBackground)] border border-red-200 rounded-2xl p-8 text-center max-w-md mx-auto">
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="bg-[var(--whiteBackground)] border border-red-200 rounded-2xl p-8 text-center max-w-md mx-auto"
+        >
           <FiAlertTriangle className="mx-auto text-red-500 mb-3" size={28} />
           <p className="text-[var(--black-text)] font-semibold mb-1">
             Couldn&apos;t load your profile

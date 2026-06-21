@@ -78,5 +78,5 @@ export default function PostContentFields({
         </div>
       </div>
     </>
-  );
+  )
 }

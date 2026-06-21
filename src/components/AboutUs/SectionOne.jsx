@@ -1,11 +1,9 @@
-import { FaArrowRight, FaGlobe } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaArrowRight, FaGlobe } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 export default function SectionOne() {
   return (
     <div className="bg-[var(--background-light)] text-[var(--black-text)] transition-colors duration-300">
-
       <section className="max-w-7xl mx-auto px-6 py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
         {/* leftSide-titles*/}
         <div className="space-y-6">
           <span className="text-xs font-bold tracking-widest text-[var(--gray-text)] uppercase">
@@ -19,9 +17,14 @@ export default function SectionOne() {
             <br /> Potential
           </h1>
           <p className="text-[var(--gray-text)] max-w-md leading-relaxed text-sm md:text-base">
-            Badilni isn't just a platform; it's a movement. We believe that true growth happens when you cross traditional barriers and exchange expertise across borders and industry.
+            Badilni isn't just a platform; it's a movement. We believe that true
+            growth happens when you cross traditional barriers and exchange
+            expertise across borders and industry.
           </p>
-          <Link to='/signIn' className="inline-flex items-center gap-2 bg-[var(--primary-light)] text-white px-6 py-3 rounded-md text-sm font-medium hover:opacity-90 transition-opacity group">
+          <Link
+            to="/signIn"
+            className="inline-flex items-center gap-2 bg-[var(--primary-light)] text-white px-6 py-3 rounded-md text-sm font-medium hover:opacity-90 transition-opacity group"
+          >
             Our Community
             <FaArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -46,16 +49,17 @@ export default function SectionOne() {
                 <FaGlobe className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-[var(--black-text)]">120+ Local Hubs</p>
-                <p className="text-[10px] text-[var(--gray-text)]">Connecting learners globally</p>
+                <p className="text-xs font-bold text-[var(--black-text)]">
+                  120+ Local Hubs
+                </p>
+                <p className="text-[10px] text-[var(--gray-text)]">
+                  Connecting learners globally
+                </p>
               </div>
             </div>
-
           </div>
         </div>
-
       </section>
-
     </div>
-  );
+  )
 }

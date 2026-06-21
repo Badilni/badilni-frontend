@@ -3,7 +3,6 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-
 html,
 body {
   background-color: var(--background-light);

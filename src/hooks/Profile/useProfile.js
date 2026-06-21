@@ -1,5 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getProfile, updateProfile } from '../../services/Profile/profileService'
+import {
+  getProfile,
+  updateProfile,
+} from '../../services/Profile/profileService'
 import useAuthStore from '../../store/authStore'
 
 export const ME_QUERY_KEY = ['me']
@@ -12,7 +15,7 @@ export const useGetMe = () => {
     queryFn: getProfile,
     initialData: storeUser ?? undefined,
     staleTime: storeUser ? 1000 * 60 * 5 : 0,
-    // 💡 Unwraps the query response so the cache format always 
+    // 💡 Unwraps the query response so the cache format always
     // matches the flat user object in your Zustand store
     select: (res) => res?.data?.user ?? res?.user ?? res,
   })

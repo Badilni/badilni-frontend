@@ -1,6 +1,11 @@
-import { FaXmark } from 'react-icons/fa6';
+import { FaXmark } from 'react-icons/fa6'
 
-export default function PostPopupHeader({ onClose, username = "Arjun Mehta", rating = "4.9", role = "Senior Mentor" }) {
+export default function PostPopupHeader({
+  onClose,
+  username = 'Arjun Mehta',
+  rating = '4.9',
+  role = 'Senior Mentor',
+}) {
   return (
     <div className="flex items-start justify-between p-6 pb-4">
       <div className="flex items-center gap-3">
@@ -33,5 +38,5 @@ export default function PostPopupHeader({ onClose, username = "Arjun Mehta", rat
         <FaXmark size={16} />
       </button>
     </div>
-  );
+  )
 }

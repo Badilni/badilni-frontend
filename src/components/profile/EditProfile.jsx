@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { handleToastMessage } from '../../utils/helper' 
+import { handleToastMessage } from '../../utils/helper'
 import { FiCamera, FiX, FiSave, FiTrash2 } from 'react-icons/fi'
 import { useProfile, useUpdateProfile } from '../../hooks/Profile/useProfile'
 
-const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+const ALLOWED_AVATAR_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]
 const MAX_SKILL_TAGS = 20
 const MAX_BIO_LENGTH = 500
 
@@ -208,9 +213,7 @@ const EditProfile = () => {
             <p className="font-semibold text-sm text-[var(--black-text)]">
               Profile Photo
             </p>
-            <p className="text-xs text-[var(--gray-text)]">
-              JPG, PNG, or WEBP
-            </p>
+            <p className="text-xs text-[var(--gray-text)]">JPG, PNG, or WEBP</p>
             {errors.avatar && (
               <p className="text-xs text-red-500 mt-1">{errors.avatar}</p>
             )}

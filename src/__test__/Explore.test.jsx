@@ -33,22 +33,31 @@ describe('ExploreHero', () => {
   it('renders headline and search button', () => {
     render(withRouter(<ExploreHero onSearch={() => {}} />))
     expect(screen.getByText(/Learn anything from/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Search Mentors/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Search Mentors/i })
+    ).toBeInTheDocument()
   })
 
   it('renders search input fields', () => {
     render(withRouter(<ExploreHero onSearch={() => {}} />))
-    expect(screen.getByPlaceholderText(/Skill, tool, or mentor name/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/Location or Remote/i)).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText(/Skill, tool, or mentor name/i)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText(/Location or Remote/i)
+    ).toBeInTheDocument()
   })
 
   it('calls onSearch with typed value when button clicked', () => {
     const onSearch = vi.fn()
     render(withRouter(<ExploreHero onSearch={onSearch} />))
 
-    fireEvent.change(screen.getByPlaceholderText(/Skill, tool, or mentor name/i), {
-      target: { value: 'React' },
-    })
+    fireEvent.change(
+      screen.getByPlaceholderText(/Skill, tool, or mentor name/i),
+      {
+        target: { value: 'React' },
+      }
+    )
     fireEvent.click(screen.getByRole('button', { name: /Search Mentors/i }))
     expect(onSearch).toHaveBeenCalledWith('React')
   })
@@ -65,7 +74,9 @@ describe('ExploreHero', () => {
 
   it('renders popular tag buttons', () => {
     render(withRouter(<ExploreHero onSearch={() => {}} />))
-    expect(screen.getByRole('button', { name: /React.js/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /React.js/i })
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Python/i })).toBeInTheDocument()
   })
 
@@ -102,22 +113,38 @@ describe('ExploreStats', () => {
 
 describe('ExploreCategoryGrid', () => {
   it('renders all category labels', () => {
-    render(<ExploreCategoryGrid activeCategory={null} onCategoryChange={() => {}} />)
-    ;['Design', 'Development', 'Business', 'Marketing', 'Growth', 'Music'].forEach((cat) => {
+    render(
+      <ExploreCategoryGrid activeCategory={null} onCategoryChange={() => {}} />
+    )
+    ;[
+      'Design',
+      'Development',
+      'Business',
+      'Marketing',
+      'Growth',
+      'Music',
+    ].forEach((cat) => {
       expect(screen.getByText(cat)).toBeInTheDocument()
     })
   })
 
   it('calls onCategoryChange when a category is clicked', () => {
     const onChange = vi.fn()
-    render(<ExploreCategoryGrid activeCategory={null} onCategoryChange={onChange} />)
+    render(
+      <ExploreCategoryGrid activeCategory={null} onCategoryChange={onChange} />
+    )
     fireEvent.click(screen.getByText('Design'))
     expect(onChange).toHaveBeenCalledWith('design')
   })
 
   it('toggles off active category when clicked again', () => {
     const onChange = vi.fn()
-    render(<ExploreCategoryGrid activeCategory="design" onCategoryChange={onChange} />)
+    render(
+      <ExploreCategoryGrid
+        activeCategory="design"
+        onCategoryChange={onChange}
+      />
+    )
     fireEvent.click(screen.getByText('Design'))
     expect(onChange).toHaveBeenCalledWith(null)
   })
@@ -162,7 +189,9 @@ describe('MentorCard', () => {
 
   it('renders a View Profile button', () => {
     render(<MentorCard mentor={MOCK_MENTOR} />)
-    expect(screen.getByRole('button', { name: /View Profile/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /View Profile/i })
+    ).toBeInTheDocument()
   })
 
   it('renders rating and review count', () => {
@@ -177,14 +206,22 @@ describe('MentorCard', () => {
 describe('MentorGrid', () => {
   it('renders filter pills', () => {
     render(<MentorGrid searchQuery="" />)
-    expect(screen.getByRole('button', { name: /All Mentors/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Available Now/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Top Rated/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /All Mentors/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Available Now/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Top Rated/i })
+    ).toBeInTheDocument()
   })
 
   it('renders at least one mentor card by default', () => {
     render(<MentorGrid searchQuery="" />)
-    expect(screen.getAllByRole('button', { name: /View Profile/i }).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByRole('button', { name: /View Profile/i }).length
+    ).toBeGreaterThan(0)
   })
 
   it('filters mentors by search query', () => {
@@ -196,18 +233,22 @@ describe('MentorGrid', () => {
   it('shows empty state when search has no results', () => {
     render(<MentorGrid searchQuery="xyznotexist" />)
     expect(screen.getByText(/No mentors found/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Clear filters/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Clear filters/i })
+    ).toBeInTheDocument()
   })
 
   it('filters to available mentors when "Available Now" is clicked', () => {
     render(<MentorGrid searchQuery="" />)
     fireEvent.click(screen.getByRole('button', { name: /Available Now/i }))
     // All shown mentor cards should only be available ones
-    expect(screen.queryByText('Alex Rivera')).not.toBeInTheDocument()  // not available
+    expect(screen.queryByText('Alex Rivera')).not.toBeInTheDocument() // not available
   })
 
   it('renders Load More button', () => {
     render(<MentorGrid searchQuery="" />)
-    expect(screen.getByRole('button', { name: /Load More Mentors/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Load More Mentors/i })
+    ).toBeInTheDocument()
   })
 })
