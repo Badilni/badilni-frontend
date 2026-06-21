@@ -11,6 +11,7 @@ import VerificationPassword from '../pages/verifyResetPass/verifyPassword'
 import ForgetPassPage from '../pages/verifyResetPass/forgetPass'
 import ProfilePage from '../pages/profile/profile'
 import EditProfilePage from '../pages/profile/EditProfile'
+import OtherProfile from '../pages/profile/OtherProfile'
 import SearchPage from '../pages/Search'
 import ContactPage from '../pages/contactUs/contact'
 import AboutPage from '../pages/about/about'
@@ -40,15 +41,13 @@ const router = createHashRouter([
           {
             element: <RequireAuth />,
             children: [
-              {
-                path: 'profile',
-                element: <ProfilePage />,
-              },
+              { path: 'profile', element: <ProfilePage /> },
               { path: 'profile/edit', element: <EditProfilePage /> },
+              { path: 'profile/:userId', element: <OtherProfile /> },
               { path: 'chat', element: <div>chat</div> },
+              { path: 'chat/:conversationId', element: <div>chat</div> },
               { path: 'settings', element: <EditProfilePage /> },
               { path: 'search', element: <SearchPage /> },
-              { path: 'chat', element: <div>chat</div> },
             ],
           },
         ],

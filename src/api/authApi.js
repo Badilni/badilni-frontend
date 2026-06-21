@@ -16,3 +16,6 @@ export const getUsersRequest = (params) =>
 
 export const updateMe = (params) =>
   api.patch('/users/me', params).then((r) => r.data)
+
+export const getUserProfileRequest = (userId) =>
+  api.get(`/users/${userId}`).then((r) => r.data)
