@@ -1,35 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 
 export default function FloatingActionButton({ onClick }) {
-  const [bottomPosition, setBottomPosition] = useState(32);
+  const [bottomPosition, setBottomPosition] = useState(32)
 
   useEffect(() => {
     const handleScroll = () => {
-      const footer = document.querySelector('footer') || document.getElementById('footer');
-      if (!footer) return;
+      const footer =
+        document.querySelector('footer') || document.getElementById('footer')
+      if (!footer) return
 
-      const totalDocHeight = document.documentElement.scrollHeight;
-      const scrollPosition = window.innerHeight + window.scrollY;
-      const footerHeight = footer.getBoundingClientRect().height;
-      const distanceToBottom = totalDocHeight - scrollPosition;
+      const totalDocHeight = document.documentElement.scrollHeight
+      const scrollPosition = window.innerHeight + window.scrollY
+      const footerHeight = footer.getBoundingClientRect().height
+      const distanceToBottom = totalDocHeight - scrollPosition
 
       if (distanceToBottom < footerHeight) {
-        const newBottom = footerHeight - distanceToBottom + 32;
-        setBottomPosition(newBottom);
+        const newBottom = footerHeight - distanceToBottom + 32
+        setBottomPosition(newBottom)
       } else {
-        setBottomPosition(32);
+        setBottomPosition(32)
       }
-    };
+    }
 
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleScroll);
-    handleScroll();
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('resize', handleScroll)
+    handleScroll()
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
-  }, []);
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+    }
+  }, [])
 
   return (
     <button
@@ -55,5 +56,5 @@ export default function FloatingActionButton({ onClick }) {
         Create Post
       </span>
     </button>
-  );
+  )
 }

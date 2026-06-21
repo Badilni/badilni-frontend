@@ -1,17 +1,17 @@
-import { FaEnvelope, FaMapPin, FaChevronDown, FaArrowRight } from 'react-icons/fa6';
-import useContactUs from '../../hooks/Contact/useContact';
-import HelpHeroSection from './HeaderContact';
+import {
+  FaEnvelope,
+  FaMapPin,
+  FaChevronDown,
+  FaArrowRight,
+} from 'react-icons/fa6'
+import useContactUs from '../../hooks/Contact/useContact'
+import HelpHeroSection from './HeaderContact'
 
 function ContactUs() {
-  const {
-    formData,
-    handleInputChange,
-    handleFormSubmit,
-  } = useContactUs();
+  const { formData, handleInputChange, handleFormSubmit } = useContactUs()
 
   return (
     <div className="relative min-h-screen bg-[var(--background-light)] text-[var(--black-text)] font-sans antialiased transition-colors duration-300 w-full">
-
       <HelpHeroSection />
 
       <main className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12 mt-8">
@@ -31,7 +31,9 @@ function ContactUs() {
                   placeholder="Enter your name here"
                   className="w-full bg-[var(--background-light)] border border-slate-200/20 dark:border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-[var(--black-text)] focus:outline-none focus:border-[var(--primary-light)] placeholder:text-[var(--Disabled)] transition-colors"
                   value={formData.fullName}
-                  onChange={(e) => handleInputChange('fullName', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange('fullName', e.target.value)
+                  }
                 />
               </div>
               <div>
@@ -58,9 +60,15 @@ function ContactUs() {
                   value={formData.subject}
                   onChange={(e) => handleInputChange('subject', e.target.value)}
                 >
-                  <option className="bg-[var(--whiteBackground)]">Technical Support</option>
-                  <option className="bg-[var(--whiteBackground)]">Account Issues</option>
-                  <option className="bg-[var(--whiteBackground)]">Feedback</option>
+                  <option className="bg-[var(--whiteBackground)]">
+                    Technical Support
+                  </option>
+                  <option className="bg-[var(--whiteBackground)]">
+                    Account Issues
+                  </option>
+                  <option className="bg-[var(--whiteBackground)]">
+                    Feedback
+                  </option>
                 </select>
                 <FaChevronDown className="absolute right-3 top-4 h-3 w-3 text-[var(--gray-text)] pointer-events-none" />
               </div>
@@ -100,7 +108,9 @@ function ContactUs() {
               </div>
               <div>
                 <p className="text-xs text-[var(--gray-text)]">Email Support</p>
-                <p className="text-sm font-semibold text-[var(--black-text)] break-all">benrt101@gmail.com</p>
+                <p className="text-sm font-semibold text-[var(--black-text)] break-all">
+                  benrt101@gmail.com
+                </p>
               </div>
             </div>
 
@@ -119,7 +129,9 @@ function ContactUs() {
 
           <div className="bg-gradient-to-br from-[var(--primary-light)] to-[var(--secondary-light)] h-70 rounded-xl p-8 text-white shadow-sm relative overflow-hidden flex flex-col justify-between">
             <div>
-              <h3 className="text-sm font-semibold mb-2">Have a quick question?</h3>
+              <h3 className="text-sm font-semibold mb-2">
+                Have a quick question?
+              </h3>
               <p className="text-xs text-blue-50/90 dark:text-slate-900/80 leading-relaxed">
                 You might find the answer you're looking for in our FAQ section.
               </p>
@@ -140,15 +152,18 @@ function ContactUs() {
               <FaMapPin className="h-4 w-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-[var(--black-text)]">Badilni Office</h4>
-              <p className="text-[11px] text-[var(--gray-text)]">Fayoum Government, Egypt</p>
+              <h4 className="text-xs font-bold text-[var(--black-text)]">
+                Badilni Office
+              </h4>
+              <p className="text-[11px] text-[var(--gray-text)]">
+                Fayoum Government, Egypt
+              </p>
             </div>
           </div>
         </div>
       </section>
-
     </div>
-  );
+  )
 }
 
-export default ContactUs;
+export default ContactUs

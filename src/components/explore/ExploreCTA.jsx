@@ -1,14 +1,9 @@
-
-import FloatingActionButton from '../common/PlusButtonPopUp';
-import CreatePostPopup from '../posts/CreatePostPopup';
-import useContactUs from '../../hooks/Contact/useContact';
+import FloatingActionButton from '../common/PlusButtonPopUp'
+import CreatePostPopup from '../posts/CreatePostPopup'
+import useContactUs from '../../hooks/Contact/useContact'
 
 export default function ExploreCTA() {
-  const {
-    isPostPopupOpen,
-    handleOpenPopup,
-    handleClosePopup,
-  } = useContactUs();
+  const { isPostPopupOpen, handleOpenPopup, handleClosePopup } = useContactUs()
 
   return (
     <>
@@ -19,9 +14,12 @@ export default function ExploreCTA() {
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 blur-2xl" />
           </div>
           <div className="relative z-10 text-center md:text-left">
-            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">Are you an expert?</h3>
+            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+              Are you an expert?
+            </h3>
             <p className="text-white/70 text-sm md:text-base max-w-md">
-              Share your knowledge, exchange skills, and grow your network. Join thousands of mentors on Badilni.
+              Share your knowledge, exchange skills, and grow your network. Join
+              thousands of mentors on Badilni.
             </p>
           </div>
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 shrink-0">
@@ -38,5 +36,5 @@ export default function ExploreCTA() {
       <FloatingActionButton onClick={handleOpenPopup} />
       <CreatePostPopup isOpen={isPostPopupOpen} onClose={handleClosePopup} />
     </>
-  );
+  )
 }

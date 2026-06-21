@@ -20,7 +20,6 @@ export default function HelpHeroSection() {
           <path d="M0,32 C300,90 600,-10 900,70 C1050,110 1150,90 1200,80 V120 H0 Z"></path>
         </svg>
       </div>
-
     </div>
-  );
+  )
 }

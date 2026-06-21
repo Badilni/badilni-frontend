@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { MdVerified } from 'react-icons/md'
 import { FiEdit2, FiShare2 } from 'react-icons/fi'
-import { motion } from "motion/react";
-
+import { motion } from 'motion/react'
 
 const fallbackAvatar = (name) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -39,7 +38,9 @@ const ProfileHeader = ({ profile, onEdit }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.75 }} className="mb-8 bg-[var(--whiteBackground)] rounded-3xl p-8 border border-[var(--secondary-light)]/10 relative overflow-hidden shadow-[0_4px_24px_rgba(47,151,233,0.10)]">
+      transition={{ duration: 0.75 }}
+      className="mb-8 bg-[var(--whiteBackground)] rounded-3xl p-8 border border-[var(--secondary-light)]/10 relative overflow-hidden shadow-[0_4px_24px_rgba(47,151,233,0.10)]"
+    >
       {/* gradient strip */}
       <div className="absolute top-0 left-0 w-full h-28 bg-gradient-to-r from-[var(--secondary-light)]/20 to-[var(--primary-light)]/10 pointer-events-none" />
 

@@ -1,35 +1,35 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 export default function useContactUs() {
-  const [isPostPopupOpen, setIsPostPopupOpen] = useState(false);
+  const [isPostPopupOpen, setIsPostPopupOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     subject: 'Technical Support',
     message: '',
-  });
+  })
 
   const handleOpenPopup = () => {
-    setIsPostPopupOpen(true);
-  };
+    setIsPostPopupOpen(true)
+  }
 
   const handleClosePopup = () => {
-    setIsPostPopupOpen(false);
-  };
+    setIsPostPopupOpen(false)
+  }
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }));
-  };
+    }))
+  }
 
   const handleFormSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form Submitted:', formData);
-//Call API
-  };
+    e.preventDefault()
+    console.log('Form Submitted:', formData)
+    //Call API
+  }
 
   return {
     isPostPopupOpen,
@@ -38,5 +38,5 @@ export default function useContactUs() {
     handleClosePopup,
     handleInputChange,
     handleFormSubmit,
-  };
+  }
 }

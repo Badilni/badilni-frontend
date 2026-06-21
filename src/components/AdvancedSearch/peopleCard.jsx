@@ -1,5 +1,5 @@
 import { BsChat, BsStarFill } from 'react-icons/bs'
-import { IoPersonOutline } from "react-icons/io5";
+import { IoPersonOutline } from 'react-icons/io5'
 
 export default function UserCard({ user }) {
   const getAvatarUrl = (avatar) => {
@@ -10,9 +10,11 @@ export default function UserCard({ user }) {
   const avatarUrl = getAvatarUrl(user?.avatar)
 
   // Safe fallback wrapper to prevent undefined crashes if a user profile lacks a bio
-  const displayBio = user?.bio 
-    ? (user.bio.length > 18 ? `${user.bio.slice(0, 18)}...` : user.bio) 
-    : "Badilni User"
+  const displayBio = user?.bio
+    ? user.bio.length > 18
+      ? `${user.bio.slice(0, 18)}...`
+      : user.bio
+    : 'Badilni User'
 
   return (
     <div

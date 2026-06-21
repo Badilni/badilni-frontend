@@ -1,8 +1,8 @@
-import useCreatePost from '../../hooks/posts/usePostEditor';
-import PostPopupHeader from './HeaderPost';
-import PostContentFields from './PostContentFields';
-import PostMediaActions from './PostMediaActions';
-import PostPopupFooter from './PostPopupFooter';
+import useCreatePost from '../../hooks/posts/usePostEditor'
+import PostPopupHeader from './HeaderPost'
+import PostContentFields from './PostContentFields'
+import PostMediaActions from './PostMediaActions'
+import PostPopupFooter from './PostPopupFooter'
 
 export default function CreatePostPopup({ isOpen, onClose }) {
   const {
@@ -23,10 +23,10 @@ export default function CreatePostPopup({ isOpen, onClose }) {
     triggerFileUpload,
     handleFileChange,
     attachedImage,
-    attachedFile
-  } = useCreatePost(onClose);
+    attachedFile,
+  } = useCreatePost(onClose)
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -38,7 +38,6 @@ export default function CreatePostPopup({ isOpen, onClose }) {
 
       {/* main Card*/}
       <div className="relative w-full max-w-xl bg-[var(--whiteBackground)] dark:bg-[#1e293b] text-[var(--black-text)] rounded-xl shadow-2xl flex flex-col z-10 overflow-hidden font-sans border border-slate-200/10 dark:border-slate-700/50 transition-colors duration-300 animate-in fade-in zoom-in-95 duration-200">
-
         {/* Header post */}
         <PostPopupHeader onClose={onClose} />
 
@@ -72,8 +71,7 @@ export default function CreatePostPopup({ isOpen, onClose }) {
           onClose={onClose}
           handlePostSubmit={handlePostSubmit}
         />
-
       </div>
     </div>
-  );
+  )
 }

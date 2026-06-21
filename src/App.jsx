@@ -1,6 +1,6 @@
 import { RouterProvider } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify';
-import { motion } from "motion/react";
+import { ToastContainer } from 'react-toastify'
+import { motion } from 'motion/react'
 import 'react-toastify/dist/ReactToastify.css'
 import router from './layout/router'
 

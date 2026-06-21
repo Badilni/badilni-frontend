@@ -1,4 +1,9 @@
-const SORT_OPTIONS = ['Newest First', 'Most Urgent', 'Match Score', 'Most Popular']
+const SORT_OPTIONS = [
+  'Newest First',
+  'Most Urgent',
+  'Match Score',
+  'Most Popular',
+]
 
 export default function RequestsHeader({ sortBy, onSortChange }) {
   return (
@@ -12,17 +17,22 @@ export default function RequestsHeader({ sortBy, onSortChange }) {
           Skill Requests
         </h1>
         <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 max-w-xl leading-relaxed">
-          Find someone who needs your expertise or explore what the community is looking to learn today.
+          Find someone who needs your expertise or explore what the community is
+          looking to learn today.
         </p>
       </div>
       <div className="flex items-center gap-3 shrink-0">
-        <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Sort by:</span>
+        <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          Sort by:
+        </span>
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value)}
           className="bg-[var(--whiteBackground)] dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/40 cursor-pointer shadow-sm"
         >
-          {SORT_OPTIONS.map((opt) => <option key={opt}>{opt}</option>)}
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt}>{opt}</option>
+          ))}
         </select>
       </div>
     </div>
