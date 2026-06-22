@@ -50,14 +50,19 @@ export default function useSearchHeader() {
             resData.data ||
             (Array.isArray(resData) ? resData : [])
 
-          setSearchResults(usersList)
+
+          const activeUsers = usersList.filter(
+            (user) => user.isDeactivated !== true && user.status !== 'deactivated'
+          )
+
+          setSearchResults(activeUsers)
           setTotalPages(
             resData.pagination?.totalPages || resData.totalPages || 1
           )
           setTotalResults(
             resData.pagination?.totalCount ||
               resData.totalCount ||
-              usersList.length ||
+              activeUsers.length ||
               0
           )
         } else {
