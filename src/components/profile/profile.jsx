@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ProfileHeader from './ProfileHeader'
+import { useNavigate } from 'react-router-dom'
 import ReviewCard, { StarRating } from './ReviewCard'
 import { useProfile } from '../../hooks/Profile/useProfile'
 import { FaGraduationCap } from 'react-icons/fa'
@@ -89,7 +90,9 @@ const SkillsCard = ({ skills }) => {
   )
 }
 
+
 const AccountCard = ({ email }) => {
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
@@ -114,8 +117,12 @@ const AccountCard = ({ email }) => {
             </span>
           </div>
         </div>
-        <button className="w-full flex items-center justify-center gap-2 border border-[var(--primary-light)] text-[var(--primary-light)] font-semibold py-2.5 rounded-xl hover:bg-[var(--primary-light)]/5 transition-colors text-sm active:scale-95">
-          <FiKey size={15} /> Reset Password
+        <button
+        type="button"
+        onClick={() => {
+          navigate('/resetEmail');}}
+        className="w-full flex items-center justify-center gap-2 border border-[var(--primary-light)] text-[var(--primary-light)] font-semibold py-2.5 rounded-xl hover:bg-[var(--primary-light)]/5 transition-colors text-sm active:scale-95">
+          <FiKey size={15} /> Reset Email
         </button>
       </div>
     </motion.div>
