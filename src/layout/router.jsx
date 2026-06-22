@@ -2,7 +2,6 @@ import { createHashRouter, Outlet, Navigate } from 'react-router-dom'
 import MainLayout from './MainLayout'
 import AuthInitializer from '../components/layout/AuthInitializer'
 import RequireAuth from '../components/layout/RequireAuth'
-
 import Home from '../pages/Home'
 import ShowcasePage from '../components/common/test'
 import LoginPage from '../pages/Login'
@@ -17,6 +16,8 @@ import ContactPage from '../pages/contactUs/contact'
 import AboutPage from '../pages/about/about'
 import ExplorePage from '../pages/Explore'
 import RequestsPage from '../pages/Requests'
+import ResetEmailPage from '../pages/profile/ResetEmail'
+import VerifyChangedEmailPage from '../pages/profile/VerfiyEmail'
 
 const RootLayout = () => (
   <>
@@ -57,6 +58,8 @@ const router = createHashRouter([
       { path: '/forgetPass', element: <ForgetPassPage /> },
       { path: '/verifyCode', element: <VerificationPassword /> },
       { path: '/test', element: <ShowcasePage /> },
+      { path: 'resetemail', element:<ResetEmailPage/>},
+      { path: '/verify-changed-email', element:< VerifyChangedEmailPage/>},
       { path: '*', element: <h1>Not Found</h1> },
     ],
   },
