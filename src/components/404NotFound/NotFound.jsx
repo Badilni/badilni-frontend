@@ -12,8 +12,10 @@ const NotFound = () => {
     <main className="min-h-screen w-full flex flex-col items-center justify-center text-center relative overflow-hidden py-12 md:py-20 select-none bg-[var(--background-light)] transition-colors duration-300">
 
       {/* Wave Background */}
-      <WaveBackground opacityTop="opacity-20" opacityBottom="opacity-25" />
-      <OrbitingCircles />
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <WaveBackground opacityTop="opacity-20" opacityBottom="opacity-25" />
+        <OrbitingCircles />
+      </div>
 
       <div className="absolute text-[12rem] md:text-[16rem] font-extrabold text-[var(--gray-text)]/20 dark:text-[var(--gray-text)]/10 tracking-widest pointer-events-none select-none z-0 font-sans">
         404

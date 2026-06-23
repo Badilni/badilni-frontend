@@ -17,13 +17,15 @@ const WaveBackground = ({ opacityTop = 'opacity-15', opacityBottom = 'opacity-25
         }
       `}</style>
 
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-0 h-[140px] md:h-[200px] pointer-events-none">
+      <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-0 h-[160px] md:h-[220px] pointer-events-none">
         <div className={`w-[200%] h-full flex animate-wave-top ${opacityTop}`}>
+
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-1/2 h-full fill-blue-600">
-            <path d="M0,0V30c150,50,350,50,600,0s450-50,600,0V0H0Z"></path>
+            <path d="M0,40 C150,10 300,80 600,45 C900,10 1050,80 1200,40 L1200,0 L0,0 Z"></path>
           </svg>
+
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-1/2 h-full fill-blue-600">
-            <path d="M0,0V30c150,50,350,50,600,0s450-50,600,0V0H0Z"></path>
+            <path d="M0,40 C150,10 300,80 600,45 C900,10 1050,80 1200,40 L1200,0 L0,0 Z"></path>
           </svg>
         </div>
       </div>
