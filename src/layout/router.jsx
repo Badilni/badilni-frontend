@@ -18,6 +18,7 @@ import ExplorePage from '../pages/Explore'
 import RequestsPage from '../pages/Requests'
 import ResetEmailPage from '../pages/profile/ResetEmail'
 import VerifyChangedEmailPage from '../pages/profile/VerfiyEmail'
+import NotFoundPage from '../pages/NotFound/notFound'
 
 const RootLayout = () => (
   <>
@@ -60,7 +61,7 @@ const router = createHashRouter([
       { path: '/test', element: <ShowcasePage /> },
       { path: 'resetemail', element:<ResetEmailPage/>},
       { path: '/verify-changed-email', element:< VerifyChangedEmailPage/>},
-      { path: '*', element: <h1>Not Found</h1> },
+      { path: '*', element: <NotFoundPage/> },
     ],
   },
 ])
