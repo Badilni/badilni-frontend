@@ -238,7 +238,7 @@ const ProfileScreen = () => {
   const handleDeactivate = async () => {
     try {
       setIsConfirmOpen(false)
-      navigate('/login', { replace: true })
+      navigate('/signIn', { replace: true })
     } catch (err) {
       console.error(err)
     }

@@ -31,3 +31,6 @@ export const verifyChangedEmail = (code) =>
 
 export const deactivateMeRequest = () =>
   api.delete('/users/me').then((r) => r.data)
+
+export const deleteAvatarRequest = () =>
+  api.delete('/users/me/avatar').then((r) => r.data)
