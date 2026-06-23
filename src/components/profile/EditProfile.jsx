@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { handleToastMessage } from '../../utils/helper'
-import { FiCamera, FiX, FiSave, FiTrash2 } from 'react-icons/fi'
+import { FiX, FiSave } from 'react-icons/fi'
 import { useProfile, useUpdateProfile } from '../../hooks/Profile/useProfile'
+import { deleteAvatarRequest } from '../../api/authApi'
+import AvatarSection from './Avatar/Avatar'
 
-const ALLOWED_AVATAR_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-]
 const MAX_SKILL_TAGS = 20
 const MAX_BIO_LENGTH = 500
 
@@ -21,6 +18,7 @@ const EditProfile = () => {
   const navigate = useNavigate()
   const { profile, isLoading: isProfileLoading } = useProfile()
   const updateProfileMutation = useUpdateProfile()
+  const queryClient = useQueryClient()
 
   const [name, setName] = useState('')
   const [bio, setBio] = useState('')
@@ -28,9 +26,11 @@ const EditProfile = () => {
   const [newSkill, setNewSkill] = useState('')
   const [avatarFile, setAvatarFile] = useState(null)
   const [avatarPreview, setAvatarPreview] = useState('')
+
+  const [isAvatarRemoved, setIsAvatarRemoved] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [errors, setErrors] = useState({})
 
-  // Prefill once GET /users/me resolves
   useEffect(() => {
     if (profile) {
       setName(profile.name || '')
@@ -40,31 +40,11 @@ const EditProfile = () => {
     }
   }, [profile])
 
-  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-    name || 'User'
-  )}&background=2f97e9&color=fff&size=160`
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-      setErrors((prev) => ({
-        ...prev,
-        avatar: 'Only JPG, PNG, or WEBP images are allowed.',
-      }))
-      e.target.value = ''
-      return
-    }
-
-    setErrors((prev) => ({ ...prev, avatar: undefined }))
-    setAvatarFile(file)
-    setAvatarPreview(URL.createObjectURL(file))
-  }
-
-  const handleRemoveAvatar = () => {
+  const confirmRemoveAvatar = () => {
     setAvatarFile(null)
     setAvatarPreview('')
+    setIsAvatarRemoved(true)
+    setShowConfirmModal(false)
   }
 
   const addSkill = () => {
@@ -104,39 +84,65 @@ const EditProfile = () => {
     return !next.name && !next.bio
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return
 
-    const formData = new FormData()
-    const nameChanged = name.trim() !== (profile?.name || '')
-    const bioChanged = bio !== (profile?.bio || '')
-    const tagsChanged = !sameTagSet(skillTags, profile?.skillTags || [])
+    try {
+      if (isAvatarRemoved && profile?.avatar?.url) {
+        const token = localStorage.getItem('token') || localStorage.getItem('accessToken')
+        await deleteAvatarRequest(token)
+      }
 
-    if (nameChanged) formData.append('name', name.trim())
-    if (bioChanged) formData.append('bio', bio)
-    if (avatarFile) formData.append('avatar', avatarFile)
-    if (tagsChanged) {
-      skillTags.forEach((tag) => formData.append('skillTags', tag))
-    }
+      const formData = new FormData()
+      const nameChanged = name.trim() !== (profile?.name || '')
+      const bioChanged = bio !== (profile?.bio || '')
+      const tagsChanged = !sameTagSet(skillTags, profile?.skillTags || [])
 
-    if (![...formData.keys()].length) {
-      handleToastMessage('Nothing to update yet.', 'default')
-      return
-    }
+      if (nameChanged) formData.append('name', name.trim())
+      if (bioChanged) formData.append('bio', bio)
+      if (avatarFile) formData.append('avatar', avatarFile)
+      if (tagsChanged) {
+        skillTags.forEach((tag) => formData.append('skillTags', tag))
+      }
 
-    updateProfileMutation.mutate(formData, {
-      onSuccess: () => {
-        handleToastMessage('Profile updated successfully!', 'success')
+      if (![...formData.keys()].length && !isAvatarRemoved) {
+        handleToastMessage('Nothing to update yet.', 'default')
+        return
+      }
+
+      if ([...formData.keys()].length) {
+        updateProfileMutation.mutate(formData, {
+          onSuccess: (updatedData) => {
+            queryClient.setQueryData(['profile'], (old) => ({
+              ...old,
+              ...updatedData,
+              ...(isAvatarRemoved ? { avatar: { ...old?.avatar, url: '' } } : {})
+            }))
+            queryClient.invalidateQueries(['profile'])
+            handleToastMessage('Profile updated successfully!', 'success')
+            navigate('/profile')
+          },
+          onError: (err) => {
+            handleToastMessage(
+              err?.response?.data?.message || 'Something went wrong while updating your profile.',
+              'error'
+            )
+          },
+        })
+      } else {
+        queryClient.setQueryData(['profile'], (old) => ({
+          ...old,
+          avatar: { ...old?.avatar, url: '' }
+        }))
+        queryClient.invalidateQueries(['profile'])
+        handleToastMessage('Profile picture removed successfully!', 'success')
         navigate('/profile')
-      },
-      onError: (err) => {
-        handleToastMessage(
-          err?.response?.data?.message ||
-            'Something went wrong while updating your profile.',
-          'error'
-        )
-      },
-    })
+      }
+
+    } catch (error) {
+      console.error("Error updates:", error)
+      handleToastMessage('Failed to handle avatar removal on server.', 'error')
+    }
   }
 
   if (isProfileLoading) {
@@ -175,50 +181,19 @@ const EditProfile = () => {
 
       {/* Card wrapper */}
       <div className="bg-[var(--whiteBackground)] rounded-2xl border border-[var(--secondary-light)]/10 shadow-[0_4px_24px_rgba(47,151,233,0.09)] p-8 md:p-12 space-y-10">
-        {/* ── Avatar ───────────────────────────────────────────── */}
-        <section className="flex flex-col items-center gap-4">
-          <div className="relative group">
-            <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-[var(--secondary-light)]/30 shadow-xl bg-[var(--background-light)]">
-              <img
-                src={avatarPreview || fallbackAvatar}
-                alt="Avatar preview"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <label
-              htmlFor="avatar-upload"
-              className="absolute bottom-1 right-1 w-10 h-10 bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] text-white rounded-full flex items-center justify-center border-4 border-[var(--whiteBackground)] hover:scale-110 transition-transform shadow-lg cursor-pointer"
-            >
-              <FiCamera size={16} />
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp"
-                className="hidden"
-                onChange={handleAvatarChange}
-              />
-            </label>
-            {avatarPreview && (
-              <button
-                type="button"
-                onClick={handleRemoveAvatar}
-                className="absolute bottom-1 left-1 w-10 h-10 bg-[var(--whiteBackground)] text-red-500 rounded-full flex items-center justify-center border-4 border-[var(--whiteBackground)] hover:scale-110 transition-transform shadow-lg"
-                aria-label="Remove avatar"
-              >
-                <FiTrash2 size={16} />
-              </button>
-            )}
-          </div>
-          <div className="text-center">
-            <p className="font-semibold text-sm text-[var(--black-text)]">
-              Profile Photo
-            </p>
-            <p className="text-xs text-[var(--gray-text)]">JPG, PNG, or WEBP</p>
-            {errors.avatar && (
-              <p className="text-xs text-red-500 mt-1">{errors.avatar}</p>
-            )}
-          </div>
-        </section>
+
+        <AvatarSection
+          name={name}
+          avatarPreview={avatarPreview}
+          setAvatarPreview={setAvatarPreview}
+          setAvatarFile={setAvatarFile}
+          setIsAvatarRemoved={setIsAvatarRemoved}
+          showConfirmModal={showConfirmModal}
+          setShowConfirmModal={setShowConfirmModal}
+          errors={errors}
+          setErrors={setErrors}
+          confirmRemoveAvatar={confirmRemoveAvatar}
+        />
 
         {/* ── Personal Information ──────────────────────────────── */}
         <section className="space-y-5">
