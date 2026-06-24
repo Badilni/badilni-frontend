@@ -15,8 +15,12 @@ import OtherProfile from '../pages/profile/OtherProfile'
 import SearchPage from '../pages/Search'
 import ContactPage from '../pages/contactUs/contact'
 import AboutPage from '../pages/about/about'
-import ExplorePage from '../pages/Explore'
-import RequestsPage from '../pages/Requests'
+import ExplorePage from '../pages/timeline/Explore'
+import Requests from '../pages/timeline/Requests'
+import VerifyEmail from '../components/auth/signup/VerifyEmail'
+import RequestPage from '../pages/timeLine/RequestPage'
+import Offers from '../pages/timeLine/Offers'
+import OfferPage from '../pages/timeLine/OfferPage'
 
 const RootLayout = () => (
   <>
@@ -34,8 +38,6 @@ const router = createHashRouter([
         element: <MainLayout />,
         children: [
           { index: true, element: <Home /> },
-          { path: 'explore', element: <ExplorePage /> },
-          { path: 'requests', element: <RequestsPage /> },
           { path: 'contact', element: <ContactPage /> },
           { path: 'about', element: <AboutPage /> },
           {
@@ -46,6 +48,11 @@ const router = createHashRouter([
               { path: 'profile/:userId', element: <OtherProfile /> },
               { path: 'chat', element: <div>chat</div> },
               { path: 'chat/:conversationId', element: <div>chat</div> },
+              { path: 'explore', element: <ExplorePage /> },
+              { path: 'requests', element: <Requests /> },
+              { path: 'requests/:requestId', element: <RequestPage /> },
+              { path: 'offers', element: <Offers /> },
+              { path: 'offers/offerId', element: <OfferPage /> },
               { path: 'settings', element: <EditProfilePage /> },
               { path: 'search', element: <SearchPage /> },
             ],

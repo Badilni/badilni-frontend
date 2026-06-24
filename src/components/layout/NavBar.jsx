@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { label: 'Home', path: '/' },
   { label: 'Explore', path: '/explore' },
   { label: 'Requests', path: '/requests' },
-  { label: 'Skills', path: '/skills' },
+  { label: 'Offers', path: '/offers' },
   { label: 'About Us', path: '/about' },
   { label: 'Contact', path: '/contact' },
 ]

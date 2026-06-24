@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import ExploreHero from '../components/explore/ExploreHero'
-import ExploreStats from '../components/explore/ExploreStats'
-import ExploreCategoryGrid from '../components/explore/ExploreCategoryGrid'
-import MentorGrid from '../components/explore/MentorGrid'
-import ExploreCTA from '../components/explore/ExploreCTA'
+import ExploreHero from '../../components/explore/ExploreHero'
+import ExploreStats from '../../components/explore/ExploreStats'
+import ExploreCategoryGrid from '../../components/explore/ExploreCategoryGrid'
+import MentorGrid from '../../components/explore/MentorGrid'
+import ExploreCTA from '../../components/explore/ExploreCTA'
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('')
