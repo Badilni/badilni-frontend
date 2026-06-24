@@ -1,4 +1,8 @@
+import { resolveCategory } from '../../utils/resolveCategory'
+import { useNavigate } from 'react-router-dom'
+import { FaEllipsisVertical } from 'react-icons/fa6'
 import { useState } from 'react'
+import useAuthStore from '../../store/authStore'
 
 function StarIcon() {
   return (
@@ -12,38 +16,152 @@ function StarIcon() {
   )
 }
 
-export default function RequestCard({ request }) {
-  const [proposed, setProposed] = useState(false)
-  const [hovered, setHovered] = useState(false)
+const GRADIENTS = [
+  'from-blue-500 to-indigo-600',
+  'from-emerald-500 to-teal-600',
+  'from-amber-500 to-orange-600',
+  'from-purple-500 to-pink-600',
+  'from-red-500 to-rose-600',
+]
+
+export const getAccentColor = (categoryName) => {
+  const index = categoryName ? categoryName.length % GRADIENTS.length : 0
+  return GRADIENTS[index]
+}
+
+export default function RequestCard({
+  request,
+  categories = [],
+  onPropose,
+  isProposing = false,
+  isProposed = false,
+  onDelete,
+  onEdit,
+}) {
+  const [showMenu, setShowMenu] = useState(false)
+
+  const currentUser = useAuthStore((state) => state.user)
+
+  const isOwner =
+    currentUser &&
+    (currentUser._id === request.user?._id ||
+      currentUser.id === request.user?.id ||
+      currentUser._id === request.user?.id ||
+      currentUser.id === request.user?._id)
+  const navigate = useNavigate()
+  const { name: categoryName } = resolveCategory(request.category, categories)
+  const accentColor = getAccentColor(categoryName)
+
+  const deadlineMs = new Date(request.deadline).getTime()
+  const msUntilDeadline = deadlineMs - Date.now()
+  const isUrgent =
+    msUntilDeadline > 0 && msUntilDeadline < 3 * 24 * 60 * 60 * 1000
+  const isExpired = Number.isFinite(deadlineMs) && msUntilDeadline <= 0
+
+  const postedAt = new Date(request.createdAt).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  })
+
+  const handleCardClick = () => {
+    navigate(`/requests/${request.id}`)
+  }
 
   return (
     <div
-      className={`relative bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl border flex flex-col overflow-hidden transition-all duration-300 ${
-        hovered
-          ? 'shadow-xl -translate-y-1.5 border-blue-200 dark:border-blue-800'
-          : 'shadow-sm border-gray-100 dark:border-slate-800'
-      }`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onClick={handleCardClick}
+      className="relative bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-blue-200 dark:hover:border-blue-800 flex flex-col overflow-hidden transition-all duration-300"
     >
-      {/* Gradient accent bar */}
-      <div className={`h-1 w-full bg-gradient-to-r ${request.accentColor}`} />
+      <div className={`h-1 w-full bg-gradient-to-r ${accentColor}`} />
+      {isOwner && (
+        <div className="absolute top-4 right-4 z-20">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowMenu((prev) => !prev)
+            }}
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500"
+          >
+            <FaEllipsisVertical size={20} />
+          </button>
 
-      {request.urgent && (
+          {showMenu && (
+            <div
+              className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => {
+                  onEdit?.(request)
+                  setShowMenu(false)
+                }}
+                className="w-full px-4 py-3 text-left text-sm hover:bg-gray-100 dark:hover:bg-slate-800"
+              >
+                Edit Request
+              </button>
+
+              <button
+                onClick={() => {
+                  onDelete?.(request)
+                  setShowMenu(false)
+                }}
+                className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+              >
+                Delete Request
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {isUrgent && (
         <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
           URGENT
         </div>
       )}
+      {isExpired && (
+        <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-gray-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
+          DEADLINE PASSED
+        </div>
+      )}
 
       <div className="p-7 flex flex-col flex-1">
-        {/* Badge + time */}
         <div className="flex items-center justify-between mb-5">
-          <span
-            className={`text-xs font-bold px-3 py-1 rounded-full ${request.badge.color}`}
-          >
-            {request.badge.label}
+          <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
+            {request.creditsOffered} Credits
           </span>
-          <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+        </div>
+
+        <h2 className="text-base font-black text-gray-900 dark:text-white mb-3 leading-snug">
+          {request.title}
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-5 flex-1 line-clamp-3">
+          {request.description}
+        </p>
+        {request.referenceImages?.[0]?.url && (
+          <img
+            src={request.referenceImages[0].url}
+            alt="Request attachment"
+            className="w-full h-40 object-cover rounded-xl mb-5"
+          />
+        )}
+        {request.tags && request.tags.length > 0 && (
+          <div className="mb-6">
+            <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+              Tags / Required Skills
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {request.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        <span className="text-xs text-gray-400 dark:text-gray-500 items-center flex gap-1 justify-end mb-2">
             <svg
               className="w-3 h-3"
               fill="none"
@@ -57,42 +175,13 @@ export default function RequestCard({ request }) {
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            {request.postedAt}
+            {postedAt}
           </span>
-        </div>
 
-        {/* Title */}
-        <h2 className="text-base font-black text-gray-900 dark:text-white mb-3 leading-snug">
-          {request.title}
-        </h2>
-
-        {/* Description */}
-        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-5 flex-1 line-clamp-3">
-          {request.description}
-        </p>
-
-        {/* Offers in exchange */}
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
-            Offering in exchange
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {request.offers.map((offer) => (
-              <span
-                key={offer}
-                className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-              >
-                {offer}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Author row */}
         <div className="flex items-center gap-3 pt-5 border-t border-gray-100 dark:border-slate-800 mb-5">
           <img
-            src={request.author.avatar}
-            alt={request.author.name}
+            src={request.user?.avatar?.url || 'https://via.placeholder.com/80'}
+            alt={request.user?.name || 'User'}
             className="w-11 h-11 rounded-full object-cover border-2 border-gray-100 dark:border-slate-700 shadow-sm shrink-0"
             onError={(e) => {
               e.target.style.display = 'none'
@@ -100,70 +189,44 @@ export default function RequestCard({ request }) {
             }}
           />
           <div
-            className={`hidden w-11 h-11 rounded-full items-center justify-center text-white font-bold text-lg bg-gradient-to-br ${request.accentColor} shrink-0`}
+            className={`hidden w-11 h-11 rounded-full items-center justify-center text-white font-bold text-lg bg-gradient-to-br ${accentColor} shrink-0`}
           >
-            {request.author.name.charAt(0)}
+            {request.user?.name?.charAt(0) || 'U'}
           </div>
           <div className="min-w-0">
             <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-              {request.author.name}
+              {request.user?.name || 'Anonymous User'}
             </p>
             <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
               <StarIcon />
               <span className="font-semibold text-gray-600 dark:text-gray-300">
-                {request.author.rating}
+                New
               </span>
-              <span>({request.author.reviews})</span>
               <span>·</span>
-              <span className="truncate">{request.author.role}</span>
+              <span className="truncate">{categoryName}</span>
             </div>
           </div>
         </div>
 
-        {/* CTA button */}
         <button
-          onClick={() => setProposed(!proposed)}
-          className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 ${
-            proposed
-              ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md'
-              : `text-white bg-gradient-to-r ${request.accentColor} hover:shadow-lg hover:brightness-110`
+          onClick={(e) => {
+            e.stopPropagation()
+            onPropose?.(request)
+          }}
+          disabled={isProposing || isExpired}
+          className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
+            isProposed
+              ? 'bg-blue-600 text-white shadow-md'
+              : `text-white bg-gradient-to-r ${accentColor} hover:shadow-lg hover:brightness-110`
           }`}
         >
-          {proposed ? (
-            <>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              Session Proposed!
-            </>
-          ) : (
-            <>
-              Propose Session
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
-            </>
-          )}
+          {isProposing
+            ? 'Sending…'
+            : isProposed
+              ? 'Session Proposed!'
+              : isExpired
+                ? 'Deadline Passed'
+                : 'Propose Session'}
         </button>
       </div>
     </div>

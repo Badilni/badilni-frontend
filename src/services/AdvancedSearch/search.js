@@ -1,5 +1,3 @@
-import axios from 'axios'
-import { serverBaseUrl } from '../../utils/constants'
 import { getUsersRequest } from '../../api/authApi'
 
 export const fetchUsersService = async ({
