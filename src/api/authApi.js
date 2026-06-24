@@ -19,3 +19,18 @@ export const updateMe = (params) =>
 
 export const getUserProfileRequest = (userId) =>
   api.get(`/users/${userId}`).then((r) => r.data)
+
+export const resetUserEmail = (data) =>
+  api.patch('/auth/me/email', {
+    currentPassword: data.currentPassword,
+    newEmail: data.newEmail,
+  }).then((r) => r.data)
+
+export const verifyChangedEmail = (code) =>
+  api.post('/auth/me/email/verify', { code }).then((r) => r.data)
+
+export const deactivateMeRequest = () =>
+  api.delete('/users/me').then((r) => r.data)
+
+export const deleteAvatarRequest = () =>
+  api.delete('/users/me/avatar').then((r) => r.data)

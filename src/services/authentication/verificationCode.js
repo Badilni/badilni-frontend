@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { serverBaseUrl } from '../../utils/constants'
+import api from '../../api/axios'
 
 export const resendCode = async (email) => {
   try {
@@ -31,5 +32,20 @@ export const verifyCode = async (email, code, purpose = 'signup') => {
     throw new Error(serverMessage)
   }
 }
+
+export const verifyChangedEmail = async (code) => {
+  const response = await api.post('/auth/me/email/verify', { code });
+  return response.data;
+};
+
+export const resetUserEmail = async (data) => {
+  const requestBody = {
+    currentPassword: data.currentPassword,
+    newEmail: data.newEmail,
+  };
+
+  const response = await api.patch('/auth/me/email', requestBody);
+  return response.data;
+};
 
 export default { resendCode, verifyCode }

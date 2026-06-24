@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ProfileHeader from './ProfileHeader'
+import { useNavigate } from 'react-router-dom'
 import ReviewCard, { StarRating } from './ReviewCard'
 import { useProfile } from '../../hooks/Profile/useProfile'
 import { FaGraduationCap } from 'react-icons/fa'
 import { motion } from 'motion/react'
+import DeactivateButton from '../DeactiveateMe/Deactiveate';
+import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal';
+
 import {
   FiSettings,
   FiLock,
@@ -89,7 +93,9 @@ const SkillsCard = ({ skills }) => {
   )
 }
 
+
 const AccountCard = ({ email }) => {
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
@@ -114,9 +120,16 @@ const AccountCard = ({ email }) => {
             </span>
           </div>
         </div>
-        <button className="w-full flex items-center justify-center gap-2 border border-[var(--primary-light)] text-[var(--primary-light)] font-semibold py-2.5 rounded-xl hover:bg-[var(--primary-light)]/5 transition-colors text-sm active:scale-95">
-          <FiKey size={15} /> Reset Password
+        <button
+        type="button"
+        onClick={() => {
+          navigate('/resetEmail');}}
+        className="w-full flex items-center justify-center gap-2 border border-[var(--primary-light)] text-[var(--primary-light)] font-semibold py-2.5 rounded-xl hover:bg-[var(--primary-light)]/5 transition-colors text-sm active:scale-95">
+          <FiKey size={15} /> Reset Email
         </button>
+
+        <DeactivateButton onClick={openConfirmModal} />
+
       </div>
     </motion.div>
   )
@@ -173,6 +186,17 @@ const ProfileScreen = () => {
   const sortOptions = ['Most Recent', 'Highest Rated']
   const visibleReviews = MOCK_REVIEWS.slice(0, visibleCount)
 
+
+  const navigate = useNavigate()
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+
+
+  useEffect(() => {
+    const handleTrigger = () => setIsConfirmOpen(true)
+    window.addEventListener('trigger-deactivate-modal', handleTrigger)
+    return () => window.removeEventListener('trigger-deactivate-modal', handleTrigger)
+  }, [])
+
   if (isLoading) {
     return (
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 flex items-center justify-center">
@@ -210,6 +234,15 @@ const ProfileScreen = () => {
   }
 
   const skillTags = Array.isArray(profile?.skillTags) ? profile.skillTags : []
+
+  const handleDeactivate = async () => {
+    try {
+      setIsConfirmOpen(false)
+      navigate('/signIn', { replace: true })
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   return (
     <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
@@ -300,8 +333,18 @@ const ProfileScreen = () => {
           </div>
         </div>
       </div>
+
+      <DeactivateConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleDeactivate}
+      />
     </main>
   )
+}
+
+const openConfirmModal = () => {
+  window.dispatchEvent(new CustomEvent('trigger-deactivate-modal'))
 }
 
 export default ProfileScreen

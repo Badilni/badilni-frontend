@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import DeactivateButton from '../DeactiveateMe/Deactiveate';
+import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal';
+import { deactivateMeRequest } from '../../api/authApi'
+import { handleToastMessage } from '../../utils/helper';
+
 
 const TABS = [
   {
@@ -91,9 +96,10 @@ const S = {
   },
 }
 
+
 /* ── Profile tab ── */
 // FIX: accept navigate as a prop instead of using undefined `navigation`
-const ProfileTab = ({ user, navigate }) => (
+const ProfileTab = ({ user, navigate, openConfirmModal }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
     {/* Avatar */}
     <div
@@ -237,6 +243,10 @@ const ProfileTab = ({ user, navigate }) => (
     >
       Edit profile
     </button>
+
+    {/* ──  DeactivateButton ── */}
+    <DeactivateButton onClick={openConfirmModal} />
+
   </div>
 )
 
@@ -473,22 +483,39 @@ const SessionsTab = () => (
 /* ── Main Sidebar ── */
 const UserSidebar = ({ open, onClose, user, onSignOut }) => {
   const [activeTab, setActiveTab] = useState('profile')
-  const navigate = useNavigate() // FIX: moved here so it can be passed to ProfileTab
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const handleDeactivateAccount = async () => {
+    try {
+      await deactivateMeRequest();
+      handleToastMessage('Your account has been deactivated successfully. 💔', 'success');
+      setIsConfirmOpen(false);
+      onClose();
+      navigate('/signIn');
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'Failed to deactivate account.';
+      handleToastMessage(msg, 'error');
+    }
+  };
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        if (isConfirmOpen) setIsConfirmOpen(false);
+        else onClose();
+      }
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [onClose])
+  }, [onClose, isConfirmOpen])
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
+    document.body.style.overflow = (open || isConfirmOpen) ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [open])
+  }, [open, isConfirmOpen])
 
   return (
     <>
@@ -636,7 +663,11 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
         <div style={{ flex: 1, overflowY: 'auto', padding: '18px' }}>
           {/* FIX: pass navigate down to ProfileTab */}
           {activeTab === 'profile' && (
-            <ProfileTab user={user} navigate={navigate} />
+            <ProfileTab
+              user={user}
+              navigate={navigate}
+              openConfirmModal={() => setIsConfirmOpen(true)}
+            />
           )}
           {activeTab === 'credits' && <CreditsTab />}
           {activeTab === 'sessions' && <SessionsTab />}
@@ -694,6 +725,12 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
           </button>
         </div>
       </aside>
+
+      <DeactivateConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleDeactivateAccount}
+      />
     </>
   )
 }

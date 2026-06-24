@@ -2,7 +2,6 @@ import { createHashRouter, Outlet, Navigate } from 'react-router-dom'
 import MainLayout from './MainLayout'
 import AuthInitializer from '../components/layout/AuthInitializer'
 import RequireAuth from '../components/layout/RequireAuth'
-
 import Home from '../pages/Home'
 import ShowcasePage from '../components/common/test'
 import LoginPage from '../pages/Login'
@@ -21,6 +20,9 @@ import VerifyEmail from '../components/auth/signup/VerifyEmail'
 import RequestPage from '../pages/timeLine/RequestPage'
 import Offers from '../pages/timeLine/Offers'
 import OfferPage from '../pages/timeLine/OfferPage'
+import ResetEmailPage from '../pages/profile/ResetEmail'
+import VerifyChangedEmailPage from '../pages/profile/VerfiyEmail'
+import NotFoundPage from '../pages/NotFound/notFound'
 
 const RootLayout = () => (
   <>

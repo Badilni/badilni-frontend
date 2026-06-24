@@ -2,10 +2,11 @@
  * src/hooks/useLogin.js
  *
  * What changed vs the original:
- *  - All localStorage / token storage code is deleted (not commented out).
- *  - After a successful login, user data goes into the Zustand store via
- *    setUser() — the only "persistence" we do in JS.
- *  - Zod validation, loading state, error state, and toasts are preserved.
+ * - All localStorage / token storage code is deleted (not commented out).
+ * - After a successful login, user data goes into the Zustand store via
+ * setUser() — the only "persistence" we do in JS.
+ * - Zod validation, loading state, error state, and toasts are preserved.
+ * - Added custom welcome back toast if the user account was deactivated.
  */
 
 import { useState } from 'react'
@@ -38,11 +39,16 @@ export const useLogin = () => {
 
     try {
       const userData = await loginService(email, password)
+      const user = userData?.data?.user ?? userData?.user ?? userData
 
-      // Write user to Zustand. No token. No localStorage.
-      setUser(userData?.data?.user ?? userData?.user ?? userData)
+      setUser(user)
 
-      handleToastMessage('Signed in successfully', 'success')
+      if (user?.active === false) {
+        handleToastMessage('Welcome back! We missed you so much. ✨💖', 'success')
+      } else {
+        handleToastMessage('Signed in successfully', 'success')
+      }
+
       // navigate('/profile', { replace: true })
 
       return { success: true, data: userData }
