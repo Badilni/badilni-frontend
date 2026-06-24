@@ -44,7 +44,7 @@ export const deleteServiceRequest = (serviceRequestId) =>
   api.delete(`/service-requests/${serviceRequestId}`).then((r) => r.data)
 
 // ---------------------------------------------------------------------------
-// Skill Listings
+// Skill Listings ("Offers")
 // ---------------------------------------------------------------------------
 
 export const getAllSkillListings = (params) =>
@@ -101,7 +101,20 @@ export function buildServiceRequestFormData({
 }
 
 // /**
-//  * @param {{category?: string, title?: string, description?: string, hourlyRate?: number|string, availabilityNotes?: string, sampleWork?: File[]|FileList}} payload
+//  * @param {{
+//  *   category?: string, title?: string, description?: string, hourlyRate?: number|string,
+//  *   availabilityNotes?: string, tags?: string[], isActive?: boolean,
+//  *   sampleWork?: File[]|FileList,      // newly selected files to upload
+//  *   keepImageIds?: string[],           // existing sampleWork _ids to retain (edit flow only)
+//  * }} payload
+//  *
+//  * NOTE on keepImageIds: no Postman screenshot covers partial-image removal
+//  * on edit. Sending retained ids as repeated `existingSampleWork` fields
+//  * mirrors the existing multi-file convention (one key, repeated), but is
+//  * UNCONFIRMED — verify the real key name with the backend before shipping
+//  * "remove individual existing image" in production. Worst case fallback:
+//  * if the backend ignores it, edits will just additively upload new images
+//  * without being able to drop old ones.
 //  */
 export function buildSkillListingFormData({
   category,
@@ -109,7 +122,10 @@ export function buildSkillListingFormData({
   description,
   hourlyRate,
   availabilityNotes,
+  tags,
+  isActive,
   sampleWork,
+  keepImageIds,
 } = {}) {
   const fd = new FormData()
   appendIfPresent(fd, 'category', category)
@@ -117,6 +133,9 @@ export function buildSkillListingFormData({
   appendIfPresent(fd, 'description', description)
   appendIfPresent(fd, 'hourlyRate', hourlyRate)
   appendIfPresent(fd, 'availabilityNotes', availabilityNotes)
+  if (isActive !== undefined) fd.append('isActive', String(isActive))
+  if (Array.isArray(tags)) tags.forEach((tag) => fd.append('tags', tag))
+  if (Array.isArray(keepImageIds)) keepImageIds.forEach((id) => fd.append('existingSampleWork', id))
   appendFiles(fd, 'sampleWork', sampleWork)
   return fd
 }

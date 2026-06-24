@@ -1,6 +1,8 @@
+import AllOffersPage from "../../components/offers/AllOffersPage"
+
 const Offers = () => {
   return (
-    <div>Offers</div>
+    <AllOffersPage/>
   )
 }
 

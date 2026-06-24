@@ -1,4 +1,18 @@
-export default function EmptyState({ onPostRequest, onClearFilters, hasActiveFilters = false }) {
+export default function EmptyState({
+  onPostRequest,
+  onClearFilters,
+  hasActiveFilters = false,
+  title,
+  description,
+  actionLabel = 'Post a Request',
+}) {
+  const resolvedTitle = title ?? (hasActiveFilters ? 'No requests match these filters' : 'No requests yet')
+  const resolvedDescription =
+    description ??
+    (hasActiveFilters
+      ? 'Try a different category, status, or sort order.'
+      : 'Post the first request and start matching with people who can help.')
+
   return (
     <div className="flex flex-col items-center text-center py-20 px-6">
       <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center mb-5">
@@ -6,14 +20,8 @@ export default function EmptyState({ onPostRequest, onClearFilters, hasActiveFil
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
         </svg>
       </div>
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
-        {hasActiveFilters ? 'No requests match these filters' : 'No requests yet'}
-      </h3>
-      <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">
-        {hasActiveFilters
-          ? 'Try a different category, status, or sort order.'
-          : 'Post the first request and start matching with people who can help.'}
-      </p>
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{resolvedTitle}</h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">{resolvedDescription}</p>
       <div className="flex gap-3">
         {hasActiveFilters && (
           <button
@@ -27,7 +35,7 @@ export default function EmptyState({ onPostRequest, onClearFilters, hasActiveFil
           onClick={onPostRequest}
           className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110"
         >
-          Post a Request
+          {actionLabel}
         </button>
       </div>
     </div>

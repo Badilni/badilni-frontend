@@ -52,7 +52,7 @@ const router = createHashRouter([
               { path: 'requests', element: <Requests /> },
               { path: 'requests/:requestId', element: <RequestPage /> },
               { path: 'offers', element: <Offers /> },
-              { path: 'offers/offerId', element: <OfferPage /> },
+              { path: 'offers/:offerId', element: <OfferPage /> },
               { path: 'settings', element: <EditProfilePage /> },
               { path: 'search', element: <SearchPage /> },
             ],

@@ -1,10 +1,19 @@
 import { getAllSkillListings } from '../../api/posts'
 import { applyRangeFilter } from '../../utils/applyRangeFilter'
 
-export const fetchSkillListings = async ({
+/**
+ * Builds query params exactly as the backend expects (see spec section 3):
+ * keyword, category, isActive, hourlyRate[gte|lte], averageRating[gte],
+ * createdAt[gte|lte], page, limit, sort, fields.
+ *
+ * `sort=-averageRating` is the only sort value directly confirmed by
+ * Postman (img 9). Other sort values are plausible but UNCONFIRMED —
+ * verify the backend's allowed sort fields before relying on them.
+ */
+export const fetchOffers = async ({
   keyword,
-  category, // category _id (ObjectId string) — confirmed, NOT a slug or name
-  isActive,
+  category, // category _id (ObjectId string), not a slug or name
+  isActive, // 'true' | 'false' | undefined ('' = no filter)
   hourlyRateGreaterThan,
   hourlyRateLessThan,
   averageRatingGreaterThan,
@@ -12,13 +21,13 @@ export const fetchSkillListings = async ({
   createdAtLessThan,
   page = 1,
   limit = 10,
-  sort = '-averageRating', // confirmed value, img 9
+  sort = '-averageRating',
   fields,
 } = {}) => {
   const params = { page, limit, sort }
   if (keyword) params.keyword = keyword
   if (category) params.category = category
-  if (isActive !== undefined) params.isActive = isActive // fixed: `false` was previously dropped (falsy check)
+  if (isActive !== undefined && isActive !== '') params.isActive = isActive
   if (fields) params.fields = fields
 
   applyRangeFilter(params, 'hourlyRate', hourlyRateGreaterThan, hourlyRateLessThan)

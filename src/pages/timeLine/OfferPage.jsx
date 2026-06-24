@@ -1,6 +1,8 @@
+import OfferPageComponent from "../../components/offers/OfferPage"
+
 const OfferPage = () => {
   return (
-    <div>OfferPage</div>
+    <OfferPageComponent/>
   )
 }
 
