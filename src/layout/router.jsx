@@ -15,7 +15,7 @@ import OtherProfile from '../pages/profile/OtherProfile'
 import SearchPage from '../pages/Search'
 import ContactPage from '../pages/contactUs/contact'
 import AboutPage from '../pages/about/about'
-import ExplorePage from '../pages/timeline/Explore'
+import ExplorePage from '../pages/Explore'
 import Requests from '../pages/timeline/Requests'
 import VerifyEmail from '../components/auth/signup/VerifyEmail'
 import RequestPage from '../pages/timeLine/RequestPage'
@@ -64,7 +64,9 @@ const router = createHashRouter([
       { path: '/forgetPass', element: <ForgetPassPage /> },
       { path: '/verifyCode', element: <VerificationPassword /> },
       { path: '/test', element: <ShowcasePage /> },
-      { path: '*', element: <h1>Not Found</h1> },
+      { path: 'resetemail', element:<ResetEmailPage/>},
+      { path: '/verify-changed-email', element:< VerifyChangedEmailPage/>},
+      { path: '*', element: <NotFoundPage/> },
     ],
   },
 ])
