@@ -49,7 +49,10 @@ const VerifyChangedEmail = () => {
     const fullCode = code.join('')
 
     if (fullCode.length !== 6) {
-      handleToastMessage('Please enter the complete 6-digit verification code.', 'warning')
+      handleToastMessage(
+        'Please enter the complete 6-digit verification code.',
+        'warning'
+      )
       return
     }
 
@@ -57,11 +60,15 @@ const VerifyChangedEmail = () => {
     try {
       await api.post('/auth/me/email/verify', { code: fullCode })
 
-      handleToastMessage('Email updated and verified successfully! 🎉', 'success')
+      handleToastMessage(
+        'Email updated and verified successfully! 🎉',
+        'success'
+      )
 
       navigate('/profile', { state: { emailUpdated: true } })
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Verification failed.'
+      const msg =
+        err.response?.data?.message || err.message || 'Verification failed.'
       handleToastMessage(msg, 'error')
     } finally {
       setIsSubmitting(false)
@@ -79,7 +86,8 @@ const VerifyChangedEmail = () => {
       handleToastMessage('A new verification code has been sent!', 'success')
       setCode(['', '', '', '', '', ''])
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Failed to resend code.'
+      const msg =
+        err.response?.data?.message || err.message || 'Failed to resend code.'
       handleToastMessage(msg, 'error')
     } finally {
       setIsResending(false)
@@ -109,7 +117,10 @@ const VerifyChangedEmail = () => {
               backgroundColor: 'var(--whiteBackground)',
             }}
           >
-            <IoIosArrowRoundBack style={{ color: 'var(--secondary-light)' }} size={28} />
+            <IoIosArrowRoundBack
+              style={{ color: 'var(--secondary-light)' }}
+              size={28}
+            />
           </button>
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-12">
@@ -125,7 +136,8 @@ const VerifyChangedEmail = () => {
                 className="text-sm leading-relaxed transition-colors"
               >
                 We've sent a 6-digit verification code to{' '}
-                <strong>{email || 'your new email'}</strong>. Enter it below to confirm your change.
+                <strong>{email || 'your new email'}</strong>. Enter it below to
+                confirm your change.
               </p>
             </div>
 
@@ -169,7 +181,10 @@ const VerifyChangedEmail = () => {
               {isSubmitting ? 'Verifying...' : 'Verify New Email'}
             </Button>
 
-            <div className="text-sm text-center" style={{ color: 'var(--gray-text)' }}>
+            <div
+              className="text-sm text-center"
+              style={{ color: 'var(--gray-text)' }}
+            >
               Didn't receive the code?{' '}
               <button
                 type="button"

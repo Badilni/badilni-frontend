@@ -64,7 +64,9 @@ const RatingsCard = ({ averageRating = 0, reviewsCount = 0, reviews = [] }) => {
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className="w-8 text-xs text-[var(--gray-text)]">{pct}%</span>
+              <span className="w-8 text-xs text-[var(--gray-text)]">
+                {pct}%
+              </span>
             </div>
           ))}
         </div>

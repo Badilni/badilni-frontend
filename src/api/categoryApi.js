@@ -1,6 +1,5 @@
 import api from './axios'
 
-
 export const getAllCategoriesRequest = (params = {}) =>
   api.get('/categories', { params }).then((r) => r.data)
 

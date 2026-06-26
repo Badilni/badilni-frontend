@@ -1,5 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createServiceRequest, editServiceRequest, deleteServiceRequest } from '../../api/posts'
+import {
+  createServiceRequest,
+  editServiceRequest,
+  deleteServiceRequest,
+} from '../../api/posts'
 import { serviceRequestKeys } from './useServiceRequests'
 
 export function useCreateServiceRequest() {
@@ -34,7 +38,10 @@ export function useDeleteServiceRequest() {
       const previous = qc.getQueriesData({ queryKey: serviceRequestKeys.all })
       qc.setQueriesData({ queryKey: serviceRequestKeys.all }, (old) => {
         if (!old?.data) return old
-        return { ...old, data: old.data.filter((item) => (item.id ?? item._id) !== id) }
+        return {
+          ...old,
+          data: old.data.filter((item) => (item.id ?? item._id) !== id),
+        }
       })
       return { previous }
     },

@@ -28,7 +28,7 @@ const ResetEmail = () => {
       navigate('/verify-changed-email', {
         state: {
           email: formData.newEmail,
-          currentPassword: formData.currentPassword
+          currentPassword: formData.currentPassword,
         },
       })
     }
@@ -66,7 +66,9 @@ const ResetEmail = () => {
                 style={{ color: 'var(--gray-text)' }}
                 className="text-sm leading-relaxed transition-colors"
               >
-                Enter your current password and the **new email address** you want to use. We will send a 6-digit verification code to the new email.
+                Enter your current password and the **new email address** you
+                want to use. We will send a 6-digit verification code to the new
+                email.
               </p>
             </div>
 
@@ -85,11 +87,15 @@ const ResetEmail = () => {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   disabled={isLoading}
-                  {...register('currentPassword', { required: 'Current password is required' })}
+                  {...register('currentPassword', {
+                    required: 'Current password is required',
+                  })}
                   style={{
                     color: 'var(--black-text)',
                     backgroundColor: 'var(--whiteBackground)',
-                    borderColor: errors.currentPassword ? 'var(--danger)' : 'var(--gray-text)',
+                    borderColor: errors.currentPassword
+                      ? 'var(--danger)'
+                      : 'var(--gray-text)',
                   }}
                   className="w-full h-12 px-4 pr-12 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
                 />
@@ -122,11 +128,15 @@ const ResetEmail = () => {
                 type="email"
                 placeholder="new-email@gmail.com"
                 disabled={isLoading}
-                {...register('newEmail', { required: 'New email address is required' })}
+                {...register('newEmail', {
+                  required: 'New email address is required',
+                })}
                 style={{
                   color: 'var(--black-text)',
                   backgroundColor: 'var(--whiteBackground)',
-                  borderColor: errors.newEmail ? 'var(--danger)' : 'var(--gray-text)',
+                  borderColor: errors.newEmail
+                    ? 'var(--danger)'
+                    : 'var(--gray-text)',
                 }}
                 className="w-full h-12 px-4 border rounded-xl outline-none transition-all focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400"
               />

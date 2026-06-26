@@ -42,9 +42,12 @@ export default function OffersCTA({
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 blur-2xl" />
           </div>
           <div className="relative z-10 text-center md:text-left">
-            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">Have a skill to share?</h3>
+            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+              Have a skill to share?
+            </h3>
             <p className="text-white/70 text-sm md:text-base max-w-md">
-              List your offer, set your rate, and let the community book you directly.
+              List your offer, set your rate, and let the community book you
+              directly.
             </p>
           </div>
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 shrink-0">
@@ -69,7 +72,11 @@ export default function OffersCTA({
           stroke="currentColor"
           strokeWidth={2.5}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 4v16m8-8H4"
+          />
         </svg>
         <span className="absolute right-16 bg-gray-900 dark:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-lg">
           Create an Offer

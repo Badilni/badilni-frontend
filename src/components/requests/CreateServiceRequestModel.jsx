@@ -20,7 +20,11 @@ const initialState = {
  *  - referenceImages: file(s), optional
  * Submitted as multipart/form-data via buildServiceRequestFormData (api/posts.js).
  */
-export default function CreateServiceRequestModal({ open, onClose, onCreated }) {
+export default function CreateServiceRequestModal({
+  open,
+  onClose,
+  onCreated,
+}) {
   const [form, setForm] = useState(initialState)
   const { data: categoriesData } = useCategories()
   const categories = categoriesData?.data?.categories ?? []
@@ -43,7 +47,9 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
         title: form.title,
         description: form.description,
         creditsOffered: form.creditsOffered,
-        deadline: form.deadline ? new Date(form.deadline).toISOString() : undefined,
+        deadline: form.deadline
+          ? new Date(form.deadline).toISOString()
+          : undefined,
         referenceImages: form.referenceImages,
       },
       {
@@ -57,16 +63,34 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+    >
       <div
         className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-7"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-black text-gray-900 dark:text-white">Post a Request</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          <h2 className="text-lg font-black text-gray-900 dark:text-white">
+            Post a Request
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -97,7 +121,11 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
                 </option>
               ))}
             </select>
-            {fieldErrors.category && <p className="text-xs text-red-500 mt-1">{fieldErrors.category}</p>}
+            {fieldErrors.category && (
+              <p className="text-xs text-red-500 mt-1">
+                {fieldErrors.category}
+              </p>
+            )}
           </div>
 
           <div>
@@ -112,7 +140,9 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
               placeholder="Need help proofreading and localizing a flyer"
               className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
             />
-            {fieldErrors.title && <p className="text-xs text-red-500 mt-1">{fieldErrors.title}</p>}
+            {fieldErrors.title && (
+              <p className="text-xs text-red-500 mt-1">{fieldErrors.title}</p>
+            )}
           </div>
 
           <div>
@@ -126,7 +156,11 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
               onChange={(e) => update('description', e.target.value)}
               className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white resize-none"
             />
-            {fieldErrors.description && <p className="text-xs text-red-500 mt-1">{fieldErrors.description}</p>}
+            {fieldErrors.description && (
+              <p className="text-xs text-red-500 mt-1">
+                {fieldErrors.description}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -142,7 +176,11 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
                 onChange={(e) => update('creditsOffered', e.target.value)}
                 className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
               />
-              {fieldErrors.creditsOffered && <p className="text-xs text-red-500 mt-1">{fieldErrors.creditsOffered}</p>}
+              {fieldErrors.creditsOffered && (
+                <p className="text-xs text-red-500 mt-1">
+                  {fieldErrors.creditsOffered}
+                </p>
+              )}
             </div>
             <div>
               <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
@@ -155,7 +193,11 @@ export default function CreateServiceRequestModal({ open, onClose, onCreated }) 
                 onChange={(e) => update('deadline', e.target.value)}
                 className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
               />
-              {fieldErrors.deadline && <p className="text-xs text-red-500 mt-1">{fieldErrors.deadline}</p>}
+              {fieldErrors.deadline && (
+                <p className="text-xs text-red-500 mt-1">
+                  {fieldErrors.deadline}
+                </p>
+              )}
             </div>
           </div>
 

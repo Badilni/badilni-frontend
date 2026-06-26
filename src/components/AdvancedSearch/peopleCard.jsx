@@ -15,7 +15,6 @@ export default function UserCard({ user }) {
 
   return (
     <div className="group relative flex flex-col rounded-[2rem] bg-[var(--whiteBackground,#ffffff)] p-3 shadow-sm ring-1 ring-[var(--border-color,#e5e7eb)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:ring-transparent">
-
       {/* Avatar Container */}
       <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-[var(--background-secondary,#f3f4f6)]">
         {avatarUrl ? (
@@ -63,7 +62,7 @@ export default function UserCard({ user }) {
           <button
             onClick={() => {
               if (user?._id) {
-                navigate('/chat', { state: { selectUserId: user._id } });
+                navigate('/chat', { state: { selectUserId: user._id } })
               }
             }}
             className="flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-tr from-[var(--primary-light,#6366f1)] to-[var(--secondary-light,#a855f7)] px-4 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:shadow-lg hover:brightness-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"

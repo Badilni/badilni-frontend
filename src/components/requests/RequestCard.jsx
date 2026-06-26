@@ -162,21 +162,21 @@ export default function RequestCard({
           </div>
         )}
         <span className="text-xs text-gray-400 dark:text-gray-500 items-center flex gap-1 justify-end mb-2">
-            <svg
-              className="w-3 h-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            {postedAt}
-          </span>
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          {postedAt}
+        </span>
 
         <div className="flex items-center gap-3 pt-5 border-t border-gray-100 dark:border-slate-800 mb-5">
           <img

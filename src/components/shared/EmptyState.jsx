@@ -6,7 +6,9 @@ export default function EmptyState({
   description,
   actionLabel = 'Post a Request',
 }) {
-  const resolvedTitle = title ?? (hasActiveFilters ? 'No requests match these filters' : 'No requests yet')
+  const resolvedTitle =
+    title ??
+    (hasActiveFilters ? 'No requests match these filters' : 'No requests yet')
   const resolvedDescription =
     description ??
     (hasActiveFilters
@@ -16,12 +18,26 @@ export default function EmptyState({
   return (
     <div className="flex flex-col items-center text-center py-20 px-6">
       <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center mb-5">
-        <svg className="w-7 h-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+        <svg
+          className="w-7 h-7 text-blue-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.8}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+          />
         </svg>
       </div>
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{resolvedTitle}</h3>
-      <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">{resolvedDescription}</p>
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+        {resolvedTitle}
+      </h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">
+        {resolvedDescription}
+      </p>
       <div className="flex gap-3">
         {hasActiveFilters && (
           <button

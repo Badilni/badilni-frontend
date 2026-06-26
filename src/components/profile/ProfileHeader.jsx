@@ -36,7 +36,9 @@ const ProfileHeader = ({
   // Defensive: avatar can be `{ url }` (own profile shape) or a plain
   // string (shape used elsewhere, e.g. UserCard).
   const avatarUrl =
-    (typeof profile?.avatar === 'object' ? profile?.avatar?.url : profile?.avatar) || undefined
+    (typeof profile?.avatar === 'object'
+      ? profile?.avatar?.url
+      : profile?.avatar) || undefined
   const isVerified = Boolean(profile?.isVerified)
   const joinDate = formatJoinDate(profile?.createdAt)
   const averageRating = Number(profile?.averageRating ?? 0)
@@ -61,7 +63,11 @@ const ProfileHeader = ({
 
       <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-8">
         <div className="w-36 h-36 rounded-full border-4 border-white shadow-xl overflow-hidden shrink-0 bg-[var(--background-light)]">
-          <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+          <img
+            src={avatarUrl}
+            alt={displayName}
+            className="w-full h-full object-cover"
+          />
         </div>
 
         <div className="flex-1 text-center md:text-left pb-2">
@@ -78,12 +84,15 @@ const ProfileHeader = ({
 
             {!isOwnProfile && (
               <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-50 text-yellow-600 text-sm rounded-full font-bold border border-yellow-200">
-                <BsStarFill size={11} /> {averageRating.toFixed(1)} · {reviewsCount} reviews
+                <BsStarFill size={11} /> {averageRating.toFixed(1)} ·{' '}
+                {reviewsCount} reviews
               </span>
             )}
           </div>
 
-          {email && <p className="text-sm text-[var(--gray-text)] mb-1">{email}</p>}
+          {email && (
+            <p className="text-sm text-[var(--gray-text)] mb-1">{email}</p>
+          )}
           {joinDate && (
             <p className="text-xs text-[var(--gray-text)] mb-3 flex items-center gap-1 justify-center md:justify-start">
               <FiCalendar size={12} /> Joined {joinDate}

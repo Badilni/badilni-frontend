@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { createSkillListing, editSkillListing, deleteSkillListing } from '../../api/posts'
+import {
+  createSkillListing,
+  editSkillListing,
+  deleteSkillListing,
+} from '../../api/posts'
 import { offerKeys } from './useOffer'
 
 export function useCreateOffer() {
@@ -47,7 +51,9 @@ export function useDeleteOffer() {
           ...old,
           data: {
             ...old.data,
-            skillListings: old.data.skillListings.filter((item) => (item._id ?? item.id) !== id),
+            skillListings: old.data.skillListings.filter(
+              (item) => (item._id ?? item.id) !== id
+            ),
           },
         }
       })

@@ -6,7 +6,11 @@ const existingImageSchema = z.object({
 })
 
 export const offerSchema = z.object({
-  title: z.string().trim().min(3, 'Title must be at least 3 characters').max(120, 'Title is too long'),
+  title: z
+    .string()
+    .trim()
+    .min(3, 'Title must be at least 3 characters')
+    .max(120, 'Title is too long'),
   description: z
     .string()
     .trim()
@@ -15,7 +19,11 @@ export const offerSchema = z.object({
   category: z.string().min(1, 'Please select a category'),
   hourlyRate: z
     .union([z.string(), z.number()])
-    .refine((v) => v !== '' && v !== null && v !== undefined && !Number.isNaN(Number(v)), 'Hourly rate must be a number')
+    .refine(
+      (v) =>
+        v !== '' && v !== null && v !== undefined && !Number.isNaN(Number(v)),
+      'Hourly rate must be a number'
+    )
     .transform((v) => Number(v))
     .refine((v) => v > 0, 'Hourly rate must be greater than 0'),
   availabilityNotes: z

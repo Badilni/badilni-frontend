@@ -49,4 +49,3 @@ const VerfyAndReset = () => {
 }
 
 export default VerfyAndReset
-

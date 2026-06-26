@@ -14,7 +14,6 @@ export const useResetEmail = () => {
 
       handleToastMessage('Verification code sent to your new email!', 'success')
       return { success: true, data }
-
     } catch (error) {
       console.log('❌ Server Error Response:', error.response?.data)
 

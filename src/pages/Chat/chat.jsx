@@ -1,4 +1,3 @@
-
 import ChatPage from '../../components/Chat/chat'
 
 const ChatBadilni = () => {

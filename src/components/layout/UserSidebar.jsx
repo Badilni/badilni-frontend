@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import DeactivateButton from '../DeactiveateMe/Deactiveate';
-import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal';
+import DeactivateButton from '../DeactiveateMe/Deactiveate'
+import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal'
 import { deactivateMeRequest } from '../../api/authApi'
-import { handleToastMessage } from '../../utils/helper';
-
+import { handleToastMessage } from '../../utils/helper'
 
 const TABS = [
   {
@@ -95,7 +94,6 @@ const S = {
     borderTop: '1px solid var(--border-color, #e2e8f0)',
   },
 }
-
 
 /* ── Profile tab ── */
 // FIX: accept navigate as a prop instead of using undefined `navigation`
@@ -246,7 +244,6 @@ const ProfileTab = ({ user, navigate, openConfirmModal }) => (
 
     {/* ──  DeactivateButton ── */}
     <DeactivateButton onClick={openConfirmModal} />
-
   </div>
 )
 
@@ -488,22 +485,28 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
 
   const handleDeactivateAccount = async () => {
     try {
-      await deactivateMeRequest();
-      handleToastMessage('Your account has been deactivated successfully. 💔', 'success');
-      setIsConfirmOpen(false);
-      onClose();
-      navigate('/signIn');
+      await deactivateMeRequest()
+      handleToastMessage(
+        'Your account has been deactivated successfully. 💔',
+        'success'
+      )
+      setIsConfirmOpen(false)
+      onClose()
+      navigate('/signIn')
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Failed to deactivate account.';
-      handleToastMessage(msg, 'error');
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to deactivate account.'
+      handleToastMessage(msg, 'error')
     }
-  };
+  }
 
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') {
-        if (isConfirmOpen) setIsConfirmOpen(false);
-        else onClose();
+        if (isConfirmOpen) setIsConfirmOpen(false)
+        else onClose()
       }
     }
     document.addEventListener('keydown', onKey)
@@ -511,7 +514,7 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
   }, [onClose, isConfirmOpen])
 
   useEffect(() => {
-    document.body.style.overflow = (open || isConfirmOpen) ? 'hidden' : ''
+    document.body.style.overflow = open || isConfirmOpen ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }

@@ -18,9 +18,8 @@ const AvatarSection = ({
   setShowConfirmModal,
   errors,
   setErrors,
-  confirmRemoveAvatar
+  confirmRemoveAvatar,
 }) => {
-
   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name || 'User'
   )}&background=2f97e9&color=fff&size=160`

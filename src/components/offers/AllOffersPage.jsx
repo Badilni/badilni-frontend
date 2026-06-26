@@ -68,7 +68,8 @@ export default function AllOffersPage() {
 
   const resetFilters = () => setSearchParams({})
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useOffers(filters)
+  const { data, isLoading, isFetching, isError, error, refetch } =
+    useOffers(filters)
   const { data: categoriesData } = useCategories()
   const categories = categoriesData?.data?.categories ?? []
   const deleteOffer = useDeleteOffer()
@@ -80,13 +81,13 @@ export default function AllOffersPage() {
 
   const hasActiveFilters = Boolean(
     filters.keyword ||
-      filters.category ||
-      filters.isActive ||
-      filters.hourlyRateGreaterThan ||
-      filters.hourlyRateLessThan ||
-      filters.averageRatingGreaterThan ||
-      filters.createdAtGreaterThan ||
-      filters.createdAtLessThan
+    filters.category ||
+    filters.isActive ||
+    filters.hourlyRateGreaterThan ||
+    filters.hourlyRateLessThan ||
+    filters.averageRatingGreaterThan ||
+    filters.createdAtGreaterThan ||
+    filters.createdAtLessThan
   )
 
   const handleConfirmDelete = () => {
@@ -100,7 +101,12 @@ export default function AllOffersPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <OffersHeader totalCount={totalCount} />
 
-      <OfferFilters categories={categories} filters={filters} onChange={updateParams} onReset={resetFilters} />
+      <OfferFilters
+        categories={categories}
+        filters={filters}
+        onChange={updateParams}
+        onReset={resetFilters}
+      />
 
       {isError && <ErrorState message={error?.message} onRetry={refetch} />}
 
@@ -117,7 +123,9 @@ export default function AllOffersPage() {
           hasActiveFilters={hasActiveFilters}
           onClearFilters={resetFilters}
           onPostRequest={() => setCreateOpen(true)}
-          title={hasActiveFilters ? 'No offers match these filters' : 'No offers yet'}
+          title={
+            hasActiveFilters ? 'No offers match these filters' : 'No offers yet'
+          }
           description={
             hasActiveFilters
               ? 'Try a different category, rate range, or sort order.'
@@ -146,13 +154,25 @@ export default function AllOffersPage() {
           totalCount={totalCount}
           hasMore={filters.page < totalPages}
           isLoadingMore={isFetching}
-          onLoadMore={() => updateParams({ page: String(filters.page + 1) }, { resetPage: false })}
+          onLoadMore={() =>
+            updateParams(
+              { page: String(filters.page + 1) },
+              { resetPage: false }
+            )
+          }
           onPostOffer={() => setCreateOpen(true)}
         />
       )}
 
-      <CreateOfferModal open={createOpen} onClose={() => setCreateOpen(false)} />
-      <EditOfferModal open={Boolean(editingOffer)} offer={editingOffer} onClose={() => setEditingOffer(null)} />
+      <CreateOfferModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+      />
+      <EditOfferModal
+        open={Boolean(editingOffer)}
+        offer={editingOffer}
+        onClose={() => setEditingOffer(null)}
+      />
       <ConfirmDeleteModal
         open={Boolean(deletingOffer)}
         title="Delete this offer?"

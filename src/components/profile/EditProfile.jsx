@@ -89,7 +89,8 @@ const EditProfile = () => {
 
     try {
       if (isAvatarRemoved && profile?.avatar?.url) {
-        const token = localStorage.getItem('token') || localStorage.getItem('accessToken')
+        const token =
+          localStorage.getItem('token') || localStorage.getItem('accessToken')
         await deleteAvatarRequest(token)
       }
 
@@ -116,7 +117,9 @@ const EditProfile = () => {
             queryClient.setQueryData(['profile'], (old) => ({
               ...old,
               ...updatedData,
-              ...(isAvatarRemoved ? { avatar: { ...old?.avatar, url: '' } } : {})
+              ...(isAvatarRemoved
+                ? { avatar: { ...old?.avatar, url: '' } }
+                : {}),
             }))
             queryClient.invalidateQueries(['profile'])
             handleToastMessage('Profile updated successfully!', 'success')
@@ -124,7 +127,8 @@ const EditProfile = () => {
           },
           onError: (err) => {
             handleToastMessage(
-              err?.response?.data?.message || 'Something went wrong while updating your profile.',
+              err?.response?.data?.message ||
+                'Something went wrong while updating your profile.',
               'error'
             )
           },
@@ -132,15 +136,14 @@ const EditProfile = () => {
       } else {
         queryClient.setQueryData(['profile'], (old) => ({
           ...old,
-          avatar: { ...old?.avatar, url: '' }
+          avatar: { ...old?.avatar, url: '' },
         }))
         queryClient.invalidateQueries(['profile'])
         handleToastMessage('Profile picture removed successfully!', 'success')
         navigate('/profile')
       }
-
     } catch (error) {
-      console.error("Error updates:", error)
+      console.error('Error updates:', error)
       handleToastMessage('Failed to handle avatar removal on server.', 'error')
     }
   }
@@ -181,7 +184,6 @@ const EditProfile = () => {
 
       {/* Card wrapper */}
       <div className="bg-[var(--whiteBackground)] rounded-2xl border border-[var(--secondary-light)]/10 shadow-[0_4px_24px_rgba(47,151,233,0.09)] p-8 md:p-12 space-y-10">
-
         <AvatarSection
           name={name}
           avatarPreview={avatarPreview}

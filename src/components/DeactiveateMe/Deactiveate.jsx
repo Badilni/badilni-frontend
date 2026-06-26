@@ -5,9 +5,7 @@ const DeactivateButton = ({ onClick }) => {
       className="group w-full flex items-center justify-center gap-2.5 bg-[var(--backgDanger)] font-medium text-[13px] font-['Poppins',_sans-serif] cursor-pointer text-[var(--whiteBackground)] transition-all duration-200 ease-out border-none hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/20 active:translate-y-0 active:scale-98"
       style={{ padding: '9px', borderRadius: '9px' }}
     >
-      <div
-        className="w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 transition-all duration-200 ease-out bg-white/10 group-hover:bg-white/20"
-      >
+      <div className="w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 transition-all duration-200 ease-out bg-white/10 group-hover:bg-white/20">
         <svg
           width="16"
           height="16"
@@ -23,7 +21,6 @@ const DeactivateButton = ({ onClick }) => {
           />
         </svg>
       </div>
-
       Deactivate Me
     </button>
   )

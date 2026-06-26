@@ -1,9 +1,7 @@
 import ServiceRequestsPage from '../../components/requests/ServiceRequestsPage'
 
 const Requests = () => {
-  return (
-    <ServiceRequestsPage/>
-  )
+  return <ServiceRequestsPage />
 }
 
 export default Requests

@@ -5,7 +5,10 @@ const ReviewsList = ({ reviews = [], isLoading, isError }) => {
     return (
       <div className="space-y-4">
         {[1, 2].map((i) => (
-          <div key={i} className="h-28 rounded-2xl bg-[var(--background-light)] animate-pulse" />
+          <div
+            key={i}
+            className="h-28 rounded-2xl bg-[var(--background-light)] animate-pulse"
+          />
         ))}
       </div>
     )
@@ -20,7 +23,11 @@ const ReviewsList = ({ reviews = [], isLoading, isError }) => {
   }
 
   if (!reviews.length) {
-    return <p className="text-sm text-[var(--gray-text)] text-center py-8">No reviews yet.</p>
+    return (
+      <p className="text-sm text-[var(--gray-text)] text-center py-8">
+        No reviews yet.
+      </p>
+    )
   }
 
   return (
