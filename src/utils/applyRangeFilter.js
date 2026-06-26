@@ -6,6 +6,8 @@
  * img 4 / img 9: creditsOffered[gte], creditsOffered[lte], createdAt[gte], etc.
  */
 export function applyRangeFilter(params, field, gte, lte) {
-  if (gte !== undefined && gte !== null && gte !== '') params[`${field}[gte]`] = gte
-  if (lte !== undefined && lte !== null && lte !== '') params[`${field}[lte]`] = lte
+  if (gte !== undefined && gte !== null && gte !== '')
+    params[`${field}[gte]`] = gte
+  if (lte !== undefined && lte !== null && lte !== '')
+    params[`${field}[lte]`] = lte
 }

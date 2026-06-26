@@ -9,7 +9,6 @@ export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState(null)
 
- 
   const handleCategoryChange = (category) => {
     setActiveCategory(category)
   }

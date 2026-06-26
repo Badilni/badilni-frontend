@@ -72,7 +72,11 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
       </span>
 
       {offer.sampleWork?.[0]?.url && (
-        <img src={offer.sampleWork[0].url} alt="" className="w-full h-40 object-cover mt-8" />
+        <img
+          src={offer.sampleWork[0].url}
+          alt=""
+          className="w-full h-40 object-cover mt-8"
+        />
       )}
 
       <div className="p-7 flex flex-col flex-1">
@@ -80,10 +84,14 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
           <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 truncate">
             {offer.category?.name}
           </span>
-          <span className="text-sm font-black text-gray-900 dark:text-white shrink-0">{offer.hourlyRate} Credits/hr</span>
+          <span className="text-sm font-black text-gray-900 dark:text-white shrink-0">
+            {offer.hourlyRate} Credits/hr
+          </span>
         </div>
 
-        <h2 className="text-base font-black text-gray-900 dark:text-white mb-2 leading-snug">{offer.title}</h2>
+        <h2 className="text-base font-black text-gray-900 dark:text-white mb-2 leading-snug">
+          {offer.title}
+        </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-5 flex-1 line-clamp-3">
           {offer.description}
         </p>
@@ -114,7 +122,9 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
             <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
               <FaStar className="text-amber-400 w-3 h-3" />
               <span className="font-semibold text-gray-600 dark:text-gray-300">
-                {typeof offer.averageRating === 'number' ? offer.averageRating.toFixed(1) : 'New'}
+                {typeof offer.averageRating === 'number'
+                  ? offer.averageRating.toFixed(1)
+                  : 'New'}
               </span>
               <span>·</span>
               <span>{offer.totalBookings ?? 0} bookings</span>

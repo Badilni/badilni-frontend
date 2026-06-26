@@ -22,15 +22,16 @@ export const useDeleteAvatar = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
-      return deleteAvatarRequest(token);
+      const token =
+        localStorage.getItem('token') || localStorage.getItem('accessToken')
+      return deleteAvatarRequest(token)
     },
     onSuccess: () => {
       queryClient.setQueryData(['profile'], (oldData) => {
         if (!oldData) return oldData
         return {
           ...oldData,
-          avatar: { ...oldData.avatar, url: '' }
+          avatar: { ...oldData.avatar, url: '' },
         }
       })
     },

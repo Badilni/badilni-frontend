@@ -8,7 +8,11 @@ export default function OfferGallery({ images = [] }) {
 
   return (
     <div className="mb-8">
-      <img src={main.url} alt="" className="w-full h-80 object-cover rounded-2xl mb-3" />
+      <img
+        src={main.url}
+        alt=""
+        className="w-full h-80 object-cover rounded-2xl mb-3"
+      />
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto">
           {images.map((img, idx) => (
@@ -19,7 +23,11 @@ export default function OfferGallery({ images = [] }) {
                 idx === activeIndex ? 'border-blue-500' : 'border-transparent'
               }`}
             >
-              <img src={img.url} alt="" className="w-full h-full object-cover" />
+              <img
+                src={img.url}
+                alt=""
+                className="w-full h-full object-cover"
+              />
             </button>
           ))}
         </div>

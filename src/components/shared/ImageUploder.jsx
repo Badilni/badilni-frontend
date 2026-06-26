@@ -8,14 +8,25 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
  * value:    { existing: { _id, url }[], files: File[] }
  * onChange: (nextValue) => void
  */
-export default function ImageUploader({ value, onChange, label = 'Images', maxFiles = 8 }) {
+export default function ImageUploader({
+  value,
+  onChange,
+  label = 'Images',
+  maxFiles = 8,
+}) {
   const { existing = [], files = [] } = value || {}
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef(null)
 
   // Memoized blob URLs so we don't recreate (and leak) one per render.
-  const previews = useMemo(() => files.map((file) => URL.createObjectURL(file)), [files])
-  useEffect(() => () => previews.forEach((url) => URL.revokeObjectURL(url)), [previews])
+  const previews = useMemo(
+    () => files.map((file) => URL.createObjectURL(file)),
+    [files]
+  )
+  useEffect(
+    () => () => previews.forEach((url) => URL.revokeObjectURL(url)),
+    [previews]
+  )
 
   const addFiles = useCallback(
     (fileList) => {
@@ -27,8 +38,10 @@ export default function ImageUploader({ value, onChange, label = 'Images', maxFi
     [existing, files, maxFiles, onChange]
   )
 
-  const removeNewFile = (index) => onChange({ existing, files: files.filter((_, i) => i !== index) })
-  const removeExisting = (id) => onChange({ existing: existing.filter((img) => img._id !== id), files })
+  const removeNewFile = (index) =>
+    onChange({ existing, files: files.filter((_, i) => i !== index) })
+  const removeExisting = (id) =>
+    onChange({ existing: existing.filter((img) => img._id !== id), files })
 
   return (
     <div>
@@ -66,7 +79,8 @@ export default function ImageUploader({ value, onChange, label = 'Images', maxFi
           }}
         />
         <p className="text-gray-500 dark:text-gray-400">
-          Drag & drop images here, or <span className="text-blue-600 font-semibold">browse</span>
+          Drag & drop images here, or{' '}
+          <span className="text-blue-600 font-semibold">browse</span>
         </p>
         <p className="text-xs text-gray-400 mt-1">Up to {maxFiles} images</p>
       </div>
@@ -75,7 +89,11 @@ export default function ImageUploader({ value, onChange, label = 'Images', maxFi
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-3">
           {existing.map((img) => (
             <div key={img._id} className="relative group aspect-square">
-              <img src={img.url} alt="" className="w-full h-full object-cover rounded-xl" />
+              <img
+                src={img.url}
+                alt=""
+                className="w-full h-full object-cover rounded-xl"
+              />
               <button
                 type="button"
                 onClick={(e) => {
@@ -90,8 +108,15 @@ export default function ImageUploader({ value, onChange, label = 'Images', maxFi
             </div>
           ))}
           {files.map((file, index) => (
-            <div key={`${file.name}-${index}`} className="relative group aspect-square">
-              <img src={previews[index]} alt="" className="w-full h-full object-cover rounded-xl" />
+            <div
+              key={`${file.name}-${index}`}
+              className="relative group aspect-square"
+            >
+              <img
+                src={previews[index]}
+                alt=""
+                className="w-full h-full object-cover rounded-xl"
+              />
               <button
                 type="button"
                 onClick={(e) => {

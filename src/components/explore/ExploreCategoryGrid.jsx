@@ -10,11 +10,13 @@ function CategorySkeleton() {
   )
 }
 
-export default function ExploreCategoryGrid({ activeCategory, onCategoryChange }) {
+export default function ExploreCategoryGrid({
+  activeCategory,
+  onCategoryChange,
+}) {
   const { categories, loading, error } = useCategories()
 
   const handleClick = (category) => {
-   
     const isCurrentlyActive = activeCategory === category._id
     onCategoryChange(isCurrentlyActive ? null : category)
   }
@@ -48,7 +50,9 @@ export default function ExploreCategoryGrid({ activeCategory, onCategoryChange }
       {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-4">
         {loading
-          ? Array.from({ length: 13 }).map((_, i) => <CategorySkeleton key={i} />)
+          ? Array.from({ length: 13 }).map((_, i) => (
+              <CategorySkeleton key={i} />
+            ))
           : categories.map((cat) => (
               <CategoryCard
                 key={cat._id}

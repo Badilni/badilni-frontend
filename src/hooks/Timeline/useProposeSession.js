@@ -9,14 +9,19 @@ import { serviceRequestKeys } from './useServiceRequests'
  * with the backend before relying on this; until then, calling it will 404.
  */
 const proposeSession = (serviceRequestId, payload) =>
-  api.post(`/service-requests/${serviceRequestId}/proposals`, payload).then((r) => r.data)
+  api
+    .post(`/service-requests/${serviceRequestId}/proposals`, payload)
+    .then((r) => r.data)
 
 export function useProposeSession() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ serviceRequestId, payload }) => proposeSession(serviceRequestId, payload),
+    mutationFn: ({ serviceRequestId, payload }) =>
+      proposeSession(serviceRequestId, payload),
     onSuccess: (_data, { serviceRequestId }) => {
-      qc.invalidateQueries({ queryKey: serviceRequestKeys.detail(serviceRequestId) })
+      qc.invalidateQueries({
+        queryKey: serviceRequestKeys.detail(serviceRequestId),
+      })
       qc.invalidateQueries({ queryKey: serviceRequestKeys.all })
     },
   })

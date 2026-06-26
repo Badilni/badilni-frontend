@@ -44,7 +44,10 @@ export const useLogin = () => {
       setUser(user)
 
       if (user?.active === false) {
-        handleToastMessage('Welcome back! We missed you so much. ✨💖', 'success')
+        handleToastMessage(
+          'Welcome back! We missed you so much. ✨💖',
+          'success'
+        )
       } else {
         handleToastMessage('Signed in successfully', 'success')
       }

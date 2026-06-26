@@ -30,15 +30,24 @@ export const getAllServiceRequests = (params) =>
 
 export const getServiceRequest = (serviceRequestId, params) =>
   // `params` lets callers send sparse fieldsets: ?fields=title,description,category (img 3)
-  api.get(`/service-requests/${serviceRequestId}`, { params }).then((r) => r.data)
+  api
+    .get(`/service-requests/${serviceRequestId}`, { params })
+    .then((r) => r.data)
 
 export const createServiceRequest = (payload) =>
-  api.post('/service-requests', buildServiceRequestFormData(payload)).then((r) => r.data)
+  api
+    .post('/service-requests', buildServiceRequestFormData(payload))
+    .then((r) => r.data)
 
 export const editServiceRequest = (serviceRequestId, payload) =>
   // Only include keys that actually changed — confirmed PATCH is a true
   // partial update; img 7 shows a real PATCH with a single field checked.
-  api.patch(`/service-requests/${serviceRequestId}`, buildServiceRequestFormData(payload)).then((r) => r.data)
+  api
+    .patch(
+      `/service-requests/${serviceRequestId}`,
+      buildServiceRequestFormData(payload)
+    )
+    .then((r) => r.data)
 
 export const deleteServiceRequest = (serviceRequestId) =>
   api.delete(`/service-requests/${serviceRequestId}`).then((r) => r.data)
@@ -54,10 +63,14 @@ export const getSkillListing = (skillId, params) =>
   api.get(`/skill-listings/${skillId}`, { params }).then((r) => r.data)
 
 export const createSkillListing = (payload) =>
-  api.post('/skill-listings', buildSkillListingFormData(payload)).then((r) => r.data)
+  api
+    .post('/skill-listings', buildSkillListingFormData(payload))
+    .then((r) => r.data)
 
 export const editSkillListing = (skillId, payload) =>
-  api.patch(`/skill-listings/${skillId}`, buildSkillListingFormData(payload)).then((r) => r.data)
+  api
+    .patch(`/skill-listings/${skillId}`, buildSkillListingFormData(payload))
+    .then((r) => r.data)
 
 export const deleteSkillListing = (skillId) =>
   api.delete(`/skill-listings/${skillId}`).then((r) => r.data)
@@ -135,7 +148,8 @@ export function buildSkillListingFormData({
   appendIfPresent(fd, 'availabilityNotes', availabilityNotes)
   if (isActive !== undefined) fd.append('isActive', String(isActive))
   if (Array.isArray(tags)) tags.forEach((tag) => fd.append('tags', tag))
-  if (Array.isArray(keepImageIds)) keepImageIds.forEach((id) => fd.append('existingSampleWork', id))
+  if (Array.isArray(keepImageIds))
+    keepImageIds.forEach((id) => fd.append('existingSampleWork', id))
   appendFiles(fd, 'sampleWork', sampleWork)
   return fd
 }

@@ -26,7 +26,12 @@ export const fetchServiceRequests = async ({
   if (status) params.status = status
   if (fields) params.fields = fields
 
-  applyRangeFilter(params, 'creditsOffered', creditsOfferedGreaterThan, creditsOfferedLessThan)
+  applyRangeFilter(
+    params,
+    'creditsOffered',
+    creditsOfferedGreaterThan,
+    creditsOfferedLessThan
+  )
   applyRangeFilter(params, 'createdAt', createdAtGreaterThan, createdAtLessThan)
 
   return getAllServiceRequests(params)

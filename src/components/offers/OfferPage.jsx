@@ -24,9 +24,19 @@ export default function OfferPageComponent() {
   // against the real GET /skill-listings/{id} response before shipping.
   const offer = data?.data?.skillListing
 
-  if (isLoading) return <div className="p-10 text-center text-gray-500 dark:text-gray-400">Loading…</div>
+  if (isLoading)
+    return (
+      <div className="p-10 text-center text-gray-500 dark:text-gray-400">
+        Loading…
+      </div>
+    )
   if (isError) return <ErrorState message={error?.message} onRetry={refetch} />
-  if (!offer) return <div className="p-10 text-center text-gray-500 dark:text-gray-400">Offer not found.</div>
+  if (!offer)
+    return (
+      <div className="p-10 text-center text-gray-500 dark:text-gray-400">
+        Offer not found.
+      </div>
+    )
 
   const owner = checkIsOwner(currentUser, offer.user)
 
@@ -40,7 +50,9 @@ export default function OfferPageComponent() {
     <div className="max-w-4xl mx-auto p-6 lg:p-10">
       <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-8 border border-gray-100 dark:border-slate-800 shadow-sm">
         <div className="flex items-start justify-between gap-4 mb-4">
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white">{offer.title}</h1>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+            {offer.title}
+          </h1>
           {owner && (
             <div className="flex gap-2 shrink-0">
               <button
@@ -63,7 +75,9 @@ export default function OfferPageComponent() {
           <span className="text-sm font-bold px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
             ${offer.hourlyRate}/hr
           </span>
-          <span className="text-sm font-semibold text-gray-500 py-1.5">Category: {offer.category?.name}</span>
+          <span className="text-sm font-semibold text-gray-500 py-1.5">
+            Category: {offer.category?.name}
+          </span>
           <span
             className={`text-sm font-bold px-4 py-1.5 rounded-full ${
               offer.isActive
@@ -77,13 +91,21 @@ export default function OfferPageComponent() {
 
         <OfferGallery images={offer.sampleWork} />
 
-        <h3 className="font-bold text-gray-900 dark:text-white mb-2">Description</h3>
-        <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">{offer.description}</p>
+        <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+          Description
+        </h3>
+        <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+          {offer.description}
+        </p>
 
         {offer.availabilityNotes && (
           <>
-            <h3 className="font-bold text-gray-900 dark:text-white mb-2">Availability</h3>
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">{offer.availabilityNotes}</p>
+            <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+              Availability
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+              {offer.availabilityNotes}
+            </p>
           </>
         )}
 
@@ -108,21 +130,33 @@ export default function OfferPageComponent() {
               alt={offer.user?.name || 'User'}
             />
             <div>
-              <p className="font-bold text-gray-900 dark:text-white">{offer.user?.name}</p>
-              <p className="text-xs text-gray-500">Posted on {new Date(offer.createdAt).toLocaleDateString()}</p>
+              <p className="font-bold text-gray-900 dark:text-white">
+                {offer.user?.name}
+              </p>
+              <p className="text-xs text-gray-500">
+                Posted on {new Date(offer.createdAt).toLocaleDateString()}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 text-sm">
             <FaStar className="text-amber-400" />
             <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {typeof offer.averageRating === 'number' ? offer.averageRating.toFixed(1) : 'New'}
+              {typeof offer.averageRating === 'number'
+                ? offer.averageRating.toFixed(1)
+                : 'New'}
             </span>
-            <span className="text-gray-400">· {offer.totalBookings ?? 0} bookings</span>
+            <span className="text-gray-400">
+              · {offer.totalBookings ?? 0} bookings
+            </span>
           </div>
         </div>
       </div>
 
-      <EditOfferModal open={editOpen} offer={offer} onClose={() => setEditOpen(false)} />
+      <EditOfferModal
+        open={editOpen}
+        offer={offer}
+        onClose={() => setEditOpen(false)}
+      />
       <ConfirmDeleteModal
         open={confirmDeleteOpen}
         title="Delete this offer?"

@@ -9,7 +9,9 @@ export const useStartChat = () => {
     mutationFn: (userId) => startConversation(userId),
     onSuccess: (response) => {
       const conversationId =
-        response?.data?.conversation?._id ?? response?.conversation?._id ?? response?._id
+        response?.data?.conversation?._id ??
+        response?.conversation?._id ??
+        response?._id
 
       navigate(conversationId ? `/chat/${conversationId}` : '/chat')
     },

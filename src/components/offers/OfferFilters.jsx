@@ -13,13 +13,19 @@ const SORT_OPTIONS = [
   { label: 'Highest Rate', value: '-hourlyRate' },
 ]
 
-export default function OfferFilters({ categories = [], filters, onChange, onReset }) {
+export default function OfferFilters({
+  categories = [],
+  filters,
+  onChange,
+  onReset,
+}) {
   const [keyword, setKeyword] = useState(filters.keyword || '')
 
   // Debounce the free-text search before it hits the URL / query.
   useEffect(() => {
     const handle = setTimeout(() => {
-      if (keyword !== (filters.keyword || '')) onChange({ keyword: keyword || undefined })
+      if (keyword !== (filters.keyword || ''))
+        onChange({ keyword: keyword || undefined })
     }, 400)
     return () => clearTimeout(handle)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,7 +71,9 @@ export default function OfferFilters({ categories = [], filters, onChange, onRes
           min={0}
           placeholder="Min rate"
           value={filters.hourlyRateGreaterThan || ''}
-          onChange={(e) => onChange({ hourlyRateGreaterThan: e.target.value || undefined })}
+          onChange={(e) =>
+            onChange({ hourlyRateGreaterThan: e.target.value || undefined })
+          }
           className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white"
         />
         <input
@@ -73,7 +81,9 @@ export default function OfferFilters({ categories = [], filters, onChange, onRes
           min={0}
           placeholder="Max rate"
           value={filters.hourlyRateLessThan || ''}
-          onChange={(e) => onChange({ hourlyRateLessThan: e.target.value || undefined })}
+          onChange={(e) =>
+            onChange({ hourlyRateLessThan: e.target.value || undefined })
+          }
           className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white"
         />
         <input
@@ -83,26 +93,34 @@ export default function OfferFilters({ categories = [], filters, onChange, onRes
           step={0.5}
           placeholder="Min rating"
           value={filters.averageRatingGreaterThan || ''}
-          onChange={(e) => onChange({ averageRatingGreaterThan: e.target.value || undefined })}
+          onChange={(e) =>
+            onChange({ averageRatingGreaterThan: e.target.value || undefined })
+          }
           className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white"
         />
         <input
           type="date"
           value={filters.createdAtGreaterThan || ''}
-          onChange={(e) => onChange({ createdAtGreaterThan: e.target.value || undefined })}
+          onChange={(e) =>
+            onChange({ createdAtGreaterThan: e.target.value || undefined })
+          }
           className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white"
         />
         <input
           type="date"
           value={filters.createdAtLessThan || ''}
-          onChange={(e) => onChange({ createdAtLessThan: e.target.value || undefined })}
+          onChange={(e) =>
+            onChange({ createdAtLessThan: e.target.value || undefined })
+          }
           className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white"
         />
       </div>
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Sort by:</span>
+          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            Sort by:
+          </span>
           <select
             value={filters.sort}
             onChange={(e) => onChange({ sort: e.target.value })}

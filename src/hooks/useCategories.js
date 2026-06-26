@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import { getAllCategoriesRequest, getCategoryByIdRequest } from '../api/categoryApi'
+import {
+  getAllCategoriesRequest,
+  getCategoryByIdRequest,
+} from '../api/categoryApi'
 
 export function useCategories(params = {}) {
   const query = useQuery({

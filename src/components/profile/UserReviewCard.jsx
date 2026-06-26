@@ -15,7 +15,11 @@ const UserReviewCard = ({ review }) => {
     typeof reviewer.avatar === 'object' ? reviewer.avatar?.url : reviewer.avatar
 
   const initials = reviewer.name
-    ? reviewer.name.split(' ').map((n) => n[0]).join('').slice(0, 2)
+    ? reviewer.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
     : '?'
 
   return (
@@ -37,12 +41,16 @@ const UserReviewCard = ({ review }) => {
             <h4 className="font-bold text-[var(--black-text)] text-sm">
               {reviewer.name || 'Anonymous'}
             </h4>
-            <p className="text-xs text-[var(--gray-text)]">{formatDate(review?.createdAt)}</p>
+            <p className="text-xs text-[var(--gray-text)]">
+              {formatDate(review?.createdAt)}
+            </p>
           </div>
         </div>
         <StarRating rating={review?.rating ?? 0} size="sm" />
       </div>
-      <p className="text-sm text-[var(--gray-text)] leading-relaxed">{review?.comment}</p>
+      <p className="text-sm text-[var(--gray-text)] leading-relaxed">
+        {review?.comment}
+      </p>
     </div>
   )
 }

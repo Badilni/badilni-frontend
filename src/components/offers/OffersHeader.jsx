@@ -9,7 +9,8 @@ export default function OffersHeader({ totalCount = 0 }) {
         Skill Offers
       </h1>
       <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 max-w-xl leading-relaxed">
-        Browse what the community is offering, or list your own skill and start getting booked.
+        Browse what the community is offering, or list your own skill and start
+        getting booked.
       </p>
     </div>
   )

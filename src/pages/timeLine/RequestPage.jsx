@@ -1,9 +1,7 @@
-import RequestDetailPage from "../../components/requests/RequestDetailPage"
+import RequestDetailPage from '../../components/requests/RequestDetailPage'
 
 const RequestPage = () => {
-  return (
-    <RequestDetailPage/>
-  )
+  return <RequestDetailPage />
 }
 
 export default RequestPage

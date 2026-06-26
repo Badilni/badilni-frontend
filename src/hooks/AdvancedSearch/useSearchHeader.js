@@ -50,9 +50,9 @@ export default function useSearchHeader() {
             resData.data ||
             (Array.isArray(resData) ? resData : [])
 
-
           const activeUsers = usersList.filter(
-            (user) => user.isDeactivated !== true && user.status !== 'deactivated'
+            (user) =>
+              user.isDeactivated !== true && user.status !== 'deactivated'
           )
 
           setSearchResults(activeUsers)

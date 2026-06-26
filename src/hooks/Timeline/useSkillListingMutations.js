@@ -1,5 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createSkillListing, editSkillListing, deleteSkillListing } from '../api/posts'
+import {
+  createSkillListing,
+  editSkillListing,
+  deleteSkillListing,
+} from '../api/posts'
 import { skillListingKeys } from './useSkillListings'
 
 export function useCreateSkillListing() {
