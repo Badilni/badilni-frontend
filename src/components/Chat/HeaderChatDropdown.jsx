@@ -48,18 +48,23 @@ const HeaderChatDropdown = () => {
   const dropdownRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Handle dropdown positioning coordinates
+  // Handle dropdown positioning coordinates based on viewport boundary check
   useEffect(() => {
     if (isDropdownOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
+      const isMobile = window.innerWidth < 640;
+
       setDropdownCoords({
         top: rect.bottom + window.scrollY + 10,
-        left: rect.right + window.scrollX - 340
+        // Center alignment on small devices, absolute side anchor alignment on desktop viewports
+        left: isMobile
+          ? (window.innerWidth - Math.min(window.innerWidth - 32, 340)) / 2
+          : rect.right + window.scrollX - 340
       });
     }
   }, [isDropdownOpen]);
 
-  // Handle outside clicks to close dropdown
+  // Close drop menus when clicking outside active node areas
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -133,28 +138,28 @@ const HeaderChatDropdown = () => {
         <div
           ref={dropdownRef}
           style={{ top: dropdownCoords.top, left: dropdownCoords.left }}
-          className="fixed w-[340px] bg-white dark:bg-slate-900 rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)] overflow-hidden border-0 z-[999999] animate-fade-in"
+          className="fixed w-[calc(100vw-32px)] sm:w-[340px] bg-white dark:bg-slate-900 rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)] overflow-hidden border border-gray-100 dark:border-slate-800 z-[999999] animate-fade-in"
         >
           <div className="p-4 font-extrabold text-xs uppercase tracking-wider text-gray-900 dark:text-white bg-gray-100 dark:bg-slate-800/80">
             Recent Chats
           </div>
-          <div className="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-slate-800/60">
+          <div className="max-h-64 sm:max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-slate-800/60">
             {chats.map(chat => (
               <div
                 key={chat.id}
                 onClick={() => handleSelectChat(chat)}
-                className="p-4 flex items-center gap-4 hover:bg-blue-50/50 dark:hover:bg-slate-800/80 cursor-pointer transition-all duration-150"
+                className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-blue-50/50 dark:hover:bg-slate-800/80 cursor-pointer transition-all duration-150"
               >
                 <div className="relative shrink-0">
-                  <img src={chat?.img} className="w-12 h-12 rounded-full object-cover shadow-sm" alt="" />
-                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm animate-pulse"></span>
+                  <img src={chat?.img} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm" alt="" />
+                  <span className="absolute bottom-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"></span>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h5 className="font-bold text-sm text-gray-900 dark:text-white truncate">{chat?.name}</h5>
-                    <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 shrink-0">{chat?.time}</span>
+                  <div className="flex justify-between items-baseline mb-0.5 sm:mb-1">
+                    <h5 className="font-bold text-xs sm:text-sm text-gray-900 dark:text-white truncate">{chat?.name}</h5>
+                    <span className="text-[10px] sm:text-[11px] font-medium text-gray-400 dark:text-gray-500 shrink-0">{chat?.time}</span>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-300 truncate font-normal">{chat?.lastMessage}</p>
+                  <p className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-300 truncate font-normal">{chat?.lastMessage}</p>
                 </div>
               </div>
             ))}
@@ -165,28 +170,28 @@ const HeaderChatDropdown = () => {
 
       {/* Part 2: Floating Active Chat Popup Window */}
       {isPopupOpen && selectedChat && createPortal(
-        <div className="fixed bottom-0 right-12 w-[400px] h-[550px] bg-white dark:bg-slate-900 rounded-t-2xl shadow-[0_-15px_50px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_-15px_50px_-10px_rgba(0,0,0,0.7)] border-0 flex flex-col overflow-hidden z-[99999] transition-all duration-300">
+        <div className="fixed bottom-0 right-0 sm:right-6 md:right-12 w-full sm:w-[360px] md:w-[400px] h-full sm:h-[500px] md:h-[550px] bg-white dark:bg-slate-900 rounded-t-2xl shadow-[0_-15px_50px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_-15px_50px_-10px_rgba(0,0,0,0.7)] border-t sm:border border-gray-100 dark:border-slate-800 flex flex-col overflow-hidden z-[99999] transition-all duration-300">
 
           {/* Popup Window Header Area */}
-          <div className="bg-[var(--primary-light)] dark:bg-slate-800 text-white p-4 flex justify-between items-center shrink-0 shadow-md">
+          <div className="bg-[var(--primary-light)] dark:bg-slate-800 text-white p-3 sm:p-4 flex justify-between items-center shrink-0 shadow-md">
             <div className="flex items-center gap-3 min-w-0">
               <div className="relative shrink-0">
-                <img src={selectedChat?.img} className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20" alt="" />
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-[var(--primary-light)] dark:border-slate-800"></span>
+                <img src={selectedChat?.img} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white/20" alt="" />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full border-2 border-[var(--primary-light)] dark:border-slate-800"></span>
               </div>
               <div className="min-w-0">
-                <h4 className="font-bold text-sm truncate leading-tight text-white">{selectedChat?.name}</h4>
-                <span className="text-xs text-white/70 font-medium">Active now</span>
+                <h4 className="font-bold text-xs sm:text-sm truncate leading-tight text-white">{selectedChat?.name}</h4>
+                <span className="text-[11px] text-white/70 font-medium">Active now</span>
               </div>
             </div>
 
             {/* Popup Window Header Control Actions */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button onClick={handleMaximize} className="p-2 hover:bg-white/15 dark:hover:bg-white/10 text-white rounded-lg transition-colors" title="Open in full screen">
-                <FiMaximize2 size={15} />
+                <FiMaximize2 size={14} />
               </button>
               <button onClick={() => setIsPopupOpen(false)} className="p-2 hover:bg-white/15 dark:hover:bg-white/10 text-white rounded-lg transition-colors">
-                <FiX size={18} />
+                <FiX size={16} />
               </button>
             </div>
           </div>
