@@ -23,6 +23,7 @@ import OfferPage from '../pages/timeLine/OfferPage'
 import ResetEmailPage from '../pages/profile/ResetEmail'
 import VerifyChangedEmailPage from '../pages/profile/VerfiyEmail'
 import NotFoundPage from '../pages/NotFound/notFound'
+import ChatBadilni from '../pages/Chat/chat'
 
 const RootLayout = () => (
   <>
@@ -48,7 +49,7 @@ const router = createHashRouter([
               { path: 'profile', element: <ProfilePage /> },
               { path: 'profile/edit', element: <EditProfilePage /> },
               { path: 'profile/:userId', element: <OtherProfile /> },
-              { path: 'chat', element: <div>chat</div> },
+              { path: 'chat', element: <ChatBadilni/> },
               { path: 'chat/:conversationId', element: <div>chat</div> },
               { path: 'explore', element: <ExplorePage /> },
               { path: 'requests', element: <Requests /> },
