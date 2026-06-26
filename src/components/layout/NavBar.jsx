@@ -6,6 +6,7 @@ import Button from '../common/Button'
 import Logo from '../../../public/logo.png'
 import AdvancedSearchSystem from '../AdvancedSearch/AdvancedSearchSystem'
 import UserSidebar from './UserSidebar'
+import HeaderChatDropdown from '../Chat/HeaderChatDropdown'
 
 // Centralized Navigation Config with Labels and Routes
 const NAV_ITEMS = [
@@ -98,26 +99,7 @@ export default function NavBar() {
           {/* Header Action Utilities */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Inbox Chat Triggers */}
-            <button
-              onClick={() => navigate('/chat')}
-              className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              aria-label="Open chat application wrapper"
-            >
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
-            </button>
+            <HeaderChatDropdown />
 
             {/* Dark Mode Switcher */}
             <ThemeToggle />

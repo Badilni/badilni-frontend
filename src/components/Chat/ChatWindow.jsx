@@ -9,6 +9,7 @@ const ChatWindow = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const pickerRef = useRef(null);
 
+  // Close emoji picker when clicking outside the component container
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (pickerRef.current && !pickerRef.current.contains(event.target)) {
@@ -19,6 +20,7 @@ const ChatWindow = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Append selected emoji to current text message input field string
   const handleEmojiClick = (emojiData) => {
     setMessageText((prev) => prev + emojiData.emoji);
   };
@@ -28,6 +30,7 @@ const ChatWindow = ({
       viewMode === 'chat' ? 'flex' : viewMode === 'sidebar' ? 'hidden md:flex' : 'hidden lg:flex'
     }`}>
 
+      {/* Active Conversation Header Section */}
       <div className="flex justify-between items-center pb-4 border-b border-[var(--gray-text)]/10 dark:border-[var(--border-color)] shrink-0">
         <div className="flex items-center gap-3 min-w-0">
           <button
@@ -43,6 +46,7 @@ const ChatWindow = ({
           </div>
         </div>
 
+        {/* Info Side Panel Control Toggle Button */}
         <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={() => setIsInfoOpen(!isInfoOpen)}
@@ -54,6 +58,7 @@ const ChatWindow = ({
         </div>
       </div>
 
+      {/* Messages Thread Timeline Scroll Container */}
       <div className="flex-1 overflow-y-auto my-4 space-y-4 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {currentChat.messages.map((msg) => (
           <div key={msg.id} className={`flex flex-col ${msg.isMe ? 'items-end w-full' : 'items-start max-w-[85%] md:max-w-[70%]'}`}>
@@ -73,11 +78,13 @@ const ChatWindow = ({
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Message Text Input and Delivery Actions Form */}
       <form
         onSubmit={onSendMessage}
         className="bg-[var(--whiteBackground)] rounded-2xl p-2 shadow-sm flex items-center gap-2 shrink-0 border border-slate-200/80 dark:border-[var(--border-color)] relative"
       >
 
+        {/* Emoji Selector Anchor Interface Trigger */}
         <div ref={pickerRef} className="relative flex items-center">
           <button
             type="button"
@@ -93,13 +100,14 @@ const ChatWindow = ({
                 onEmojiClick={handleEmojiClick}
                 autoFocusSearch={false}
                 theme="light"
-                height={460}
+                height={360}
                 width={340}
               />
             </div>
           )}
         </div>
 
+        {/* Main Composition Text Box Field */}
         <input
           type="text"
           placeholder="Write your message..."
@@ -108,6 +116,7 @@ const ChatWindow = ({
           className="flex-1 bg-transparent px-2 text-xs md:text-sm text-[var(--black-text)] focus:outline-none"
         />
 
+        {/* Submit Output Button Element */}
         <button type="submit" className="p-2.5 bg-[var(--primary-light)] text-white rounded-xl hover:opacity-90 transition-opacity">
           <FiSend size={14} />
         </button>
