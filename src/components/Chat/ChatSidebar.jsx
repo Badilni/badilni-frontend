@@ -6,6 +6,7 @@ const ChatSidebar = ({ viewMode, searchQuery, setSearchQuery, filteredChats, act
       viewMode === 'sidebar' ? 'flex' : 'hidden md:flex'
     }`}>
 
+      {/* User Profile Section */}
       <div className="flex flex-col items-center text-center mb-6">
         <div className="relative">
           <img
@@ -21,6 +22,7 @@ const ChatSidebar = ({ viewMode, searchQuery, setSearchQuery, filteredChats, act
         </button>
       </div>
 
+      {/* Search Input Section */}
       <div className="relative mb-6">
         <FiSearch className="absolute left-4 top-3.5 text-[var(--gray-text)] size-4" />
         <input
@@ -32,6 +34,7 @@ const ChatSidebar = ({ viewMode, searchQuery, setSearchQuery, filteredChats, act
         />
       </div>
 
+      {/* Section Header Controls */}
       <div className="flex justify-between items-center mb-4">
         <span className="font-bold text-sm md:text-base text-[var(--black-text)]">Last chats</span>
         <button className="p-1.5 bg-[var(--background-light)] rounded-lg text-[var(--gray-text)] hover:text-[var(--black-text)] transition-colors">
@@ -39,6 +42,7 @@ const ChatSidebar = ({ viewMode, searchQuery, setSearchQuery, filteredChats, act
         </button>
       </div>
 
+      {/* Chats Scrollable Container List */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {filteredChats.map((chat) => {
           const lastMessage = chat.messages[chat.messages.length - 1];
@@ -53,11 +57,15 @@ const ChatSidebar = ({ viewMode, searchQuery, setSearchQuery, filteredChats, act
               }`}
             >
               <img src={chat.img} className="w-11 h-11 md:w-12 md:h-12 rounded-full object-cover shrink-0" alt="" />
+
+              {/* Chat Information Details */}
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-baseline">
                   <h4 className="font-bold text-sm truncate text-[var(--black-text)]">{chat.name}</h4>
                   <span className="text-[10px] md:text-[11px] text-[var(--gray-text)] ml-2 shrink-0">{lastMessage?.time}</span>
                 </div>
+
+                {/* Dynamic Status Notification */}
                 {chat.typing ? (
                   <p className="text-xs text-[var(--success)] font-medium truncate mt-0.5 animate-pulse">typing...</p>
                 ) : (

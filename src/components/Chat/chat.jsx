@@ -4,6 +4,7 @@ import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
 import ChatInfoPanel from './ChatInfoPanel';
 
+// Mock Data Source
 const initialChatsData = [
   {
     id: "chat_1",
@@ -44,12 +45,11 @@ const ChatPage = () => {
   const [chats, setChats] = useState(initialChatsData);
   const [searchQuery, setSearchQuery] = useState("");
   const [messageText, setMessageText] = useState("");
-
-
   const [isInfoOpen, setIsInfoOpen] = useState(true);
+
   const messagesEndRef = useRef(null);
 
-
+  // Initialize active chat fallback based on redirected router navigation state
   const [activeChatId, setActiveChatId] = useState(() => {
     const targetUserId = location.state?.selectUserId;
     if (targetUserId) {
@@ -61,18 +61,21 @@ const ChatPage = () => {
     return "chat_1";
   });
 
+  // Toggle layout display mode for responsive viewports
   const [viewMode, setViewMode] = useState(() => {
     return location.state?.selectUserId ? "chat" : "sidebar";
   });
 
+  // Extract selected conversation reference object
   const currentChat = chats.find(c => c.id === activeChatId) || chats[0];
 
-
+  // Switch conversation channel profile
   const handleSelectChat = (id) => {
     setActiveChatId(id);
     setViewMode("chat");
   };
 
+  // Push new context message object into dataset stream array
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!messageText.trim()) return;
@@ -93,6 +96,7 @@ const ChatPage = () => {
     setMessageText("");
   };
 
+  // Filter channel nodes matches using search string matching query
   const filteredChats = chats.filter(chat =>
     chat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -101,7 +105,7 @@ const ChatPage = () => {
     <div className="flex h-screen w-full bg-[var(--background-light)] text-[var(--black-text)] font-sans overflow-hidden">
       <div className="flex w-full h-full relative">
 
-
+        {/* Channels List Component Sidebar */}
         <ChatSidebar
           viewMode={viewMode}
           searchQuery={searchQuery}
@@ -112,6 +116,7 @@ const ChatPage = () => {
           currentChat={currentChat}
         />
 
+        {/* Core Message Thread Stream Window */}
         <ChatWindow
           viewMode={viewMode}
           setViewMode={setViewMode}
@@ -124,7 +129,7 @@ const ChatPage = () => {
           setIsInfoOpen={setIsInfoOpen}
         />
 
-
+        {/* Detailed Metadata Metrics Side Panel */}
         <ChatInfoPanel
           viewMode={viewMode}
           setViewMode={setViewMode}
