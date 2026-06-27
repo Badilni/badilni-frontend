@@ -24,6 +24,7 @@ import ResetEmailPage from '../pages/profile/ResetEmail'
 import VerifyChangedEmailPage from '../pages/profile/VerfiyEmail'
 import NotFoundPage from '../pages/NotFound/notFound'
 import ChatBadilni from '../pages/Chat/chat'
+import NotificationsPageWrapper from '../pages/Notifications/notifications'
 
 const RootLayout = () => (
   <>
@@ -50,6 +51,7 @@ const router = createHashRouter([
               { path: 'profile/edit', element: <EditProfilePage /> },
               { path: 'profile/:userId', element: <OtherProfile /> },
               { path: 'chat', element: <ChatBadilni /> },
+              { path: 'notifications', element: <NotificationsPageWrapper /> },
               { path: 'chat/:conversationId', element: <div>chat</div> },
               { path: 'explore', element: <ExplorePage /> },
               { path: 'requests', element: <Requests /> },

@@ -7,6 +7,7 @@ import Logo from '../../../public/logo.png'
 import AdvancedSearchSystem from '../AdvancedSearch/AdvancedSearchSystem'
 import UserSidebar from './UserSidebar'
 import HeaderChatDropdown from '../Chat/HeaderChatDropdown'
+import NotificationDropdown from '../notifications/NotificationDropdown'
 
 // Centralized Navigation Config with Labels and Routes
 const NAV_ITEMS = [
@@ -100,6 +101,9 @@ export default function NavBar() {
           <div className="flex items-center gap-2 shrink-0">
             {/* Inbox Chat Triggers */}
             <HeaderChatDropdown />
+
+            {/* Notification Bell */}
+            <NotificationDropdown />
 
             {/* Dark Mode Switcher */}
             <ThemeToggle />
