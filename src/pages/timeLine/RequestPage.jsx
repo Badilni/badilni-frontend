@@ -1,7 +1,7 @@
-import RequestDetailPage from '../../components/requests/RequestDetailPage'
+import ServiceRequestPage from "../../components/requests/ServiceRequestPage"
 
 const RequestPage = () => {
-  return <RequestDetailPage />
+  return <ServiceRequestPage />
 }
 
 export default RequestPage

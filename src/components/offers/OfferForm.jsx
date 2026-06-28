@@ -1,16 +1,10 @@
-import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { offerSchema, offerDefaultValues } from '../../utils/offerSchema'
 import { useCategories } from '../../hooks/Timeline/useCategories'
 import ImageUploader from '../shared/ImageUploder'
 
-export default function OfferForm({
-  initialValues,
-  onSubmit,
-  isSubmitting,
-  submitLabel = 'Post Offer',
-}) {
+export default function OfferForm({ initialValues, onSubmit, isSubmitting, submitLabel = 'Post Offer' }) {
   const { data: categoriesData } = useCategories()
   const categories = categoriesData?.data?.categories ?? []
 
@@ -20,17 +14,17 @@ export default function OfferForm({
     control,
     watch,
     setValue,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(offerSchema),
-    defaultValues: offerDefaultValues,
+    // Computed once, at mount, from whatever was passed in when editing.
+    // NOTE: do not "sync" this with an effect that calls reset() on every
+    // initialValues/parent re-render — isPending flips during submit would
+    // re-trigger it and silently wipe unsaved edits right as the user hits
+    // submit. Since the parent modal fully unmounts on close, a fresh mount
+    // on each open is enough to pick up new initialValues correctly.
+    defaultValues: initialValues ? { ...offerDefaultValues, ...initialValues } : offerDefaultValues,
   })
-
-  // Loads existing offer data into the form when editing.
-  useEffect(() => {
-    if (initialValues) reset({ ...offerDefaultValues, ...initialValues })
-  }, [initialValues, reset])
 
   const tags = watch('tags')
 
@@ -44,11 +38,7 @@ export default function OfferForm({
     }
   }
 
-  const removeTag = (tag) =>
-    setValue(
-      'tags',
-      tags.filter((t) => t !== tag)
-    )
+  const removeTag = (tag) => setValue('tags', tags.filter((t) => t !== tag))
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -62,9 +52,7 @@ export default function OfferForm({
           placeholder="Guitar lessons for beginners"
           className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
         />
-        {errors.title && (
-          <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>
-        )}
+        {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
       </div>
 
       <div>
@@ -76,11 +64,7 @@ export default function OfferForm({
           rows={4}
           className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white resize-none"
         />
-        {errors.description && (
-          <p className="text-xs text-red-500 mt-1">
-            {errors.description.message}
-          </p>
-        )}
+        {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
       </div>
 
       <div>
@@ -100,9 +84,7 @@ export default function OfferForm({
             </option>
           ))}
         </select>
-        {errors.category && (
-          <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>
-        )}
+        {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -117,23 +99,13 @@ export default function OfferForm({
             {...register('hourlyRate')}
             className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
           />
-          {errors.hourlyRate && (
-            <p className="text-xs text-red-500 mt-1">
-              {errors.hourlyRate.message}
-            </p>
-          )}
+          {errors.hourlyRate && <p className="text-xs text-red-500 mt-1">{errors.hourlyRate.message}</p>}
         </div>
 
         <div className="flex items-end pb-2.5">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              {...register('isActive')}
-              className="w-4 h-4 rounded"
-            />
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Active
-            </span>
+            <input type="checkbox" {...register('isActive')} className="w-4 h-4 rounded" />
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Active</span>
           </label>
         </div>
       </div>
@@ -148,11 +120,7 @@ export default function OfferForm({
           placeholder="Weekday evenings, weekend mornings…"
           className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white resize-none"
         />
-        {errors.availabilityNotes && (
-          <p className="text-xs text-red-500 mt-1">
-            {errors.availabilityNotes.message}
-          </p>
-        )}
+        {errors.availabilityNotes && <p className="text-xs text-red-500 mt-1">{errors.availabilityNotes.message}</p>}
       </div>
 
       <div>
@@ -182,20 +150,14 @@ export default function OfferForm({
             className="flex-1 min-w-[120px] bg-transparent text-xs text-gray-900 dark:text-white outline-none"
           />
         </div>
-        {errors.tags && (
-          <p className="text-xs text-red-500 mt-1">{errors.tags.message}</p>
-        )}
+        {errors.tags && <p className="text-xs text-red-500 mt-1">{errors.tags.message}</p>}
       </div>
 
       <Controller
         name="images"
         control={control}
         render={({ field }) => (
-          <ImageUploader
-            value={field.value}
-            onChange={field.onChange}
-            label="Sample Work (optional)"
-          />
+          <ImageUploader value={field.value} onChange={field.onChange} label="Sample Work (optional)" />
         )}
       />
 

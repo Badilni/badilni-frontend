@@ -2,11 +2,14 @@ import { useMemo, useState } from 'react'
 import { useServiceRequests } from '../../hooks/Timeline/useServiceRequests'
 import { useCategories } from '../../hooks/Timeline/useCategories'
 import { useProposeSession } from '../../hooks/Timeline/useProposeSession'
+import { useDeleteServiceRequest } from '../../hooks/Timeline/useServiceRequestMutations'
 import RequestsHeader from './RequestsHeader'
 import RequestFilters from './RequestFilters'
 import RequestCard from './RequestCard'
 import RequestsCTA from './RequestsCTA'
-import CreateServiceRequestModal from './CreateServiceRequestModel'
+import CreateServiceRequestModal from './CreateServiceRequestModal'
+import EditServiceRequestModal from './EditServiceRequestModal'
+import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import RequestCardSkeleton from '../shared/RequestCardSkeleton'
 import EmptyState from '../shared/EmptyState'
 import ErrorState from '../shared/ErrorState'
@@ -19,6 +22,8 @@ export default function ServiceRequestsPage() {
   const [sort, setSort] = useState('-averageRating')
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
+  const [editingRequest, setEditingRequest] = useState(null)
+  const [deletingRequest, setDeletingRequest] = useState(null)
 
   const filters = useMemo(
     () => ({ category, status, sort, page, limit: PAGE_SIZE }),
@@ -30,6 +35,7 @@ export default function ServiceRequestsPage() {
   const { data: categoriesData } = useCategories()
   const categories = categoriesData?.data?.categories ?? []
   const proposeSession = useProposeSession()
+  const deleteRequest = useDeleteServiceRequest()
   const [proposingId, setProposingId] = useState(null)
   const [proposedIds, setProposedIds] = useState(() => new Set())
   const requests = data?.data.serviceRequests ?? []
@@ -52,6 +58,13 @@ export default function ServiceRequestsPage() {
     setCategory('')
     setStatus('')
     setPage(1)
+  }
+
+  const handleConfirmDelete = () => {
+    if (!deletingRequest) return
+    deleteRequest.mutate(deletingRequest._id ?? deletingRequest.id, {
+      onSuccess: () => setDeletingRequest(null),
+    })
   }
 
   return (
@@ -108,6 +121,8 @@ export default function ServiceRequestsPage() {
                 onPropose={handlePropose}
                 isProposing={proposingId === id}
                 isProposed={proposedIds.has(id)}
+                onEdit={setEditingRequest}
+                onDelete={setDeletingRequest}
               />
             )
           })}
@@ -128,6 +143,21 @@ export default function ServiceRequestsPage() {
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         onCreated={() => setPage(1)}
+      />
+
+      <EditServiceRequestModal
+        open={Boolean(editingRequest)}
+        request={editingRequest}
+        onClose={() => setEditingRequest(null)}
+      />
+
+      <ConfirmDeleteModal
+        open={Boolean(deletingRequest)}
+        title="Delete this request?"
+        description="This will permanently remove your request. This action cannot be undone."
+        isDeleting={deleteRequest.isPending}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeletingRequest(null)}
       />
     </div>
   )
