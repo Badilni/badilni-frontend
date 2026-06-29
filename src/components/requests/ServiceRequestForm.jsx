@@ -11,13 +11,6 @@ const blankState = {
   images: { existing: [], files: [] },
 }
 
-/**
- * Shared by CreateServiceRequestModal and EditServiceRequestModal.
- * Field shape confirmed against img 2 / img 5 (see api/posts.js).
- *
- * `initialValues` is read once, at mount, to seed the form — see the note
- * in OfferForm.jsx for why this intentionally isn't synced via an effect.
- */
 export default function ServiceRequestForm({
   initialValues,
   onSubmit,

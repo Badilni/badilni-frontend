@@ -6,6 +6,10 @@ export const offerKeys = {
   all: ['offers'],
   list: (filters) => [...offerKeys.all, 'list', filters],
   detail: (id) => [...offerKeys.all, 'detail', id],
+  // Nested under the same 'offers' root as `all`, so the existing
+  // invalidateQueries({ queryKey: offerKeys.all }) calls in
+  // useOfferMutations.js already invalidate this too.
+  byUser: (userId) => [...offerKeys.all, 'byUser', userId ?? 'me'],
 }
 
 /** List + filter + paginate offers (skill listings). */

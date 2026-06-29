@@ -211,10 +211,10 @@ export default function RequestCard({
           {isProposing
             ? 'Sending…'
             : isProposed
-              ? 'Session Proposed!'
+              ? 'Session Booked!'
               : isExpired
                 ? 'Deadline Passed'
-                : 'Propose Session'}
+                : 'Book Session'}
         </button>
       </div>
     </div>

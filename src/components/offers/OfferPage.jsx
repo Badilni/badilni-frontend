@@ -49,7 +49,36 @@ export default function OfferPageComponent() {
   return (
     <div className="max-w-4xl mx-auto p-6 lg:p-10">
       <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-8 border border-gray-100 dark:border-slate-800 shadow-sm">
-        <div className="flex items-start justify-between gap-4 mb-4">
+       <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl flex-wrap"
+        onClick={navigate()}>
+          <div className="flex items-center gap-4">
+            <img
+              src={offer.user?.avatar?.url || 'https://via.placeholder.com/80'}
+              className="w-12 h-12 rounded-full object-cover"
+              alt={offer.user?.name || 'User'}
+            />
+            <div>
+              <p className="font-bold text-gray-900 dark:text-white">
+                {offer.user?.name}
+              </p>
+              <p className="text-xs text-gray-500">
+                Posted on {new Date(offer.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm">
+            <FaStar className="text-amber-400" />
+            <span className="font-semibold text-gray-700 dark:text-gray-300">
+              {typeof offer.averageRating === 'number'
+                ? offer.averageRating.toFixed(1)
+                : 'New'}
+            </span>
+            <span className="text-gray-400">
+              · {offer.totalBookings ?? 0} bookings
+            </span>
+          </div>
+        </div>
+        <div className="flex items-start justify-between gap-4 mb-4 mt-4">
           <h1 className="text-3xl font-black text-gray-900 dark:text-white">
             {offer.title}
           </h1>
@@ -73,7 +102,7 @@ export default function OfferPageComponent() {
 
         <div className="flex flex-wrap gap-3 mb-6">
           <span className="text-sm font-bold px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
-            ${offer.hourlyRate}/hr
+            {offer.hourlyRate} Credits/hr
           </span>
           <span className="text-sm font-semibold text-gray-500 py-1.5">
             Category: {offer.category?.name}
@@ -121,35 +150,10 @@ export default function OfferPageComponent() {
             ))}
           </div>
         )}
-
-        <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl flex-wrap">
-          <div className="flex items-center gap-4">
-            <img
-              src={offer.user?.avatar?.url || 'https://via.placeholder.com/80'}
-              className="w-12 h-12 rounded-full object-cover"
-              alt={offer.user?.name || 'User'}
-            />
-            <div>
-              <p className="font-bold text-gray-900 dark:text-white">
-                {offer.user?.name}
-              </p>
-              <p className="text-xs text-gray-500">
-                Posted on {new Date(offer.createdAt).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 text-sm">
-            <FaStar className="text-amber-400" />
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {typeof offer.averageRating === 'number'
-                ? offer.averageRating.toFixed(1)
-                : 'New'}
-            </span>
-            <span className="text-gray-400">
-              · {offer.totalBookings ?? 0} bookings
-            </span>
-          </div>
-        </div>
+        <botton>
+          Booking
+        </botton>
+        
       </div>
 
       <EditOfferModal

@@ -11,6 +11,7 @@ import { useUserProfile } from '../../hooks/Profile/useUserProfile'
 import { useUserReviews } from '../../hooks/Review/useReviews'
 import { useStartChat } from '../../hooks/Chat/useStartChat'
 import SkillBadge from './SkillBadge'
+import ProfileActivityTabs from './ProfileActiveTabs'
 
 // Backend only returns an averageRating + reviewsCount, no per-star
 // breakdown — so the bars are derived from the reviews list we already
@@ -221,6 +222,11 @@ const UserProfile = () => {
             />
           </div>
         </div>
+      </div>
+
+      {/* This user's Service Requests / Offers */}
+      <div className="mt-8">
+        <ProfileActivityTabs userId={userId} />
       </div>
     </main>
   )

@@ -40,7 +40,18 @@ export default function ServiceRequestPage() {
     <div className="max-w-4xl mx-auto p-6 lg:p-10">
       <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-8 border border-gray-100 dark:border-slate-800 shadow-sm">
         {/* Title, metadata & owner actions */}
-        <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl" onClick={navigate()}>
+          <img
+            src={request.user?.avatar?.url || 'https://via.placeholder.com/80'}
+            className="w-12 h-12 rounded-full object-cover"
+            alt={request.user?.name || 'User'}
+          />
+          <div>
+            <p className="font-bold text-gray-900 dark:text-white">{request.user?.name}</p>
+            <p className="text-xs text-gray-500">Posted on {new Date(request.createdAt).toLocaleDateString()}</p>
+          </div>
+        </div>
+        <div className="flex items-start justify-between gap-4 mb-4 mt-4">
           <h1 className="text-3xl font-black text-gray-900 dark:text-white">{request.title}</h1>
           {owner && (
             <div className="flex gap-2 shrink-0">
@@ -83,17 +94,7 @@ export default function ServiceRequestPage() {
         <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">{request.description}</p>
 
         {/* User Info */}
-        <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl">
-          <img
-            src={request.user?.avatar?.url || 'https://via.placeholder.com/80'}
-            className="w-12 h-12 rounded-full object-cover"
-            alt={request.user?.name || 'User'}
-          />
-          <div>
-            <p className="font-bold text-gray-900 dark:text-white">{request.user?.name}</p>
-            <p className="text-xs text-gray-500">Posted on {new Date(request.createdAt).toLocaleDateString()}</p>
-          </div>
-        </div>
+        <botton>Booking</botton>
       </div>
 
       <EditServiceRequestModal open={editOpen} request={request} onClose={() => setEditOpen(false)} />

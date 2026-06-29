@@ -5,12 +5,23 @@ import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getAccentColor } from '../../utils/getAccentColor'
 
-export default function OfferCard({ offer, onEdit, onDelete }) {
+export default function OfferCard({
+  offer,
+  onEdit,
+  onDelete,
+  isProposing = false,
+  isProposed = false,
+}) {
   const [showMenu, setShowMenu] = useState(false)
   const currentUser = useAuthStore((state) => state.user)
   const navigate = useNavigate()
   const owner = checkIsOwner(currentUser, offer.user)
   const accentColor = getAccentColor(offer.category?.name)
+  const deadlineMs = new Date(offer.deadline).getTime()
+  const msUntilDeadline = deadlineMs - Date.now()
+  const isUrgent =
+    msUntilDeadline > 0 && msUntilDeadline < 3 * 24 * 60 * 60 * 1000
+  const isExpired = Number.isFinite(deadlineMs) && msUntilDeadline <= 0
 
   const handleCardClick = () => navigate(`/offers/${offer._id ?? offer.id}`)
 
@@ -56,6 +67,16 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
               >
                 Delete Offer
               </button>
+            </div>
+          )}
+          {isUrgent && (
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
+              URGENT
+            </div>
+          )}
+          {isExpired && (
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-gray-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
+              DEADLINE PASSED
             </div>
           )}
         </div>
@@ -131,6 +152,26 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
             </div>
           </div>
         </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onPropose?.(request)
+          }}
+          disabled={isProposing || isExpired}
+          className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
+            isProposed
+              ? 'bg-blue-600 text-white shadow-md'
+              : `text-white bg-gradient-to-r ${accentColor} hover:shadow-lg hover:brightness-110`
+          }`}
+        >
+          {isProposing
+            ? 'Sending…'
+            : isProposed
+              ? 'Session Booked!'
+              : isExpired
+                ? 'Deadline Passed'
+                : 'Book Session'}
+        </button>
       </div>
     </div>
   )

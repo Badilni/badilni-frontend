@@ -6,6 +6,11 @@ export const serviceRequestKeys = {
   all: ['serviceRequests'],
   list: (filters) => [...serviceRequestKeys.all, 'list', filters],
   detail: (id) => [...serviceRequestKeys.all, 'detail', id],
+  // Nested under the same 'serviceRequests' root as `all`, so the existing
+  // invalidateQueries({ queryKey: serviceRequestKeys.all }) calls in
+  // useServiceRequestMutations.js already invalidate this too — no need to
+  // touch those mutation hooks.
+  byUser: (userId) => [...serviceRequestKeys.all, 'byUser', userId ?? 'me'],
 }
 
 /** List + filter + paginate service requests. */

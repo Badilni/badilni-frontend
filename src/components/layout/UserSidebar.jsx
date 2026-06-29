@@ -4,6 +4,9 @@ import DeactivateButton from '../DeactiveateMe/Deactiveate'
 import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal'
 import { deactivateMeRequest } from '../../api/authApi'
 import { handleToastMessage } from '../../utils/helper'
+import { useWalletBalance } from '../../hooks/Profile/transactions/useWalletBalance'
+import { useTransactions } from '../../hooks/Profile/transactions/useTransations'
+import { getTransactionDirection, getTransactionLabel } from '../../utils/transactionDisplay'
 
 const TABS = [
   {
@@ -248,125 +251,189 @@ const ProfileTab = ({ user, navigate, openConfirmModal }) => (
 )
 
 /* ── Credits tab ── */
-const CreditsTab = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-    <div
-      style={{
-        borderRadius: '12px',
-        background:
-          'linear-gradient(135deg, var(--primary-light), var(--secondary-light))',
-        padding: '18px',
-        color: '#fff',
-      }}
-    >
-      <p style={{ fontSize: '11px', opacity: 0.8, margin: '0 0 4px' }}>
-        Available credits
-      </p>
-      <p style={{ fontSize: '30px', fontWeight: '700', margin: 0 }}>240</p>
-      <p style={{ fontSize: '11px', opacity: 0.65, margin: '4px 0 0' }}>
-        Resets Jul 1, 2026
-      </p>
-    </div>
+// FIX: was fully hardcoded (240 balance, fake 60/300 progress bar, 3 fake
+// transactions). Now backed by GET /transactions/balance + GET /transactions.
+const CreditsTab = ({ user }) => {
+  const currentUserId = user?._id ?? user?.id
 
-    <div>
+  const {
+    data: balanceData,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+    refetch: refetchBalance,
+  } = useWalletBalance()
+
+  const {
+    data: txData,
+    isLoading: isTxLoading,
+    isError: isTxError,
+    refetch: refetchTransactions,
+  } = useTransactions({ limit: 5 })
+
+  // ASSUMPTION: GET /transactions/balance wraps the figures as
+  // { data: { walletBalance, creditsInEscrow } } — confirmed by screenshot.
+  const walletBalance = balanceData?.data?.walletBalance
+  const creditsInEscrow = balanceData?.data?.creditsInEscrow
+
+  // GET /transactions additionally returns a walletSummary alongside the
+  // paginated list (confirmed by screenshot) — reused here instead of
+  // making a second call just for totalEarned/totalSpent.
+  const walletSummary = txData?.walletSummary
+  const transactions = txData?.data?.transactions ?? []
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontSize: '11px',
-          color: 'var(--gray-text)',
-          marginBottom: '6px',
+          borderRadius: '12px',
+          background:
+            'linear-gradient(135deg, var(--primary-light), var(--secondary-light))',
+          padding: '18px',
+          color: '#fff',
         }}
       >
-        <span>Used this month</span>
-        <span>60 / 300</span>
-      </div>
-      <div
-        style={{
-          height: '6px',
-          borderRadius: '99px',
-          backgroundColor: 'var(--background-light)',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            height: '100%',
-            width: '20%',
-            borderRadius: '99px',
-            backgroundColor: 'var(--primary-light)',
-          }}
-        />
-      </div>
-    </div>
+        <p style={{ fontSize: '11px', opacity: 0.8, margin: '0 0 4px' }}>
+          Available credits
+        </p>
 
-    <div>
-      <p style={{ ...S.label, marginBottom: '8px' }}>Recent transactions</p>
-      {[
-        { label: 'Skill exchange — Ahmed', change: -5, date: 'Jun 13' },
-        { label: 'Bonus reward', change: +20, date: 'Jun 10' },
-        { label: 'Skill exchange — Sara', change: -10, date: 'Jun 8' },
-      ].map(({ label, change, date }) => (
-        <div
-          key={label}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '9px 0',
-            borderBottom: '1px solid var(--border-color, #e2e8f0)',
-          }}
-        >
-          <div>
-            <p
-              style={{
-                fontSize: '12px',
-                color: 'var(--black-text)',
-                margin: 0,
-              }}
-            >
-              {label}
-            </p>
-            <p
-              style={{ fontSize: '11px', color: 'var(--gray-text)', margin: 0 }}
-            >
-              {date}
-            </p>
-          </div>
-          <span
+        {isBalanceLoading ? (
+          <p style={{ fontSize: '20px', fontWeight: '600', margin: 0, opacity: 0.85 }}>
+            Loading…
+          </p>
+        ) : isBalanceError ? (
+          <button
+            onClick={() => refetchBalance()}
             style={{
               fontSize: '13px',
               fontWeight: '600',
-              color: change > 0 ? 'var(--success)' : 'var(--danger)',
+              background: 'rgba(255,255,255,0.15)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#fff',
+              padding: '6px 12px',
+              cursor: 'pointer',
             }}
           >
-            {change > 0 ? `+${change}` : change}
-          </span>
-        </div>
-      ))}
-    </div>
+            Couldn&apos;t load balance — Retry
+          </button>
+        ) : (
+          <p style={{ fontSize: '30px', fontWeight: '700', margin: 0 }}>
+            {walletBalance ?? 0}
+          </p>
+        )}
 
-    <button
-      style={{
-        width: '100%',
-        padding: '9px',
-        border: 'none',
-        borderRadius: '9px',
-        backgroundColor: 'var(--background-light)',
-        color: 'var(--primary-light)',
-        fontSize: '13px',
-        fontWeight: '500',
-        cursor: 'pointer',
-        fontFamily: 'Poppins, sans-serif',
-        transition: 'opacity 0.15s',
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.8')}
-      onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-    >
-      Buy credits
-    </button>
-  </div>
-)
+        {!isBalanceLoading && !isBalanceError && creditsInEscrow > 0 && (
+          <p style={{ fontSize: '11px', opacity: 0.65, margin: '4px 0 0' }}>
+            {creditsInEscrow} credit{creditsInEscrow === 1 ? '' : 's'} in escrow
+          </p>
+        )}
+      </div>
+
+      {walletSummary && (
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ ...S.card, flex: 1, backgroundColor: 'var(--background-light)' }}>
+            <p style={S.label}>Total earned</p>
+            <p style={{ ...S.value, fontWeight: '600', color: 'var(--success)' }}>
+              +{walletSummary.totalEarned ?? 0}
+            </p>
+          </div>
+          <div style={{ ...S.card, flex: 1, backgroundColor: 'var(--background-light)' }}>
+            <p style={S.label}>Total spent</p>
+            <p style={{ ...S.value, fontWeight: '600', color: 'var(--danger)' }}>
+              -{walletSummary.totalSpent ?? 0}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div>
+        <p style={{ ...S.label, marginBottom: '8px' }}>Recent transactions</p>
+
+        {isTxLoading && (
+          <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>Loading…</p>
+        )}
+
+        {isTxError && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '8px',
+            }}
+          >
+            <p style={{ fontSize: '12px', color: 'var(--danger)', margin: 0 }}>
+              Couldn&apos;t load transactions.
+            </p>
+            <button
+              onClick={() => refetchTransactions()}
+              style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: 'var(--primary-light)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {!isTxLoading && !isTxError && transactions.length === 0 && (
+          <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
+            No transactions yet.
+          </p>
+        )}
+
+        {!isTxLoading &&
+          !isTxError &&
+          transactions.map((transaction) => {
+            const direction = getTransactionDirection(transaction, currentUserId)
+            const isCredit = direction === 'credit'
+            const label =
+              transaction.description || getTransactionLabel(transaction, currentUserId)
+
+            return (
+              <div
+                key={transaction._id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '9px 0',
+                  borderBottom: '1px solid var(--border-color, #e2e8f0)',
+                }}
+              >
+                <div>
+                  <p style={{ fontSize: '12px', color: 'var(--black-text)', margin: 0 }}>
+                    {label}
+                  </p>
+                  <p style={{ fontSize: '11px', color: 'var(--gray-text)', margin: 0 }}>
+                    {new Date(transaction.createdAt).toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </p>
+                </div>
+                <span
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    color: isCredit ? 'var(--success)' : 'var(--danger)',
+                  }}
+                >
+                  {isCredit ? `+${transaction.amount}` : `-${transaction.amount}`}
+                </span>
+              </div>
+            )
+          })}
+      </div>
+    </div>
+  )
+}
 
 /* ── Sessions tab ── */
 const SessionsTab = () => (
@@ -672,7 +739,7 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
               openConfirmModal={() => setIsConfirmOpen(true)}
             />
           )}
-          {activeTab === 'credits' && <CreditsTab />}
+          {activeTab === 'credits' && <CreditsTab user={user} />}
           {activeTab === 'sessions' && <SessionsTab />}
         </div>
 

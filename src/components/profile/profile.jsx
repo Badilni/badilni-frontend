@@ -7,6 +7,7 @@ import { FaGraduationCap } from 'react-icons/fa'
 import { motion } from 'motion/react'
 import DeactivateButton from '../DeactiveateMe/Deactiveate'
 import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal'
+import ProfileActivityTabs from './ProfileActiveTabs'
 
 import {
   FiSettings,
@@ -331,6 +332,11 @@ const ProfileScreen = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* My Service Requests / My Offers */}
+      <div className="mt-8">
+        <ProfileActivityTabs isOwnProfile />
       </div>
 
       <DeactivateConfirmModal
