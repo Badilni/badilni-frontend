@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useServiceRequests } from '../../hooks/Timeline/useServiceRequests'
-import { useCategories } from '../../hooks/Timeline/useCategories'
+import { useCategories } from '../../hooks/useCategories'
 import { useProposeSession } from '../../hooks/Timeline/useProposeSession'
 import { useDeleteServiceRequest } from '../../hooks/Timeline/useServiceRequestMutations'
 import RequestsHeader from './RequestsHeader'
@@ -14,7 +14,7 @@ import RequestCardSkeleton from '../shared/RequestCardSkeleton'
 import EmptyState from '../shared/EmptyState'
 import ErrorState from '../shared/ErrorState'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 9
 
 export default function ServiceRequestsPage() {
   const [category, setCategory] = useState('')
@@ -32,14 +32,15 @@ export default function ServiceRequestsPage() {
 
   const { data, isLoading, isFetching, isError, error, refetch } =
     useServiceRequests(filters)
-  const { data: categoriesData } = useCategories()
-  const categories = categoriesData?.data?.categories ?? []
+  const { categories, loading, error: categoriesError } = useCategories()
   const proposeSession = useProposeSession()
   const deleteRequest = useDeleteServiceRequest()
   const [proposingId, setProposingId] = useState(null)
   const [proposedIds, setProposedIds] = useState(() => new Set())
   const requests = data?.data.serviceRequests ?? []
-  const totalCount = data?.total ?? requests.length
+  const pagination = data?.pagination ?? {}
+  const totalCount = pagination.totalCount ?? requests.length
+  const totalPages = pagination.totalPages ?? Math.ceil(totalCount / PAGE_SIZE)
   const hasActiveFilters = Boolean(category || status)
 
   const handlePropose = (request) => {
@@ -128,13 +129,13 @@ export default function ServiceRequestsPage() {
           })}
         </div>
       )}
-
       {!isError && requests.length > 0 && (
         <RequestsCTA
           totalShowing={requests.length}
           totalCount={totalCount}
+          hasMore={filters.page < totalPages}
           isLoadingMore={isFetching}
-          onLoadMore={() => setPage((p) => p + 1)}
+          onLoadMore={() => setPage((prev) => prev + 1)}
           onPostRequest={() => setCreateOpen(true)}
         />
       )}

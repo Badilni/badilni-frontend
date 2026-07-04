@@ -12,9 +12,9 @@ import NotificationDropdown from '../notifications/NotificationDropdown'
 // Centralized Navigation Config with Labels and Routes
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
-  { label: 'Explore', path: '/explore' },
   { label: 'Requests', path: '/requests' },
   { label: 'Offers', path: '/offers' },
+  { label: 'Bookings', path: '/booking' },
   { label: 'About Us', path: '/about' },
   { label: 'Contact', path: '/contact' },
 ]

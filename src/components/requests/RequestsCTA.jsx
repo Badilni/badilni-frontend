@@ -1,13 +1,14 @@
 export default function RequestsCTA({
   totalShowing = 0,
   totalCount = 0,
+  hasMore = false,
   isLoadingMore = false,
   onLoadMore,
   onPostRequest,
 }) {
   return (
     <>
-      {totalShowing < totalCount && (
+      {hasMore && (
         <div className="mt-14 flex flex-col items-center gap-3">
           <button
             onClick={onLoadMore}

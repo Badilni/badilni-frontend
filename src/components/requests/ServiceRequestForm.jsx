@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCategories } from '../../hooks/Timeline/useCategories'
+import { useCategories } from '../../hooks/useCategories'
 import ImageUploader from '../shared/ImageUploder'
 
 const blankState = {
@@ -18,9 +18,10 @@ export default function ServiceRequestForm({
   fieldErrors = {},
   submitLabel = 'Post Request',
 }) {
-  const [form, setForm] = useState(() => (initialValues ? { ...blankState, ...initialValues } : blankState))
-  const { data: categoriesData } = useCategories()
-  const categories = categoriesData?.data?.categories ?? []
+  const [form, setForm] = useState(() =>
+    initialValues ? { ...blankState, ...initialValues } : blankState
+  )
+  const { categories, loading, error: categoriesError } = useCategories()
 
   const update = (key, value) => setForm((f) => ({ ...f, [key]: value }))
 
@@ -50,7 +51,9 @@ export default function ServiceRequestForm({
             </option>
           ))}
         </select>
-        {fieldErrors.category && <p className="text-xs text-red-500 mt-1">{fieldErrors.category}</p>}
+        {fieldErrors.category && (
+          <p className="text-xs text-red-500 mt-1">{fieldErrors.category}</p>
+        )}
       </div>
 
       <div>
@@ -65,7 +68,9 @@ export default function ServiceRequestForm({
           placeholder="Need help proofreading and localizing a flyer"
           className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
         />
-        {fieldErrors.title && <p className="text-xs text-red-500 mt-1">{fieldErrors.title}</p>}
+        {fieldErrors.title && (
+          <p className="text-xs text-red-500 mt-1">{fieldErrors.title}</p>
+        )}
       </div>
 
       <div>
@@ -79,7 +84,9 @@ export default function ServiceRequestForm({
           onChange={(e) => update('description', e.target.value)}
           className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white resize-none"
         />
-        {fieldErrors.description && <p className="text-xs text-red-500 mt-1">{fieldErrors.description}</p>}
+        {fieldErrors.description && (
+          <p className="text-xs text-red-500 mt-1">{fieldErrors.description}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -95,7 +102,11 @@ export default function ServiceRequestForm({
             onChange={(e) => update('creditsOffered', e.target.value)}
             className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
           />
-          {fieldErrors.creditsOffered && <p className="text-xs text-red-500 mt-1">{fieldErrors.creditsOffered}</p>}
+          {fieldErrors.creditsOffered && (
+            <p className="text-xs text-red-500 mt-1">
+              {fieldErrors.creditsOffered}
+            </p>
+          )}
         </div>
         <div>
           <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
@@ -108,7 +119,9 @@ export default function ServiceRequestForm({
             onChange={(e) => update('deadline', e.target.value)}
             className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
           />
-          {fieldErrors.deadline && <p className="text-xs text-red-500 mt-1">{fieldErrors.deadline}</p>}
+          {fieldErrors.deadline && (
+            <p className="text-xs text-red-500 mt-1">{fieldErrors.deadline}</p>
+          )}
         </div>
       </div>
 

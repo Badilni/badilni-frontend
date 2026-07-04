@@ -1,12 +1,6 @@
 import { getAllServiceRequests } from '../../api/posts'
 import { applyRangeFilter } from '../../utils/applyRangeFilter'
 
-/**
- * `sort=-averageRating` is the only sort value directly confirmed by
- * Postman (img 4). '-createdAt' / 'creditsOffered' / 'deadline' are
- * plausible but UNCONFIRMED — verify against the backend's allowed sort
- * fields before relying on them.
- */
 export const fetchServiceRequests = async ({
   keyword,
   category, // category _id (ObjectId string) — confirmed, NOT a slug or name
@@ -16,7 +10,7 @@ export const fetchServiceRequests = async ({
   createdAtGreaterThan,
   createdAtLessThan,
   page = 1,
-  limit = 10,
+  limit = 9,
   sort = '-averageRating',
   fields,
 } = {}) => {

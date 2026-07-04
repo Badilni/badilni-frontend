@@ -2,23 +2,16 @@ import { useState } from 'react'
 import { useUserServiceRequests } from '../../hooks/Timeline/useUserServiceRequest'
 import { useDeleteServiceRequest } from '../../hooks/Timeline/useServiceRequestMutations'
 import { useProposeSession } from '../../hooks/Timeline/useProposeSession'
-import { useCategories } from '../../hooks/Timeline/useCategories'
+import { useCategories } from '../../hooks/useCategories'
 import RequestCard from '../requests/RequestCard'
 import EditServiceRequestModal from '../requests/EditServiceRequestModal'
 import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import RequestCardSkeleton from '../shared/RequestCardSkeleton'
 import ErrorState from '../shared/ErrorState'
 
-/**
- * userId: pass to view someone else's requests, omit for the logged-in
- * user's own ("me") requests. RequestCard already hides Edit/Delete for
- * non-owners and shows them for owners — same component works for both
- * "my profile" and "their profile" without any extra branching here.
- */
 export default function ProfileServiceRequests({ userId, isOwnProfile = false, limit = 6 }) {
   const { data, isLoading, isError, error, refetch } = useUserServiceRequests(userId, { limit })
-  const { data: categoriesData } = useCategories()
-  const categories = categoriesData?.data?.categories ?? []
+  const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
   const deleteRequest = useDeleteServiceRequest()
   const proposeSession = useProposeSession()
   const [editingRequest, setEditingRequest] = useState(null)

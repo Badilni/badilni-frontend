@@ -1,33 +1,23 @@
-import { useCategories } from '../../hooks/Timeline/useCategories'
+import { useCategories } from '../../hooks/useCategories';
+import CategoryCard from '../common/CategoryCard';
 
-const ALL = { _id: '', name: 'All Requests' }
+const ALL = { _id: '', name: 'All Requests', slug: 'all' };
 
-/**
- * BUG FIXED: the old version hardcoded categories with a human `slug`
- * ('languages-and-translation') and sent that slug as the filter value.
- * Every Postman screenshot of a request/response body shows `category` as
- * a 24-char Mongo ObjectId (e.g. 6a353f07d142ee79762ec9bb) — a slug would
- * never match anything server-side. This version sources categories from
- * a real query and filters by `_id`.
- *
- * `useCategories()`'s endpoint is itself an unconfirmed assumption (see
- * hooks/useCategories.js) — until that's verified, this degrades to just
- * the "All Requests" option rather than showing fabricated category names.
- */
 export default function RequestFilters({
-  activeCategory, // category _id, or '' for "All Requests"
+  activeCategory,
   onCategoryChange,
   activeStatus,
   onStatusChange,
   matchScore = 85,
 }) {
-  const { data, isLoading } = useCategories()
-  const categoriesData = data?.data?.categories ?? []
+  const { categories = [], loading, error: categoriesError } = useCategories();
 
-  const categories = [ALL, ...categoriesData]
+  const combinedCategories = [ALL, ...categories];
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-10">
-      <div className="lg:col-span-8 bg-[var(--whiteBackground)] dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
+      {/* Categories Wrapper Section */}
+      <div className="lg:col-span-8 bg-[var(--whiteBackground)] dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div className="flex items-center gap-2 mb-5">
           <svg
             className="w-4 h-4 text-blue-600 dark:text-blue-400"
@@ -47,31 +37,30 @@ export default function RequestFilters({
           </h3>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {isLoading
-            ? Array.from({ length: 5 }).map((_, i) => (
+        {/* Horizontal Scroll Container */}
+        <div className="flex overflow-x-auto gap-3 pb-2 w-full snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-9 w-28 rounded-xl bg-gray-100 dark:bg-slate-800 animate-pulse"
+                  className="flex-shrink-0 w-40 h-[140px] rounded-2xl bg-gray-100 dark:bg-slate-800 animate-pulse snap-start"
                 />
               ))
-            : categories.map((cat) => (
-                <button
-                  key={cat._id || 'all'}
-                  onClick={() => onCategoryChange(cat._id)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
-                    activeCategory === cat._id
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  {cat.name}
-                </button>
+            : combinedCategories.map((cat) => (
+                <div key={cat._id} className="flex-shrink-0 w-40 h-[140px] snap-start">
+                  <CategoryCard
+                    category={cat}
+                    isActive={activeCategory === cat._id}
+                    onClick={() => onCategoryChange(cat._id)}
+                    variant="compact"
+                  />
+                </div>
               ))}
         </div>
       </div>
 
-      <div className="lg:col-span-4 relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800 p-6 rounded-2xl shadow-lg text-white">
+      {/* Status Filtering Section */}
+      <div className="lg:col-span-4 relative overflow-hidden bg-gradient-to-br from-blue-900 to-indigo-300 dark:from-blue-700 dark:to-black p-6 rounded-2xl shadow-lg text-white">
         <div className="absolute -right-8 -bottom-8 w-36 h-36 rounded-full bg-white/5 blur-2xl pointer-events-none" />
 
         <h3 className="text-sm font-bold mb-5 opacity-90">Status</h3>
@@ -86,7 +75,7 @@ export default function RequestFilters({
           ].map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-3 cursor-pointer group"
+              className="flex items-center gap-3 cursor-pointer group select-none font-medium"
             >
               <div
                 onClick={() => onStatusChange(opt.value)}
@@ -100,11 +89,11 @@ export default function RequestFilters({
                   <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />
                 )}
               </div>
-              <span className="text-sm font-semibold">{opt.label}</span>
+              <span className="text-xl italic font-serif ">{opt.label}</span>
             </label>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -20,7 +20,7 @@ export const fetchOffers = async ({
   createdAtGreaterThan,
   createdAtLessThan,
   page = 1,
-  limit = 10,
+  limit = 9,
   sort = '-averageRating',
   fields,
 } = {}) => {

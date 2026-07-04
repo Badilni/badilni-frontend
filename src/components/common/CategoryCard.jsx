@@ -264,6 +264,26 @@ const CATEGORY_META = {
       </svg>
     ),
   },
+  'all':{
+    bg: 'bg-gray-50 dark:bg-gray-800/50',
+    iconColor: 'text-gray-600 dark:text-gray-400',
+    activeBorder: 'border-gray-400 dark:border-gray-500',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        className="w-8 h-8"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+        />
+      </svg>
+    ),
+  }
 }
 
 const DEFAULT_META = {
@@ -291,49 +311,38 @@ export default function CategoryCard({
   category,
   isActive = false,
   onClick,
-  variant = 'grid',
+  variant = 'compact',
 }) {
-  const meta = CATEGORY_META[category.slug] || DEFAULT_META
-
-  if (variant === 'chip') {
-    return (
-      <button
-        id={`category-chip-${category._id}`}
-        onClick={() => onClick?.(category)}
-        className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold transition-all duration-200 cursor-pointer ${
-          isActive
-            ? `${meta.bg} ${meta.iconColor} ${meta.activeBorder} border shadow-sm`
-            : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
-        }`}
-      >
-        <span
-          className={`w-5 h-5 ${isActive ? meta.iconColor : 'text-gray-400'}`}
-        >
-          {meta.icon}
-        </span>
-        {category.name}
-      </button>
-    )
-  }
+  const meta = CATEGORY_META[category.slug] || DEFAULT_META;
 
   return (
     <button
       id={`category-card-${category._id}`}
       onClick={() => onClick?.(category)}
-      className={`group flex flex-col items-center text-center p-6 rounded-2xl border transition-all duration-200 cursor-pointer w-full ${
+      className={`group flex flex-col items-center justify-center text-center p-4 rounded-2xl transition-all duration-200 cursor-pointer w-full h-full select-none border-3 shadow-sm border-gray-400 dark:border-slate-700  ${
         isActive
-          ? `${meta.bg} ${meta.activeBorder} border shadow-md`
-          : 'bg-[var(--whiteBackground)] dark:bg-slate-900 border-gray-100 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md'
+          ? `${meta.activeBorder} ${meta.bg} shadow-md`
+          : 'border-transparent bg-[var(--whiteBackground)] dark:bg-slate-900'
       }`}
     >
       <div
-        className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-110 ${meta.bg} ${meta.iconColor}`}
+        className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-110 flex-shrink-0 ${
+          isActive
+            ? 'bg-white dark:bg-slate-800 shadow-sm' // Pops against the tinted card background
+            : meta.bg
+        } ${meta.iconColor}`}
       >
         {meta.icon}
       </div>
-      <span className="text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight">
+      <span
+        className={`text-sm font-bold leading-tight line-clamp-2 ${
+          isActive
+            ? 'text-gray-900 dark:text-white'
+            : 'text-gray-700 dark:text-gray-300'
+        }`}
+      >
         {category.name}
       </span>
     </button>
-  )
+  );
 }

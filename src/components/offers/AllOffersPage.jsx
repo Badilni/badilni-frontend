@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useOffers } from '../../hooks/Timeline/useOffer'
 import { useDeleteOffer } from '../../hooks/Timeline/useOfferMutation'
-import { useCategories } from '../../hooks/Timeline/useCategories'
+import { useCategories } from '../../hooks/useCategories'
 import OffersHeader from './OffersHeader'
 import OfferFilters from './OfferFilters'
 import OfferCard from './OfferCard'
@@ -14,7 +14,7 @@ import OfferCardSkeleton from './OfferCardSkeleton'
 import EmptyState from '../shared/EmptyState'
 import ErrorState from '../shared/ErrorState'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 9
 const DEFAULT_SORT = '-averageRating'
 
 export default function AllOffersPage() {
@@ -70,8 +70,7 @@ export default function AllOffersPage() {
 
   const { data, isLoading, isFetching, isError, error, refetch } =
     useOffers(filters)
-  const { data: categoriesData } = useCategories()
-  const categories = categoriesData?.data?.categories ?? []
+  const { categories, loading, error: categoriesError } = useCategories()
   const deleteOffer = useDeleteOffer()
 
   const offers = data?.data?.skillListings ?? []

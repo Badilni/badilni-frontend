@@ -1,12 +1,12 @@
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { offerSchema, offerDefaultValues } from '../../utils/offerSchema'
-import { useCategories } from '../../hooks/Timeline/useCategories'
+import { useCategories } from '../../hooks/useCategories'
 import ImageUploader from '../shared/ImageUploder'
 
 export default function OfferForm({ initialValues, onSubmit, isSubmitting, submitLabel = 'Post Offer' }) {
-  const { data: categoriesData } = useCategories()
-  const categories = categoriesData?.data?.categories ?? []
+   const { categories, loading, error: categoriesError } = useCategories()
+
 
   const {
     register,
