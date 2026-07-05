@@ -3,7 +3,7 @@ import { FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 import { FiStar } from 'react-icons/fi'
 import useAuthStore from '../../store/authStore'
 import { useListingReviews, useReviews, useCreateReview } from '../../hooks/Review/useReviews'
-import { useBookings } from '../../hooks/Booking/useBookings'
+import { useBookingsLegacy } from '../../hooks/booking/useBookings'
 import { handleToastMessage } from '../../utils/helper'
 
 export default function OfferReviews({ listingId, listingOwnerId }) {
@@ -24,12 +24,10 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
   const pagination = response?.pagination ?? { page: 1, limit: 5, totalCount: 0, totalPages: 1 }
 
   // Fetch completed bookings of the current user to see if they can review
-  const { data: bookingsData } = useBookings(
+  const { bookings: completedBookings } = useBookingsLegacy(
     { status: 'completed' },
-    { enabled: isAuthenticated }
+    isAuthenticated
   )
-
-  const completedBookings = bookingsData?.data?.bookings ?? bookingsData?.bookings ?? []
 
   // Fetch reviews given by this user for this listing
   const { reviews: userReviews } = useReviews(

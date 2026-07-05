@@ -1,6 +1,6 @@
 import {
   getUserReviewsRequest,
-  createReviewRequest,
+  createReviewRequests,
   getListingReviewsRequest,
   getReviewsRequest,
 } from '../../api/reviewApi'
@@ -19,7 +19,7 @@ export const createReview = (data) => {
   if (data.comment !== undefined) {
     payload.comment = data.comment
   }
-  return createReviewRequest(bookingId, payload)
+  return createReviewRequests(bookingId, payload)
 }
 
 export const getListingReviews = (listingId, params) =>
