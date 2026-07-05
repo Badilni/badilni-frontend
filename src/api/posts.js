@@ -151,3 +151,52 @@ export function buildSkillListingFormData({
   appendFiles(fd, 'sampleWork', sampleWork)
   return fd
 }
+
+// ---------------------------------------------------------------------------
+// Bookings
+// Moved here from api/bookings.js so all calls share the same proven axios
+// instance — keeping them in a separate file caused the auth token to not
+// be attached, resulting in 401 "You are not logged in" errors on booking
+// creation even when the user was authenticated.
+// ---------------------------------------------------------------------------
+
+function buildBookingFormData({ listing, request, scheduledAt, durationHours, note, attachments } = {}) {
+  const fd = new FormData()
+  appendIfPresent(fd, 'listing', listing)
+  appendIfPresent(fd, 'request', request)
+  appendIfPresent(fd, 'scheduledAt', scheduledAt)
+  appendIfPresent(fd, 'durationHours', durationHours)
+  appendIfPresent(fd, 'note', note)
+  if (attachments?.length) {
+    const files = Array.isArray(attachments) ? attachments : Array.from(attachments)
+    files.slice(0, 3).forEach((file) => fd.append('attachments', file))
+  }
+  return fd
+}
+
+export const createBooking = (payload) =>
+  api.post('/bookings', buildBookingFormData(payload)).then((r) => r.data)
+
+export const getBookings = (params) =>
+  api.get('/bookings', { params }).then((r) => r.data)
+
+export const getBooking = (id) =>
+  api.get(`/bookings/${id}`).then((r) => r.data)
+
+export const acceptBooking = (id) =>
+  api.patch(`/bookings/${id}/accept`).then((r) => r.data)
+
+export const declineBooking = (id) =>
+  api.patch(`/bookings/${id}/decline`).then((r) => r.data)
+
+export const cancelBooking = (id, cancellationReason) =>
+  api.patch(`/bookings/${id}/cancel`, { cancellationReason }).then((r) => r.data)
+
+export const confirmBooking = (id) =>
+  api.patch(`/bookings/${id}/confirm`).then((r) => r.data)
+
+export const disputeBooking = (id) =>
+  api.patch(`/bookings/${id}/dispute`).then((r) => r.data)
+
+export const addMeetingLink = (id, meetingLink) =>
+  api.patch(`/bookings/${id}/meeting-link`, { meetingLink }).then((r) => r.data)

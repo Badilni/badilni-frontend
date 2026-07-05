@@ -96,9 +96,19 @@ api.interceptors.response.use(
         processQueue(refreshError)
         clearAccessToken()
 
-        navigate('/signin', { replace: true })
+        // Fallback navigation outside React context — use full redirect
+        try {
+          window.location.assign('/signIn')
+        } catch (e) {
+          // ignore in non-browser environments
+        }
         return Promise.reject(refreshError)
       }
+    }
+
+    // Attach any server-sent message to the thrown Error for downstream handlers
+    if (error.response?.data?.message) {
+      error.message = error.response.data.message
     }
 
     return Promise.reject(error)
