@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FaStar } from 'react-icons/fa6'
+import { getProfilePath } from '../../utils/getProfilePath'
 import { useOffer } from '../../hooks/Timeline/useOffer'
 import { useDeleteOffer } from '../../hooks/Timeline/useOfferMutation'
 import useAuthStore from '../../store/authStore'
@@ -39,6 +40,7 @@ export default function OfferPageComponent() {
     )
 
   const owner = checkIsOwner(currentUser, offer.user)
+  const profilePath = getProfilePath(offer.user, currentUser)
 
   const handleDelete = () => {
     deleteOffer.mutate(offer._id ?? offer.id, {
@@ -47,24 +49,31 @@ export default function OfferPageComponent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 lg:p-10">
+    <div className="w-4xl mx-auto p-6 lg:p-10">
       <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-8 border border-gray-100 dark:border-slate-800 shadow-sm">
-       <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl flex-wrap"
-        onClick={navigate()}>
+        <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl flex-wrap">
           <div className="flex items-center gap-4">
-            <img
-              src={offer.user?.avatar?.url || 'https://via.placeholder.com/80'}
-              className="w-12 h-12 rounded-full object-cover"
-              alt={offer.user?.name || 'User'}
-            />
-            <div>
-              <p className="font-bold text-gray-900 dark:text-white">
-                {offer.user?.name}
-              </p>
-              <p className="text-xs text-gray-500">
-                Posted on {new Date(offer.createdAt).toLocaleDateString()}
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={() => profilePath && navigate(profilePath)}
+              className="flex items-center gap-4 bg-transparent border-0 p-0"
+            >
+              <img
+                src={
+                  offer.user?.avatar?.url || 'https://via.placeholder.com/80'
+                }
+                className="w-12 h-12 rounded-full object-cover"
+                alt={offer.user?.name || 'User'}
+              />
+              <div>
+                <p className="font-bold text-gray-900 dark:text-white">
+                  {offer.user?.name}
+                </p>
+                <p className="text-xs text-gray-500">
+                  Posted on {new Date(offer.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </button>
           </div>
           <div className="flex items-center gap-1.5 text-sm">
             <FaStar className="text-amber-400" />
@@ -150,10 +159,17 @@ export default function OfferPageComponent() {
             ))}
           </div>
         )}
-        <botton>
-          Booking
-        </botton>
-        
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={() =>
+              navigate(`/bookings/new?offerId=${offer._id ?? offer.id}`)
+            }
+            className="inline-flex w-full items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xl font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110"
+          >
+            Book
+          </button>
+        </div>
       </div>
 
       <EditOfferModal

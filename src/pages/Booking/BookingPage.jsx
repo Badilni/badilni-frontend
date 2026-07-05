@@ -1,5 +1,4 @@
-import BookingsPage from "../../components/booking/BookingsPage"
-
+import BookingsPage from '../../components/bookings/BookingsPage'
 const BookingPage = () => {
   return (
     <BookingsPage />

@@ -6,7 +6,14 @@ import { deactivateMeRequest } from '../../api/authApi'
 import { handleToastMessage } from '../../utils/helper'
 import { useWalletBalance } from '../../hooks/Profile/transactions/useWalletBalance'
 import { useTransactions } from '../../hooks/Profile/transactions/useTransations'
-import { getTransactionDirection, getTransactionLabel } from '../../utils/transactionDisplay'
+import {
+  getTransactionDirection,
+  getTransactionLabel,
+} from '../../utils/transactionDisplay'
+import { useBookings } from '../../hooks/booking/useBookings'
+import { getBookingRole } from '../../utils/bookingPermissions'
+import { BOOKING_STATUS } from '../../utils/bookingStatus'
+import BookingStatusBadge from '../bookings/BookingStatusBadge'
 
 const TABS = [
   {
@@ -272,14 +279,37 @@ const CreditsTab = ({ user }) => {
 
   // ASSUMPTION: GET /transactions/balance wraps the figures as
   // { data: { walletBalance, creditsInEscrow } } — confirmed by screenshot.
-  const walletBalance = balanceData?.data?.walletBalance
-  const creditsInEscrow = balanceData?.data?.creditsInEscrow
+  // Be tolerant of multiple possible response shapes. Backend sometimes
+  // returns numbers under different keys depending on endpoint/version.
+  const walletBalance =
+    balanceData?.data?.walletBalance ??
+    balanceData?.walletBalance ??
+    (txData?.walletSummary && txData.walletSummary.walletBalance) ??
+    txData?.walletBalance
+
+  const creditsInEscrow =
+    balanceData?.data?.creditsInEscrow ??
+    balanceData?.creditsInEscrow ??
+    (txData?.walletSummary && txData.walletSummary.creditsInEscrow) ??
+    txData?.creditsInEscrow
 
   // GET /transactions additionally returns a walletSummary alongside the
   // paginated list (confirmed by screenshot) — reused here instead of
   // making a second call just for totalEarned/totalSpent.
-  const walletSummary = txData?.walletSummary
-  const transactions = txData?.data?.transactions ?? []
+  const walletSummary = txData?.walletSummary ?? txData?.data?.walletSummary
+  const transactions = txData?.data?.transactions ?? txData?.transactions ?? []
+
+  // Upcoming sessions: fetch recent bookings and show those scheduled in future
+  const { data: bookingsData } = useBookings({ page: 1, limit: 5 })
+  const bookings = bookingsData?.data?.bookings ?? []
+  const upcoming = bookings
+    .filter(
+      (b) =>
+        b.scheduledAt &&
+        new Date(b.scheduledAt) > new Date() &&
+        b.status === BOOKING_STATUS.ACCEPTED
+    )
+    .slice(0, 5)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -297,7 +327,14 @@ const CreditsTab = ({ user }) => {
         </p>
 
         {isBalanceLoading ? (
-          <p style={{ fontSize: '20px', fontWeight: '600', margin: 0, opacity: 0.85 }}>
+          <p
+            style={{
+              fontSize: '20px',
+              fontWeight: '600',
+              margin: 0,
+              opacity: 0.85,
+            }}
+          >
             Loading…
           </p>
         ) : isBalanceError ? (
@@ -331,15 +368,31 @@ const CreditsTab = ({ user }) => {
 
       {walletSummary && (
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ ...S.card, flex: 1, backgroundColor: 'var(--background-light)' }}>
+          <div
+            style={{
+              ...S.card,
+              flex: 1,
+              backgroundColor: 'var(--background-light)',
+            }}
+          >
             <p style={S.label}>Total earned</p>
-            <p style={{ ...S.value, fontWeight: '600', color: 'var(--success)' }}>
+            <p
+              style={{ ...S.value, fontWeight: '600', color: 'var(--success)' }}
+            >
               +{walletSummary.totalEarned ?? 0}
             </p>
           </div>
-          <div style={{ ...S.card, flex: 1, backgroundColor: 'var(--background-light)' }}>
+          <div
+            style={{
+              ...S.card,
+              flex: 1,
+              backgroundColor: 'var(--background-light)',
+            }}
+          >
             <p style={S.label}>Total spent</p>
-            <p style={{ ...S.value, fontWeight: '600', color: 'var(--danger)' }}>
+            <p
+              style={{ ...S.value, fontWeight: '600', color: 'var(--danger)' }}
+            >
               -{walletSummary.totalSpent ?? 0}
             </p>
           </div>
@@ -350,7 +403,9 @@ const CreditsTab = ({ user }) => {
         <p style={{ ...S.label, marginBottom: '8px' }}>Recent transactions</p>
 
         {isTxLoading && (
-          <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>Loading…</p>
+          <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
+            Loading…
+          </p>
         )}
 
         {isTxError && (
@@ -391,10 +446,27 @@ const CreditsTab = ({ user }) => {
         {!isTxLoading &&
           !isTxError &&
           transactions.map((transaction) => {
-            const direction = getTransactionDirection(transaction, currentUserId)
+            const direction = getTransactionDirection(
+              transaction,
+              currentUserId
+            )
             const isCredit = direction === 'credit'
+            const isEscrow = transaction.type === 'escrow_lock'
             const label =
-              transaction.description || getTransactionLabel(transaction, currentUserId)
+              transaction.description ||
+              getTransactionLabel(transaction, currentUserId)
+
+            const amountText = isEscrow
+              ? `±${transaction.amount}`
+              : isCredit
+                ? `+${transaction.amount}`
+                : `-${transaction.amount}`
+
+            const amountColor = isEscrow
+              ? 'var(--warning, #D97706)'
+              : isCredit
+                ? 'var(--success)'
+                : 'var(--danger)'
 
             return (
               <div
@@ -408,24 +480,39 @@ const CreditsTab = ({ user }) => {
                 }}
               >
                 <div>
-                  <p style={{ fontSize: '12px', color: 'var(--black-text)', margin: 0 }}>
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--black-text)',
+                      margin: 0,
+                    }}
+                  >
                     {label}
                   </p>
-                  <p style={{ fontSize: '11px', color: 'var(--gray-text)', margin: 0 }}>
-                    {new Date(transaction.createdAt).toLocaleDateString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                    })}
+                  <p
+                    style={{
+                      fontSize: '11px',
+                      color: 'var(--gray-text)',
+                      margin: 0,
+                    }}
+                  >
+                    {new Date(transaction.createdAt).toLocaleDateString(
+                      undefined,
+                      {
+                        month: 'short',
+                        day: 'numeric',
+                      }
+                    )}
                   </p>
                 </div>
                 <span
                   style={{
                     fontSize: '13px',
                     fontWeight: '600',
-                    color: isCredit ? 'var(--success)' : 'var(--danger)',
+                    color: amountColor,
                   }}
                 >
-                  {isCredit ? `+${transaction.amount}` : `-${transaction.amount}`}
+                  {amountText}
                 </span>
               </div>
             )
@@ -436,113 +523,83 @@ const CreditsTab = ({ user }) => {
 }
 
 /* ── Sessions tab ── */
-const SessionsTab = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-    <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
-      Devices where your account is active
-    </p>
+const SessionsTab = ({ user }) => {
+  const { data: bookingsData, isLoading } = useBookings({ page: 1, limit: 5 })
+  const bookings = bookingsData?.data?.bookings ?? []
+  const upcoming = bookings
+    .filter(
+      (b) =>
+        b.scheduledAt &&
+        new Date(b.scheduledAt) > new Date() &&
+        b.status === BOOKING_STATUS.ACCEPTED
+    )
+    .slice(0, 5)
 
-    {[
-      {
-        device: 'Chrome on Windows',
-        location: 'Cairo, EG',
-        active: true,
-        time: 'Now',
-      },
-      {
-        device: 'Safari on iPhone',
-        location: 'Cairo, EG',
-        active: false,
-        time: '2 days ago',
-      },
-      {
-        device: 'Firefox on macOS',
-        location: 'Alexandria, EG',
-        active: false,
-        time: '5 days ago',
-      },
-    ].map(({ device, location, active, time }) => (
-      <div
-        key={device}
-        style={{
-          ...S.card,
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: '10px',
-          backgroundColor: 'var(--background-light)',
-        }}
-      >
-        <div
-          style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            marginTop: '4px',
-            flexShrink: 0,
-            backgroundColor: active ? 'var(--success)' : 'var(--Disabled)',
-          }}
-        />
-        <div style={{ flex: 1 }}>
-          <p
-            style={{
-              fontSize: '13px',
-              fontWeight: '500',
-              color: 'var(--black-text)',
-              margin: 0,
-            }}
-          >
-            {device}
-          </p>
-          <p
-            style={{
-              fontSize: '11px',
-              color: 'var(--gray-text)',
-              margin: '2px 0 0',
-            }}
-          >
-            {location} · {time}
-          </p>
-        </div>
-        {!active && (
-          <button
-            style={{
-              fontSize: '11px',
-              fontWeight: '500',
-              color: 'var(--danger)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              flexShrink: 0,
-            }}
-          >
-            Revoke
-          </button>
-        )}
-      </div>
-    ))}
+  if (isLoading) {
+    return (
+      <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
+        Loading upcoming sessions…
+      </p>
+    )
+  }
 
-    <button
-      style={{
-        width: '100%',
-        padding: '9px',
-        border: '1px solid var(--danger)',
-        borderRadius: '9px',
-        backgroundColor: 'var(--backgDangerOpacity)',
-        color: 'var(--danger)',
-        fontSize: '13px',
-        fontWeight: '500',
-        cursor: 'pointer',
-        fontFamily: 'Poppins, sans-serif',
-        transition: 'opacity 0.15s',
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.8')}
-      onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-    >
-      Sign out all other sessions
-    </button>
-  </div>
-)
+  if (upcoming.length === 0) {
+    return (
+      <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
+        No upcoming sessions.
+      </p>
+    )
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {upcoming.map((b) => {
+        const role = getBookingRole(b, user)
+        const counterpart = role === 'provider' ? b.receiver : b.provider
+        return (
+          <div
+            key={b._id}
+            style={{
+              ...S.card,
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+            }}
+          >
+            <img
+              src={counterpart?.avatar?.url}
+              alt={counterpart?.name}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 10,
+                objectFit: 'cover',
+              }}
+            />
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: '13px', fontWeight: '600', margin: 0 }}>
+                {b.listing?.title ?? b.request?.title ?? 'Session'}
+              </p>
+              <p
+                style={{
+                  fontSize: '11px',
+                  color: 'var(--gray-text)',
+                  margin: '4px 0 0',
+                }}
+              >
+                {counterpart?.name ?? 'Unknown'} ·{' '}
+                {new Date(b.scheduledAt).toLocaleString()}
+              </p>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <BookingStatusBadge status={b.status} />
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 /* ── Main Sidebar ── */
 const UserSidebar = ({ open, onClose, user, onSignOut }) => {
@@ -740,7 +797,7 @@ const UserSidebar = ({ open, onClose, user, onSignOut }) => {
             />
           )}
           {activeTab === 'credits' && <CreditsTab user={user} />}
-          {activeTab === 'sessions' && <SessionsTab />}
+          {activeTab === 'sessions' && <SessionsTab user={user} />}
         </div>
 
         {/* Footer */}
