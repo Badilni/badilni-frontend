@@ -87,15 +87,25 @@ const ProfileScreen = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
         {/* Left column */}
         <div className="lg:col-span-4 space-y-5">
+          <div className="bg-[var(--whiteBackground)] rounded-2xl p-4 border border-[var(--secondary-light)]/10 shadow-[0_6px_24px_rgba(15,23,42,0.04)]">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-xs uppercase font-semibold opacity-90">
+                    Wallet Balance
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-extrabold mt-1">
+                    {Number(profile?.walletBalance ?? 0).toLocaleString()}
+                    <span className="text-sm font-semibold ml-2 text-blue-100">
+                      credits
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <AccountCard email={profile?.email} isOwnProfile={isOwnProfile} />
           <SkillsCard skills={Array.isArray(profile?.skillTags) ? profile.skillTags : []} />
-
-          <div className="bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] rounded-2xl p-6 text-white shadow-lg">
-            <p className="font-semibold mb-1">Ready to share your knowledge?</p>
-            <button className="w-full bg-white text-[var(--primary-light)] font-bold py-2.5 mt-4 rounded-xl text-sm">
-              Start a Session
-            </button>
-          </div>
         </div>
 
         {/* Right column */}

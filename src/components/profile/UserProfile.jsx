@@ -123,13 +123,35 @@ const UserProfile = () => {
         onStartChat={() => startChatMutation.mutate(userId)}
         isStartingChat={startChatMutation.isPending}
       />
+      {/* <div
+        className="text-sm text-[var(--gray-text)] mb-6"
+      >
+        walletBalance: {profile?.walletBalance ?? 0} credits
+      </div> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-4 space-y-5">
+          <div className="bg-[var(--whiteBackground)] rounded-2xl p-4 border border-[var(--secondary-light)]/10 shadow-[0_6px_24px_rgba(15,23,42,0.04)]">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-xs uppercase font-semibold opacity-90">
+                    Wallet Balance
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-extrabold mt-1">
+                    {Number(profile?.walletBalance ?? 0).toLocaleString()}
+                    <span className="text-sm font-semibold ml-2 text-blue-100">
+                      credits
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <AccountCard email={profile?.email} />
           <SkillsCard skills={skillTags} />
           {/* Review submission form */}
-          <ReviewForm reviewedUserId={userId} />
+          {/* <ReviewForm reviewedUserId={userId} /> */}
         </div>
 
         <div className="lg:col-span-8 space-y-6">
