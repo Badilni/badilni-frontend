@@ -24,10 +24,12 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
   const pagination = response?.pagination ?? { page: 1, limit: 5, totalCount: 0, totalPages: 1 }
 
   // Fetch completed bookings of the current user to see if they can review
-  const { bookings: completedBookings } = useBookings(
+  const { data: bookingsData } = useBookings(
     { status: 'completed' },
-    isAuthenticated
+    { enabled: isAuthenticated }
   )
+
+  const completedBookings = bookingsData?.data?.bookings ?? bookingsData?.bookings ?? []
 
   // Fetch reviews given by this user for this listing
   const { reviews: userReviews } = useReviews(
