@@ -11,17 +11,27 @@
  * nothing else here depends on how direction is determined.
  */
 
-const CREDIT_TYPES = new Set(['welcome_bonus', 'bonus_reward', 'session_payout', 'refund'])
+const CREDIT_TYPES = new Set([
+  'welcome_bonus',
+  'bonus_reward',
+  'session_payout',
+  'refund',
+])
 const DEBIT_TYPES = new Set(['session_payment'])
+const NEUTRAL_TYPES = new Set(['escrow_lock'])
 
 export function getTransactionDirection(transaction, currentUserId) {
   const isRecipient =
-    transaction.toUser?._id === currentUserId || transaction.toUser?.id === currentUserId
+    transaction.toUser?._id === currentUserId ||
+    transaction.toUser?.id === currentUserId
   const isSender =
-    transaction.fromUser?._id === currentUserId || transaction.fromUser?.id === currentUserId
+    transaction.fromUser?._id === currentUserId ||
+    transaction.fromUser?.id === currentUserId
 
   if (isSender && !isRecipient) return 'debit'
   if (isRecipient && !isSender) return 'credit'
+
+  if (NEUTRAL_TYPES.has(transaction.type)) return 'neutral'
 
   // Can't tell from participants (e.g. fromUser isn't present on this
   // record) — fall back to the known one-sided bonus/payout types.
@@ -35,12 +45,19 @@ const TYPE_LABELS = {
   bonus_reward: 'Bonus reward',
   session_payment: 'Session payment',
   session_payout: 'Session payout',
+  escrow_lock: 'Escrow lock',
   refund: 'Refund',
 }
 
 export function getTransactionLabel(transaction, currentUserId) {
   const direction = getTransactionDirection(transaction, currentUserId)
-  const baseLabel = TYPE_LABELS[transaction.type] || transaction.type?.replace(/_/g, ' ') || 'Transaction'
-  const counterparty = direction === 'credit' ? transaction.fromUser?.name : transaction.toUser?.name
+  const baseLabel =
+    TYPE_LABELS[transaction.type] ||
+    transaction.type?.replace(/_/g, ' ') ||
+    'Transaction'
+  const counterparty =
+    direction === 'credit'
+      ? transaction.fromUser?.name
+      : transaction.toUser?.name
   return counterparty ? `${baseLabel} — ${counterparty}` : baseLabel
 }
