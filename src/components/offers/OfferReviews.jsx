@@ -3,7 +3,7 @@ import { FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 import { FiStar } from 'react-icons/fi'
 import useAuthStore from '../../store/authStore'
 import { useListingReviews, useReviews, useCreateReview } from '../../hooks/Review/useReviews'
-import { useBookings } from '../../hooks/Booking/useBookings'
+import { useBookings } from '../../hooks/booking/useBookings'
 import { handleToastMessage } from '../../utils/helper'
 
 export default function OfferReviews({ listingId, listingOwnerId }) {
