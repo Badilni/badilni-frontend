@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchBookings } from '../../services/booking/fetchBookings'
 import { getBooking } from '../../api/posts'
+import { getBookings } from '../../services/Booking/bookingService'
 
 export const bookingKeys = {
   all: ['bookings'],
@@ -24,4 +25,15 @@ export function useBooking(id) {
     enabled: Boolean(id),
     staleTime: 30_000,
   })
+}
+
+export const useBookingsLegacy = (params, enabled = true) => {
+  const query = useQuery({
+    queryKey: ['bookings', params],
+    queryFn: () => getBookings(params),
+    enabled: Boolean(enabled),
+    select: (res) => res?.data?.bookings ?? res?.bookings ?? [],
+  })
+
+  return { ...query, bookings: query.data ?? [] }
 }
