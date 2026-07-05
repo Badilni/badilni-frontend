@@ -11,8 +11,10 @@ import { BOOKING_STATUS } from './bookingStatus'
 export function getBookingRole(booking, currentUser) {
   if (!booking || !currentUser) return null
   const userId = currentUser._id ?? currentUser.id
-  const providerId = booking.provider?._id ?? booking.provider?.id ?? booking.provider
-  const receiverId = booking.receiver?._id ?? booking.receiver?.id ?? booking.receiver
+  const providerId =
+    booking.provider?._id ?? booking.provider?.id ?? booking.provider
+  const receiverId =
+    booking.receiver?._id ?? booking.receiver?.id ?? booking.receiver
   if (userId === providerId) return 'provider'
   if (userId === receiverId) return 'receiver'
   return null
@@ -51,13 +53,15 @@ export function getBookingPermissions(booking, currentUser) {
   const isReceiver = role === 'receiver'
 
   if (status === BOOKING_STATUS.PENDING) {
+    const isRequestBooking = !!booking?.request
+
     return {
       ...none,
       isProvider,
       isReceiver,
-      canCancel: isProvider,
-      canAccept: isReceiver,
-      canDecline: isReceiver,
+      canCancel: isRequestBooking ? isProvider : isReceiver,
+      canAccept: isRequestBooking ? isReceiver : isProvider,
+      canDecline: isRequestBooking ? isReceiver : isProvider,
     }
   }
 

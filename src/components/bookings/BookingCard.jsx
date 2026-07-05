@@ -20,7 +20,10 @@ export default function BookingCard({ booking }) {
   const profilePath = getProfilePath(counterparty, currentUser)
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden transform transition-all hover:-translate-y-1 hover:shadow-2xl">
+    <div
+      className="relative w-full rounded-3xl overflow-hidden transform transition-all hover:-translate-y-1 hover:shadow-2xl"
+      onClick={() => navigate(`/bookings/${id}`)}
+    >
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4">
         <div className="flex items-center gap-4">
           <button
@@ -54,7 +57,8 @@ export default function BookingCard({ booking }) {
       <div className="bg-[var(--whiteBackground)] flex dark:bg-slate-900 p-6 border border-t-0 border-gray-100 dark:border-slate-800 rounded-b-3xl justify-between items-start gap-4">
         <button
           type="button"
-          onClick={() => navigate(`/bookings/${id}`)} items-start gap-4
+          items-start
+          gap-4
           className="text-left w-auto mb-4 group"
         >
           <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors line-clamp-1">

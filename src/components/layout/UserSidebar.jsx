@@ -275,7 +275,7 @@ const CreditsTab = ({ user }) => {
     isLoading: isTxLoading,
     isError: isTxError,
     refetch: refetchTransactions,
-  } = useTransactions({ limit: 5 })
+  } = useTransactions({ limit: 10})
 
   // ASSUMPTION: GET /transactions/balance wraps the figures as
   // { data: { walletBalance, creditsInEscrow } } — confirmed by screenshot.
@@ -300,7 +300,8 @@ const CreditsTab = ({ user }) => {
   const transactions = txData?.data?.transactions ?? txData?.transactions ?? []
 
   // Upcoming sessions: fetch recent bookings and show those scheduled in future
-  const { data: bookingsData } = useBookings({ page: 1, limit: 5 })
+  const { data: bookingsData } = useBookings({ page: 1, limit: 10 })
+  console.log('bookingsData', bookingsData)
   const bookings = bookingsData?.data?.bookings ?? []
   const upcoming = bookings
     .filter(
@@ -309,7 +310,7 @@ const CreditsTab = ({ user }) => {
         new Date(b.scheduledAt) > new Date() &&
         b.status === BOOKING_STATUS.ACCEPTED
     )
-    .slice(0, 5)
+    .slice(0, 10)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

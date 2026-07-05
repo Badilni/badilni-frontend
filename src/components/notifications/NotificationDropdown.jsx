@@ -222,6 +222,8 @@ export default function NotificationDropdown() {
                     isDeleting={deletingId === n._id}
                     onClick={() => handleNotificationClick(n)}
                     onDelete={(e) => handleDelete(e, n._id)}
+                    // onClick={() => { setIsOpen(false); navigate('/notifications') }}
+
                   />
                 ))
               )}
