@@ -5,6 +5,7 @@ import useAuthStore from '../../store/authStore'
 import { useListingReviews, useReviews, useCreateReview } from '../../hooks/Review/useReviews'
 import { useBookingsLegacy } from '../../hooks/booking/useBookings'
 import { handleToastMessage } from '../../utils/helper'
+import ReviewCard from '../reviews/ReviewCard'
 
 export default function OfferReviews({ listingId, listingOwnerId }) {
   const currentUser = useAuthStore((state) => state.user)
@@ -124,24 +125,7 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
     )
   }
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return ''
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  }
 
-  const getInitials = (name) => {
-    if (!name) return '?'
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase()
-  }
 
   return (
     <div className="space-y-6">
@@ -285,53 +269,9 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
           </div>
         ) : reviews.length > 0 ? (
           <div className="space-y-4">
-            {reviews.map((review) => {
-              const reviewer = review.reviewer || {}
-              const avatar = typeof reviewer.avatar === 'object' ? reviewer.avatar?.url : reviewer.avatar
-              
-              return (
-                <div
-                  key={review._id || review.id}
-                  className="p-5 rounded-2xl border border-gray-50 dark:border-slate-800/60 bg-gray-50/30 dark:bg-slate-800/10 hover:border-gray-100 dark:hover:border-slate-800 transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div className="flex items-center gap-3">
-                      {avatar ? (
-                        <img
-                          src={avatar}
-                          alt={reviewer.name}
-                          className="w-10 h-10 rounded-full object-cover shrink-0 border border-gray-100 dark:border-slate-800"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] flex items-center justify-center text-white text-xs font-bold shrink-0">
-                          {getInitials(reviewer.name)}
-                        </div>
-                      )}
-                      <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">
-                          {reviewer.name || 'Anonymous'}
-                        </h4>
-                        <p className="text-[10px] text-gray-400">
-                          {formatDate(review.createdAt)}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-0.5 text-amber-400 text-xs mt-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <FaStar
-                          key={star}
-                          className={star <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200 dark:text-slate-700'}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed pl-1 pt-1 break-words">
-                    {review.comment}
-                  </p>
-                </div>
-              )
-            })}
+            {reviews.map((review) => (
+              <ReviewCard key={review._id || review.id} review={review} />
+            ))}
 
             {/* Pagination Controls */}
             {pagination.totalPages > 1 && (
