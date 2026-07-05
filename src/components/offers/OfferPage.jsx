@@ -10,6 +10,7 @@ import OfferGallery from './OfferGallery'
 import EditOfferModal from './EditOfferModal'
 import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import ErrorState from '../shared/ErrorState'
+import OfferReviews from './OfferReviews'
 
 export default function OfferPageComponent() {
   const { offerId } = useParams()
@@ -106,57 +107,60 @@ export default function OfferPageComponent() {
                 Delete
               </button>
             </div>
-          )}
-        </div>
 
-        <div className="flex flex-wrap gap-3 mb-6">
-          <span className="text-sm font-bold px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
-            {offer.hourlyRate} Credits/hr
-          </span>
-          <span className="text-sm font-semibold text-gray-500 py-1.5">
-            Category: {offer.category?.name}
-          </span>
-          <span
-            className={`text-sm font-bold px-4 py-1.5 rounded-full ${
-              offer.isActive
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400'
-                : 'bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-gray-400'
-            }`}
-          >
-            {offer.isActive ? 'Active' : 'Inactive'}
-          </span>
-        </div>
+            <div className="flex flex-wrap gap-3 mb-6">
+              <span className="text-sm font-bold px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+                {offer.hourlyRate} Credits/hr
+              </span>
+              <span className="text-sm font-semibold text-gray-500 py-1.5">
+                Category: {offer.category?.name}
+              </span>
+              <span
+                className={`text-sm font-bold px-4 py-1.5 rounded-full ${
+                  offer.isActive
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400'
+                    : 'bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-gray-400'
+                }`}
+              >
+                {offer.isActive ? 'Active' : 'Inactive'}
+              </span>
+            </div>
 
-        <OfferGallery images={offer.sampleWork} />
+            <OfferGallery images={offer.sampleWork} />
 
-        <h3 className="font-bold text-gray-900 dark:text-white mb-2">
-          Description
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-          {offer.description}
-        </p>
-
-        {offer.availabilityNotes && (
-          <>
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
-              Availability
+              Description
             </h3>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-              {offer.availabilityNotes}
+              {offer.description}
             </p>
-          </>
-        )}
 
-        {offer.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-8">
-            {offer.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-              >
-                {tag}
-              </span>
-            ))}
+            {offer.availabilityNotes && (
+              <>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+                  Availability
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                  {offer.availabilityNotes}
+                </p>
+              </>
+            )}
+
+            {offer.tags?.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-8">
+                {offer.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            <button className="w-full mt-4 py-3 rounded-2xl bg-[var(--primary-light)] text-white text-sm font-bold hover:bg-blue-600 transition-colors cursor-pointer">
+              Booking
+            </button>
           </div>
         )}
         <div className="mt-6">
