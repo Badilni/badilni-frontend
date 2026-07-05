@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signinFormValidationSchema } from '../utils/validationSchema'
 import { login as loginService } from '../services/authentication/login'
+import { setAccessToken } from '../api/axios'
 import { handleToastMessage } from '../utils/helper'
 import useAuthStore from '../store/authStore'
 
@@ -40,7 +41,13 @@ export const useLogin = () => {
     try {
       const userData = await loginService(email, password)
       const user = userData?.data?.user ?? userData?.user ?? userData
-
+      // If the backend returned an access token, store it in the axios in-memory
+      // token store so subsequent API calls include Authorization header.
+      const possibleToken =
+        userData?.data?.accessToken ||
+        userData?.accessToken ||
+        userData?.data?.token
+      if (possibleToken) setAccessToken(possibleToken)
       setUser(user)
 
       if (user?.active === false) {

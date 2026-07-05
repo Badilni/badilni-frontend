@@ -26,6 +26,7 @@ import NotFoundPage from '../pages/NotFound/notFound'
 import ChatBadilni from '../pages/Chat/chat'
 import NotificationsPageWrapper from '../pages/Notifications/notifications'
 import BookingPage from '../pages/Booking/BookingPage'
+import BookingPageDetail from '../pages/Booking/BookingPageDetail'
 
 const RootLayout = () => (
   <>
@@ -56,6 +57,7 @@ const router = createHashRouter([
               { path: 'chat/:conversationId', element: <div>chat</div> },
               { path: 'explore', element: <ExplorePage /> },
               { path: 'booking', element: <BookingPage /> },
+              { path: 'bookings/:bookingId', element: <BookingPageDetail /> },
               { path: 'requests', element: <Requests /> },
               { path: 'requests/:requestId', element: <RequestPage /> },
               { path: 'offers', element: <Offers /> },
