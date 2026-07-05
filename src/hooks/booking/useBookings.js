@@ -8,13 +8,12 @@ export const bookingKeys = {
   detail: (id) => [...bookingKeys.all, 'detail', id],
 }
 
-export function useBookings(filters = {}, options = {}) {
+export function useBookings(filters = {}) {
   return useQuery({
     queryKey: bookingKeys.list(filters),
     queryFn: () => fetchBookings(filters),
     placeholderData: (prev) => prev,
     staleTime: 30_000,
-    ...options,
   })
 }
 
