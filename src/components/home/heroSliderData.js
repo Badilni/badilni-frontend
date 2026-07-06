@@ -3,48 +3,52 @@ export const HERO_SLIDES = [
     id: 'slide-welcome',
     title: 'Exchange Skills, Grow Together',
     description:
-      'Connect with talented people, exchange knowledge, and learn new skills without spending money.',
+      'Connect with talented developers, designers, and creators worldwide. Swap your skills and learn for free.',
     primaryCta: { text: 'Explore Skills', path: '/explore' },
-    secondaryCta: { text: 'Get Started', path: '/SignIn' },
+    secondaryCta: { text: 'Get Started', path: '/signUp' },
     image:
-      'https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1600&auto=format&fit=crop',
     imageAlt:
-      'Modern digital collaboration illustration representing skill sharing',
+      'Creative tech team collaborating with high-contrast warm workspace lighting',
+    overlayClass: 'from-blue-950/80 via-slate-950/60 to-transparent',
   },
   {
     id: 'slide-teach',
-    title: 'Teach Free or Paid by Your Time',
+    title: 'Teach Free or Earn Swap Credits',
     description:
-      'Share your skills through direct community swaps or offer premium, time-based sessions. Your expertise, your rules.',
+      'Share your expertise through live coding sessions, design critiques, or language lessons. Your time, your rewards.',
     primaryCta: { text: 'Share Your Skills', path: '/skills' },
-    secondaryCta: { text: 'How it Works', path: '/about' },
+    secondaryCta: { text: 'How it Works', path: '#why-badilni-section' },
     image:
-      'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1547082299-de196ea013d6?q=80&w=1600&auto=format&fit=crop',
     imageAlt:
-      'People actively teaching and learning in a vibrant workspace group',
+      'Aesthetic dual screen programmer workspace with colorful LED lighting',
+    overlayClass: 'from-emerald-950/80 via-slate-950/60 to-transparent',
   },
   {
     id: 'slide-request',
-    title: 'Request Help Easily',
+    title: 'Request Expert Help Instantly',
     description:
-      'Need a specific skill or service? Create a request and connect with the right people instantly.',
+      'Stuck on a tricky bug or looking to learn advanced tools? Post a request and get matched with verified community helpers.',
     primaryCta: { text: 'Create Request', path: '/requests' },
     secondaryCta: null,
     image:
-      'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=1600&auto=format&fit=crop',
     imageAlt:
-      'Task management team aligning a collaboration project strategy board',
+      'UI designer sketching dashboard mockups on a professional screen tablet',
+    overlayClass: 'from-orange-950/80 via-slate-950/60 to-transparent',
   },
   {
     id: 'slide-community',
-    title: 'Join a Trusted Community',
+    title: 'Join a Verified Trust Network',
     description:
-      'Build your profile, earn trust, and collaborate with people who share your interests.',
-    primaryCta: { text: 'Join Community', path: '/SignIn' },
+      'Build your reputation with direct feedback, transparent review scores, and verified user ratings.',
+    primaryCta: { text: 'Join Community', path: '/signUp' },
     secondaryCta: null,
     image:
-      'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop',
     imageAlt:
-      'Diverse community group gathering and collaborating on unified goals',
+      'Glowing holographic communication network representing digital trust connections',
+    overlayClass: 'from-purple-950/80 via-slate-950/60 to-transparent',
   },
 ]

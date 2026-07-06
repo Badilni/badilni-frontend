@@ -23,7 +23,7 @@ export default function ExplorePage() {
           activeCategory={activeCategory?._id ?? null}
           onCategoryChange={handleCategoryChange}
         />
-        <MentorGrid searchQuery={searchQuery} />
+        <MentorGrid searchQuery={searchQuery} activeCategory={activeCategory} />
         <ExploreCTA />
       </div>
 

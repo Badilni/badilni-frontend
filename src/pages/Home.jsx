@@ -1,13 +1,13 @@
-// import TopRatedUsersSection from '../components/home/TopRatedUsersSection'
+import TopRatedUsersSection from '../components/home/TopRatedUsersSection'
 import HeroSlider from '../components/home/HeroSlider'
-import SecondSection from '../components/home/SecondSection'
+import HomeFeatures from '../components/home/HomeFeatures'
 
 const Home = () => {
   return (
     <>
       <HeroSlider />
-      {/* <TopRatedUsersSection /> */}
-      <SecondSection />
+      <HomeFeatures />
+      <TopRatedUsersSection />
     </>
   )
 }
