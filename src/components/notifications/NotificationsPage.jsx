@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useNotifications } from '../../hooks/useNotifications'
 
 // ─── Type → visual meta ──────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ const FILTER_TABS = [
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function NotificationsPage() {
+  const navigate = useNavigate()
   const [activeFilter, setActiveFilter] = useState('all')
   const [selectedId, setSelectedId] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
@@ -216,6 +218,7 @@ export default function NotificationsPage() {
               isDeleting={deletingId === selected._id}
               onDelete={() => handleDelete(selected._id)}
               onBack={() => setMobileView('list')}
+              navigate={navigate}
             />
           ) : (
             <EmptyDetail />
@@ -285,7 +288,7 @@ function SidebarItem({ notification: n, isActive, isDeleting, onClick, onDelete 
 
 // ─── Detail Panel ─────────────────────────────────────────────────────────────
 
-function DetailPanel({ notification: n, isDeleting, onDelete, onBack }) {
+function DetailPanel({ notification: n, isDeleting, onDelete, onBack, navigate }) {
   const meta = getTypeMeta(n.type)
 
   return (
@@ -343,6 +346,50 @@ function DetailPanel({ notification: n, isDeleting, onDelete, onBack }) {
           <p className="text-gray-600 dark:text-gray-400 text-center leading-relaxed text-sm md:text-base mb-8">
             {n.body}
           </p>
+
+          {/* Action button redirect if applicable */}
+          {(() => {
+            const bookingTypes = [
+              'BOOKING_REQUEST',
+              'BOOKING_ACCEPTED',
+              'BOOKING_DECLINED',
+              'BOOKING_CANCELLED',
+              'BOOKING_COMPLETED',
+              'DISPUTE_FILED',
+              'MEETING_LINK_ADDED',
+            ]
+            const creditsTypes = [
+              'CREDITS_RELEASED',
+              'CREDITS_REFUNDED',
+              'CREDITS_WELCOME_BONUS',
+              'CREDITS_ADMIN_ADJUSTMENT',
+            ]
+            
+            let btnText = ''
+            let onClickAction = null
+
+            if (bookingTypes.includes(n.type)) {
+              btnText = 'View Booking Details'
+              onClickAction = () => navigate('/booking')
+            } else if (creditsTypes.includes(n.type)) {
+              btnText = 'Open Wallet Sidebar'
+              onClickAction = () => window.dispatchEvent(new Event('open-user-sidebar'))
+            } else if (n.type === 'NEW_REVIEW') {
+              btnText = 'View Profile Reviews'
+              onClickAction = () => navigate('/profile', { state: { scrollToReviews: true } })
+            }
+
+            if (!btnText) return null
+
+            return (
+              <button
+                onClick={onClickAction}
+                className="w-full mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-sm py-4 rounded-2xl hover:shadow-lg hover:brightness-110 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 cursor-pointer shadow-md text-center"
+              >
+                {btnText}
+              </button>
+            )
+          })()}
 
           {/* Meta card */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-5 space-y-3 shadow-sm">
