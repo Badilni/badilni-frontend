@@ -19,6 +19,8 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
     page,
     limit,
     sort: '-createdAt',
+    user: listingOwnerId,
+    type: 'received',
   })
 
   const reviews = response?.data?.reviews ?? response?.reviews ?? []

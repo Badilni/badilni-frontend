@@ -5,7 +5,7 @@ import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getAccentColor } from '../../utils/getAccentColor'
 import { getProfilePath } from '../../utils/getProfilePath'
-import CreateBookingModal from '../Bookings/CreateBookingModal'
+import CreateBookingModal from '../bookings/CreateBookingModal'
 
 export default function OfferCard({ offer, onEdit, onDelete }) {
   const [showMenu, setShowMenu] = useState(false)

@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useBooking } from '../../hooks/booking/useBookings'
 import BookingDetail from './BookingDetail'
+import BookingReviews from './BookingReviews'
 import ErrorState from '../shared/ErrorState'
 
 export default function BookingPage() {
@@ -27,7 +28,7 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-6">
         <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
           Booking Details
@@ -36,7 +37,15 @@ export default function BookingPage() {
           View and manage this session
         </p>
       </div>
-      <BookingDetail booking={booking} />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="lg:col-span-8 w-full">
+          <BookingDetail booking={booking} />
+        </div>
+        <div className="lg:col-span-4 w-full">
+          <BookingReviews booking={booking} />
+        </div>
+      </div>
     </div>
   )
 }
+

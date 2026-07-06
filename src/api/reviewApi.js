@@ -19,3 +19,10 @@ export const getUserReviewsRequest = (userId, params) => {
 
 export const createReviewRequests = (bookingId, data) =>
   api.post(`/bookings/${bookingId}/reviews`, data).then((r) => r.data)
+
+export const getBookingReviewsRequest = (bookingId, params) =>
+  api.get(`/bookings/${bookingId}/reviews`, { params }).then((r) => r.data)
+
+export const updateReviewRequest = (id, data) =>
+  api.patch(`/reviews/${id}`, data).then((r) => r.data)
+

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchBookings } from '../../services/booking/fetchBookings'
+import { fetchBookings } from '../../services/Booking/fetchBookings'
 import { getBooking } from '../../api/posts'
 import { getBookings } from '../../services/Booking/bookingService'
 
