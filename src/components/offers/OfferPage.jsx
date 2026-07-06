@@ -11,6 +11,7 @@ import EditOfferModal from './EditOfferModal'
 import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import ErrorState from '../shared/ErrorState'
 import OfferReviews from './OfferReviews'
+import CreateBookingModal from '../bookings/CreateBookingModal'
 
 export default function OfferPageComponent() {
   const { offerId } = useParams()
@@ -20,11 +21,24 @@ export default function OfferPageComponent() {
   const currentUser = useAuthStore((state) => state.user)
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [bookingOpen, setBookingOpen] = useState(false)
 
-  // ASSUMPTION: single-resource GET wraps the document as { data: { skillListing } },
-  // mirroring the list endpoint's { data: { skillListings } } shape. Confirm
-  // against the real GET /skill-listings/{id} response before shipping.
-  const offer = data?.data?.skillListing
+  const extractResource = (payload, primaryKey, fallbackKey) => {
+    const candidates = [
+      payload?.[primaryKey],
+      payload?.[fallbackKey],
+      payload?.data?.[primaryKey],
+      payload?.data?.[fallbackKey],
+      payload?.data?.data?.[primaryKey],
+      payload?.data?.data?.[fallbackKey],
+    ].filter(Boolean)
+
+    const firstMatch = candidates[0]
+    if (Array.isArray(firstMatch)) return firstMatch[0] || null
+    return firstMatch || payload?.data || payload
+  }
+
+  const offer = extractResource(data, 'skillListing', 'skillListings')
 
   if (isLoading)
     return (
@@ -42,6 +56,17 @@ export default function OfferPageComponent() {
 
   const owner = checkIsOwner(currentUser, offer.user)
   const profilePath = getProfilePath(offer.user, currentUser)
+  const normalizedStatus = String(offer.status || '')
+    .trim()
+    .toLowerCase()
+  const isFulfilled =
+    normalizedStatus === 'fulfilled' ||
+    normalizedStatus === 'completed' ||
+    offer.isFulfilled === true ||
+    offer.fulfilled === true ||
+    offer.isCompleted === true
+  const isActive = offer.isActive !== false
+  const isUnavailable = owner || !isActive || isFulfilled
 
   const handleDelete = () => {
     deleteOffer.mutate(offer._id ?? offer.id, {
@@ -63,7 +88,8 @@ export default function OfferPageComponent() {
                 >
                   <img
                     src={
-                      offer.user?.avatar?.url || 'https://via.placeholder.com/80'
+                      offer.user?.avatar?.url ||
+                      'https://via.placeholder.com/80'
                     }
                     className="w-12 h-12 rounded-full object-cover"
                     alt={offer.user?.name || 'User'}
@@ -165,14 +191,35 @@ export default function OfferPageComponent() {
 
             {!owner && (
               <div className="mt-6">
+                {isFulfilled && (
+                  <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-400">
+                    This offer is no longer available for booking.
+                  </div>
+                )}
+                {!isFulfilled && !isActive && (
+                  <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-600 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300">
+                    This offer is currently inactive.
+                  </div>
+                )}
                 <button
                   type="button"
-                  onClick={() =>
-                    navigate(`/bookings/new?offerId=${offer._id ?? offer.id}`)
-                  }
-                  className="inline-flex w-full items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xl font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110 cursor-pointer"
+                  onClick={() => {
+                    if (!isUnavailable) setBookingOpen(true)
+                  }}
+                  disabled={isUnavailable}
+                  className={`inline-flex w-full items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xl font-medium transition-all duration-200 ${
+                    owner
+                      ? 'bg-gray-100 text-gray-500 cursor-default'
+                      : isUnavailable
+                        ? 'bg-gray-100 text-gray-500 cursor-default'
+                        : 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110 cursor-pointer'
+                  }`}
                 >
-                  Book
+                  {owner
+                    ? 'Your Offer'
+                    : isFulfilled || !isActive
+                      ? 'Unavailable'
+                      : 'Book'}
                 </button>
               </div>
             )}
@@ -191,6 +238,15 @@ export default function OfferPageComponent() {
         open={editOpen}
         offer={offer}
         onClose={() => setEditOpen(false)}
+      />
+      <CreateBookingModal
+        open={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+        listingId={offer._id ?? offer.id}
+        onSuccess={(booking) => {
+          const id = booking?.data?.booking?._id ?? booking?._id
+          if (id) navigate(`/bookings/${id}`)
+        }}
       />
       <ConfirmDeleteModal
         open={confirmDeleteOpen}

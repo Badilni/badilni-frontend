@@ -53,6 +53,16 @@ export default function RequestCard({
     msUntilDeadline > 0 &&
     msUntilDeadline < 3 * 24 * 60 * 60 * 1000
   const isExpired = Number.isFinite(deadlineMs) && msUntilDeadline <= 0
+  const normalizedStatus = String(safeRequest.status || '')
+    .trim()
+    .toLowerCase()
+  const isFulfilled =
+    normalizedStatus === 'fulfilled' ||
+    normalizedStatus === 'completed' ||
+    safeRequest.isFulfilled === true ||
+    safeRequest.fulfilled === true ||
+    safeRequest.isCompleted === true
+  const isUnavailable = isOwner || isExpired || isFulfilled
 
   const postedAt = safeRequest.createdAt
     ? new Date(safeRequest.createdAt).toLocaleDateString(undefined, {
@@ -110,14 +120,19 @@ export default function RequestCard({
           </div>
         )}
 
-        {isUrgent && (
-          <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
-            URGENT
+        {isFulfilled && (
+          <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
+            FULFILLED
           </div>
         )}
-        {isExpired && (
+        {!isFulfilled && isExpired && (
           <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-gray-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
             DEADLINE PASSED
+          </div>
+        )}
+        {!isFulfilled && !isExpired && isUrgent && (
+          <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-3 py-0.5 rounded-full tracking-wide shadow-md z-10">
+            URGENT
           </div>
         )}
 
@@ -253,25 +268,31 @@ export default function RequestCard({
           <button
             onClick={(e) => {
               e.stopPropagation()
-              if (!isOwner && !isExpired) setBookingOpen(true)
+              if (!isUnavailable) setBookingOpen(true)
             }}
-            disabled={isExpired}
+            disabled={isUnavailable}
             className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
               isOwner
                 ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 cursor-default'
-                : `text-white bg-gradient-to-r ${accentColor} hover:shadow-lg hover:brightness-110`
+                : isFulfilled
+                  ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-default'
+                  : isExpired
+                    ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-default'
+                    : `text-white bg-gradient-to-r ${accentColor} hover:shadow-lg hover:brightness-110`
             }`}
           >
             {isOwner
               ? 'Your Request'
-              : isExpired
-                ? 'Deadline Passed'
-                : 'Book Session'}
+              : isFulfilled
+                ? 'Fulfilled'
+                : isExpired
+                  ? 'Deadline Passed'
+                  : 'Book Session'}
           </button>
         </div>
       </div>
 
-      {!isOwner && (
+      {!isOwner && !isUnavailable && (
         <CreateBookingModal
           open={bookingOpen}
           onClose={() => setBookingOpen(false)}

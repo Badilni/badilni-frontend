@@ -258,10 +258,9 @@ const ProfileTab = ({ user, navigate, openConfirmModal }) => (
 )
 
 /* ── Credits tab ── */
-// FIX: was fully hardcoded (240 balance, fake 60/300 progress bar, 3 fake
-// transactions). Now backed by GET /transactions/balance + GET /transactions.
-const CreditsTab = ({ user }) => {
+const CreditsTab = ({ user, scrollContainerRef }) => {
   const currentUserId = user?._id ?? user?.id
+  const [transactionPage, setTransactionPage] = useState(1)
 
   const {
     data: balanceData,
@@ -275,12 +274,14 @@ const CreditsTab = ({ user }) => {
     isLoading: isTxLoading,
     isError: isTxError,
     refetch: refetchTransactions,
-  } = useTransactions({ limit: 10})
+  } = useTransactions({ limit: 5, page: transactionPage })
 
-  // ASSUMPTION: GET /transactions/balance wraps the figures as
-  // { data: { walletBalance, creditsInEscrow } } — confirmed by screenshot.
-  // Be tolerant of multiple possible response shapes. Backend sometimes
-  // returns numbers under different keys depending on endpoint/version.
+  useEffect(() => {
+    if (scrollContainerRef?.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [transactionPage, scrollContainerRef])
+
   const walletBalance =
     balanceData?.data?.walletBalance ??
     balanceData?.walletBalance ??
@@ -293,25 +294,20 @@ const CreditsTab = ({ user }) => {
     (txData?.walletSummary && txData.walletSummary.creditsInEscrow) ??
     txData?.creditsInEscrow
 
-  // GET /transactions additionally returns a walletSummary alongside the
-  // paginated list (confirmed by screenshot) — reused here instead of
-  // making a second call just for totalEarned/totalSpent.
   const walletSummary = txData?.walletSummary ?? txData?.data?.walletSummary
   const transactions = txData?.data?.transactions ?? txData?.transactions ?? []
+  
+  // FIX: Look in all possible backend response locations
+  const knownTotalPages =
+    txData?.pagination?.totalPages ??
+    txData?.data?.pagination?.totalPages ??
+    txData?.totalPages ??
+    txData?.data?.totalPages
 
-  // Upcoming sessions: fetch recent bookings and show those scheduled in future
-  const { data: bookingsData } = useBookings({ page: 1, limit: 10 })
-  console.log('bookingsData', bookingsData)
-  const bookings = 
-  bookingsData?.data?.bookings ?? []
-  const upcoming = bookings
-    .filter(
-      (b) =>
-        b.scheduledAt &&
-        new Date(b.scheduledAt) > new Date() &&
-        b.status === BOOKING_STATUS.ACCEPTED
-    )
-    .slice(0, 10)
+  // FIX: If backend doesn't send totalPages, guess based on whether the page is full (limit is 5)
+  const isFullPage = transactions.length === 5
+  const effectiveTotalPages = knownTotalPages ?? (isFullPage ? transactionPage + 1 : transactionPage)
+  const showPagination = effectiveTotalPages > 1 || transactionPage > 1
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -329,14 +325,7 @@ const CreditsTab = ({ user }) => {
         </p>
 
         {isBalanceLoading ? (
-          <p
-            style={{
-              fontSize: '20px',
-              fontWeight: '600',
-              margin: 0,
-              opacity: 0.85,
-            }}
-          >
+          <p style={{ fontSize: '20px', fontWeight: '600', margin: 0, opacity: 0.85 }}>
             Loading…
           </p>
         ) : isBalanceError ? (
@@ -370,31 +359,15 @@ const CreditsTab = ({ user }) => {
 
       {walletSummary && (
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div
-            style={{
-              ...S.card,
-              flex: 1,
-              backgroundColor: 'var(--background-light)',
-            }}
-          >
+          <div style={{ ...S.card, flex: 1, backgroundColor: 'var(--background-light)' }}>
             <p style={S.label}>Total earned</p>
-            <p
-              style={{ ...S.value, fontWeight: '600', color: 'var(--success)' }}
-            >
+            <p style={{ ...S.value, fontWeight: '600', color: 'var(--success)' }}>
               +{walletSummary.totalEarned ?? 0}
             </p>
           </div>
-          <div
-            style={{
-              ...S.card,
-              flex: 1,
-              backgroundColor: 'var(--background-light)',
-            }}
-          >
+          <div style={{ ...S.card, flex: 1, backgroundColor: 'var(--background-light)' }}>
             <p style={S.label}>Total spent</p>
-            <p
-              style={{ ...S.value, fontWeight: '600', color: 'var(--danger)' }}
-            >
+            <p style={{ ...S.value, fontWeight: '600', color: 'var(--danger)' }}>
               -{walletSummary.totalSpent ?? 0}
             </p>
           </div>
@@ -405,20 +378,11 @@ const CreditsTab = ({ user }) => {
         <p style={{ ...S.label, marginBottom: '8px' }}>Recent transactions</p>
 
         {isTxLoading && (
-          <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
-            Loading…
-          </p>
+          <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>Loading…</p>
         )}
 
         {isTxError && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '8px',
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
             <p style={{ fontSize: '12px', color: 'var(--danger)', margin: 0 }}>
               Couldn&apos;t load transactions.
             </p>
@@ -448,15 +412,10 @@ const CreditsTab = ({ user }) => {
         {!isTxLoading &&
           !isTxError &&
           transactions.map((transaction) => {
-            const direction = getTransactionDirection(
-              transaction,
-              currentUserId
-            )
+            const direction = getTransactionDirection(transaction, currentUserId)
             const isCredit = direction === 'credit'
             const isEscrow = transaction.type === 'escrow_lock'
-            const label =
-              transaction.description ||
-              getTransactionLabel(transaction, currentUserId)
+            const label = transaction.description || getTransactionLabel(transaction, currentUserId)
 
             const amountText = isEscrow
               ? `±${transaction.amount}`
@@ -482,43 +441,73 @@ const CreditsTab = ({ user }) => {
                 }}
               >
                 <div>
-                  <p
-                    style={{
-                      fontSize: '12px',
-                      color: 'var(--black-text)',
-                      margin: 0,
-                    }}
-                  >
+                  <p style={{ fontSize: '12px', color: 'var(--black-text)', margin: 0 }}>
                     {label}
                   </p>
-                  <p
-                    style={{
-                      fontSize: '11px',
-                      color: 'var(--gray-text)',
-                      margin: 0,
-                    }}
-                  >
-                    {new Date(transaction.createdAt).toLocaleDateString(
-                      undefined,
-                      {
-                        month: 'short',
-                        day: 'numeric',
-                      }
-                    )}
+                  <p style={{ fontSize: '11px', color: 'var(--gray-text)', margin: 0 }}>
+                    {new Date(transaction.createdAt).toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
                   </p>
                 </div>
-                <span
-                  style={{
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    color: amountColor,
-                  }}
-                >
+                <span style={{ fontSize: '13px', fontWeight: '600', color: amountColor }}>
                   {amountText}
                 </span>
               </div>
             )
           })}
+
+        {/* FIX: Robust pagination display checks */}
+        {!isTxLoading && !isTxError && showPagination && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '8px',
+              marginTop: '8px',
+              paddingTop: '8px',
+              borderTop: '1px solid var(--border-color, #e2e8f0)',
+            }}
+          >
+            <button
+              onClick={() => setTransactionPage((page) => Math.max(1, page - 1))}
+              disabled={transactionPage === 1}
+              style={{
+                border: '1px solid var(--border-color, #e2e8f0)',
+                background: 'var(--whiteBackground)',
+                color: transactionPage === 1 ? 'var(--gray-text)' : 'var(--black-text)',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                fontSize: '12px',
+                cursor: transactionPage === 1 ? 'not-allowed' : 'pointer',
+                opacity: transactionPage === 1 ? 0.6 : 1,
+              }}
+            >
+              Previous
+            </button>
+            <span style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
+              {knownTotalPages ? `Page ${transactionPage} of ${knownTotalPages}` : `Page ${transactionPage}`}
+            </span>
+            <button
+              onClick={() => setTransactionPage((page) => Math.min(effectiveTotalPages, page + 1))}
+              disabled={transactionPage >= effectiveTotalPages}
+              style={{
+                border: '1px solid var(--border-color, #e2e8f0)',
+                background: 'var(--whiteBackground)',
+                color: transactionPage >= effectiveTotalPages ? 'var(--gray-text)' : 'var(--black-text)',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                fontSize: '12px',
+                cursor: transactionPage >= effectiveTotalPages ? 'not-allowed' : 'pointer',
+                opacity: transactionPage >= effectiveTotalPages ? 0.6 : 1,
+              }}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -526,16 +515,24 @@ const CreditsTab = ({ user }) => {
 
 /* ── Sessions tab ── */
 const SessionsTab = ({ user }) => {
-  const { data: bookingsData, isLoading } = useBookings({ page: 1, limit: 5 })
-  const bookings = bookingsData?.data?.bookings ?? []
-  const upcoming = bookings
-    .filter(
-      (b) =>
-        b.scheduledAt &&
-        new Date(b.scheduledAt) > new Date() &&
-        b.status === BOOKING_STATUS.ACCEPTED
-    )
-    .slice(0, 5)
+  const [sessionPage, setSessionPage] = useState(1)
+  const { data: bookingsData, isLoading } = useBookings({
+    page: sessionPage,
+    limit: 5,
+    status: 'accepted',
+  })
+  
+  const bookings = bookingsData?.data?.bookings ?? bookingsData?.bookings ?? []
+  const pagination = bookingsData?.pagination ?? bookingsData?.data?.pagination
+  const totalPages =
+    pagination?.totalPages ??
+    bookingsData?.totalPages ??
+    bookingsData?.data?.totalPages ??
+    1
+    
+  const upcoming = bookings.filter(
+    (b) => b.scheduledAt && new Date(b.scheduledAt) > new Date()
+  )
 
   if (isLoading) {
     return (
@@ -545,60 +542,113 @@ const SessionsTab = ({ user }) => {
     )
   }
 
-  if (upcoming.length === 0) {
-    return (
-      <p style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
-        No upcoming sessions.
-      </p>
-    )
-  }
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {upcoming.map((b) => {
-        const role = getBookingRole(b, user)
-        const counterpart = role === 'provider' ? b.receiver : b.provider
-        return (
-          <div
-            key={b._id}
+      {/* FIX: Handled empty state inline so pagination controls aren't destroyed early */}
+      {upcoming.length === 0 ? (
+        <p style={{ fontSize: '12px', color: 'var(--gray-text)', margin: '4px 0' }}>
+          No upcoming sessions on this page.
+        </p>
+      ) : (
+        upcoming.map((b) => {
+          const role = getBookingRole(b, user)
+          const counterpart = role === 'provider' ? b.receiver : b.provider
+          return (
+            <div
+              key={b._id}
+              style={{
+                ...S.card,
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'center',
+              }}
+            >
+              <img
+                src={counterpart?.avatar?.url}
+                alt={counterpart?.name}
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 10,
+                  objectFit: 'cover',
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: '13px', fontWeight: '600', margin: 0 }}>
+                  {b.listing?.title ?? b.request?.title ?? 'Session'}
+                </p>
+                <p
+                  style={{
+                    fontSize: '11px',
+                    color: 'var(--gray-text)',
+                    margin: '4px 0 0',
+                  }}
+                >
+                  {counterpart?.name ?? 'Unknown'} ·{' '}
+                  {new Date(b.scheduledAt).toLocaleString()}
+                </p>
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <BookingStatusBadge status={b.status} />
+              </div>
+            </div>
+          )
+        })
+      )}
+
+      {totalPages > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '8px',
+            marginTop: '4px',
+          }}
+        >
+          <button
+            onClick={() => setSessionPage((page) => Math.max(1, page - 1))}
+            disabled={sessionPage === 1}
             style={{
-              ...S.card,
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
+              border: '1px solid var(--border-color, #e2e8f0)',
+              background: 'var(--whiteBackground)',
+              color:
+                sessionPage === 1 ? 'var(--gray-text)' : 'var(--black-text)',
+              borderRadius: '8px',
+              padding: '6px 10px',
+              fontSize: '12px',
+              cursor: sessionPage === 1 ? 'not-allowed' : 'pointer',
+              opacity: sessionPage === 1 ? 0.6 : 1,
             }}
           >
-            <img
-              src={counterpart?.avatar?.url}
-              alt={counterpart?.name}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 10,
-                objectFit: 'cover',
-              }}
-            />
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: '13px', fontWeight: '600', margin: 0 }}>
-                {b.listing?.title ?? b.request?.title ?? 'Session'}
-              </p>
-              <p
-                style={{
-                  fontSize: '11px',
-                  color: 'var(--gray-text)',
-                  margin: '4px 0 0',
-                }}
-              >
-                {counterpart?.name ?? 'Unknown'} ·{' '}
-                {new Date(b.scheduledAt).toLocaleString()}
-              </p>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <BookingStatusBadge status={b.status} />
-            </div>
-          </div>
-        )
-      })}
+            Previous
+          </button>
+          <span style={{ fontSize: '12px', color: 'var(--gray-text)' }}>
+            Page {sessionPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setSessionPage((page) => Math.min(totalPages, page + 1))
+            }
+            disabled={sessionPage >= totalPages}
+            style={{
+              border: '1px solid var(--border-color, #e2e8f0)',
+              background: 'var(--whiteBackground)',
+              color:
+                sessionPage >= totalPages
+                  ? 'var(--gray-text)'
+                  : 'var(--black-text)',
+              borderRadius: '8px',
+              padding: '6px 10px',
+              fontSize: '12px',
+              cursor: sessionPage >= totalPages ? 'not-allowed' : 'pointer',
+              opacity: sessionPage >= totalPages ? 0.6 : 1,
+            }}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   )
 }

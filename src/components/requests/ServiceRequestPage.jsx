@@ -9,10 +9,13 @@ import EditServiceRequestModal from './EditServiceRequestModal'
 import OfferGallery from '../offers/OfferGallery'
 import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import ErrorState from '../shared/ErrorState'
+import CreateBookingModal from '../bookings/CreateBookingModal'
 
 export default function ServiceRequestPage() {
   const { requestId } = useParams()
   const navigate = useNavigate()
+  const [bookingOpen, setBookingOpen] = useState(false)
+
   const { data, isLoading, isError, error, refetch } =
     useServiceRequest(requestId)
   const deleteRequest = useDeleteServiceRequest()
@@ -20,12 +23,32 @@ export default function ServiceRequestPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
-  // ASSUMPTION: single-resource GET wraps the document as { data: { serviceRequest } },
-  // mirroring the list endpoint's { data: { serviceRequests } } shape (same
-  // assumption used for OfferPage / skill-listings). The previous version of
-  // this page read `data?.serviceRequest` with no nested `data` — confirm the
-  // real shape against Postman before relying on either.
-  const request = data?.data?.serviceRequest
+  const extractResource = (payload, primaryKey, fallbackKey) => {
+    const candidates = [
+      payload?.[primaryKey],
+      payload?.[fallbackKey],
+      payload?.data?.[primaryKey],
+      payload?.data?.[fallbackKey],
+      payload?.data?.data?.[primaryKey],
+      payload?.data?.data?.[fallbackKey],
+    ].filter(Boolean)
+
+    const firstMatch = candidates[0]
+    if (Array.isArray(firstMatch)) return firstMatch[0] || null
+    return firstMatch || payload?.data || payload
+  }
+
+  const request = extractResource(data, 'serviceRequest', 'serviceRequests')
+  const safeRequest = request || {}
+  const safeUser = safeRequest.user || {}
+  const isOwner = checkIsOwner(currentUser, safeUser)
+  const deadlineMs = safeRequest.deadline
+    ? new Date(safeRequest.deadline).getTime()
+    : NaN
+  const msUntilDeadline = Number.isFinite(deadlineMs)
+    ? deadlineMs - Date.now()
+    : Number.POSITIVE_INFINITY
+  const isExpired = Number.isFinite(deadlineMs) && msUntilDeadline <= 0
 
   if (isLoading)
     return (
@@ -43,6 +66,16 @@ export default function ServiceRequestPage() {
 
   const owner = checkIsOwner(currentUser, request.user)
   const profilePath = getProfilePath(request.user, currentUser)
+  const normalizedStatus = String(request.status || '')
+    .trim()
+    .toLowerCase()
+  const isFulfilled =
+    normalizedStatus === 'fulfilled' ||
+    normalizedStatus === 'completed' ||
+    request.isFulfilled === true ||
+    request.fulfilled === true ||
+    request.isCompleted === true
+  const isUnavailable = owner || isExpired || isFulfilled
 
   const handleDelete = () => {
     deleteRequest.mutate(request._id ?? request.id, {
@@ -68,7 +101,7 @@ export default function ServiceRequestPage() {
               alt={request.user?.name || 'User'}
             />
             <div>
-              <p className="-ml-20 font-bold text-gray-900 dark:text-white">
+              <p className="text-left font-bold text-gray-900 dark:text-white">
                 {request.user?.name}
               </p>
               <p className="text-xs text-gray-500">
@@ -124,8 +157,18 @@ export default function ServiceRequestPage() {
         {/* Deadline */}
         {request.deadline && (
           <div className="flex items-center gap-2 mb-8">
-            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-4 h-4 text-gray-500 dark:text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Deadline: {new Date(request.deadline).toLocaleDateString()}
@@ -152,17 +195,39 @@ export default function ServiceRequestPage() {
           </div>
         )}
 
-
         {/* User Info */}
         <div className="mt-6">
+          {isFulfilled && (
+            <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-400">
+              This request has already been fulfilled.
+            </div>
+          )}
+          {isExpired && !isFulfilled && (
+            <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-400">
+              This request deadline has passed.
+            </div>
+          )}
           <button
-            type="button"
-            onClick={() =>
-              navigate(`/bookings/new?requestId=${request._id ?? request.id}`)
-            }
-            className="w-full text-center text-2xl items-center gap-2 px-5 py-2.5 rounded-xl font-medium font-serif text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110"
+            onClick={(e) => {
+              e.stopPropagation()
+              if (!isUnavailable) setBookingOpen(true)
+            }}
+            disabled={isUnavailable}
+            className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
+              isOwner
+                ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 cursor-default'
+                : isFulfilled
+                  ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-default'
+                  : 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:shadow-lg hover:brightness-110'
+            }`}
           >
-            Book
+            {isOwner
+              ? 'Your Request'
+              : isFulfilled
+                ? 'Fulfilled'
+                : isExpired
+                  ? 'Deadline Passed'
+                  : 'Book Session'}
           </button>
         </div>
       </div>
@@ -180,6 +245,18 @@ export default function ServiceRequestPage() {
         onConfirm={handleDelete}
         onCancel={() => setConfirmDeleteOpen(false)}
       />
+
+      {!isOwner && !isUnavailable && (
+        <CreateBookingModal
+          open={bookingOpen}
+          onClose={() => setBookingOpen(false)}
+          requestId={request._id ?? request.id}
+          onSuccess={(booking) => {
+            const id = booking?.data?.booking?._id ?? booking?._id
+            if (id) navigate(`/bookings/${id}`)
+          }}
+        />
+      )}
     </div>
   )
 }
