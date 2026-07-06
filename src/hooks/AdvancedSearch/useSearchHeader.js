@@ -1,13 +1,57 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { fetchUsersService } from '../../services/AdvancedSearch/search'
+import { fetchOffers } from '../../services/Posts/fetchOffers'
+import { fetchServiceRequests } from '../../services/Posts/serviceRequestsServices'
+
+const SEARCH_LIMIT = 9
+
+export const extractCollection = (payload, keys = []) => {
+  if (Array.isArray(payload)) return payload
+
+  if (!payload || typeof payload !== 'object') return []
+
+  const fallbackKeys = [
+    'users',
+    'skillListings',
+    'serviceRequests',
+    'results',
+    'items',
+  ]
+
+  if (Array.isArray(payload.data)) return payload.data
+  if (Array.isArray(payload.results)) return payload.results
+  if (Array.isArray(payload.items)) return payload.items
+
+  for (const key of fallbackKeys) {
+    if (Array.isArray(payload[key])) return payload[key]
+  }
+
+  const nestedValue = keys.reduce((acc, key) => {
+    if (acc && typeof acc === 'object' && key in acc) return acc[key]
+    return undefined
+  }, payload)
+
+  if (Array.isArray(nestedValue)) return nestedValue
+  if (nestedValue && typeof nestedValue === 'object') {
+    const nestedCollection = extractCollection(nestedValue, keys)
+    if (Array.isArray(nestedCollection)) return nestedCollection
+  }
+
+  if (payload.data && typeof payload.data === 'object') {
+    const fromData = extractCollection(payload.data, keys)
+    if (Array.isArray(fromData)) return fromData
+  }
+
+  return []
+}
 
 export default function useSearchHeader() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  // Track state against standard 'q' key query parameter
-  const queryKeyword = searchParams.get('q') || ''
+  const queryKeyword =
+    searchParams.get('q') || searchParams.get('keyword') || ''
   const queryPage = parseInt(searchParams.get('page')) || 1
   const currentFilter = searchParams.get('type') || 'all'
 
@@ -18,13 +62,11 @@ export default function useSearchHeader() {
   const [totalResults, setTotalResults] = useState(0)
   const [searchError, setSearchError] = useState(null)
 
-  // Synchronize input bar state when user uses browser back/forward buttons
   useEffect(() => {
     setKeywordInput(queryKeyword)
   }, [queryKeyword])
 
   useEffect(() => {
-    // If no active search query exists in the URL parameters, clear out elements safely
     if (!searchParams.has('q')) {
       setSearchResults([])
       setTotalResults(0)
@@ -35,41 +77,147 @@ export default function useSearchHeader() {
     const fetchResults = async () => {
       setResultsLoading(true)
       setSearchError(null)
+
       try {
-        const resData = await fetchUsersService({
-          keyword: queryKeyword.trim() || undefined,
-          page: queryPage,
-          limit: 10,
-          sort: 'averageRating',
-        })
+        const keyword = queryKeyword.trim() || undefined
+        const filterType = currentFilter || 'all'
 
-        if (resData) {
-          const usersList =
-            resData.data?.users ||
-            resData.users ||
-            resData.data ||
-            (Array.isArray(resData) ? resData : [])
+        if (filterType === 'people') {
+          const resData = await fetchUsersService({
+            keyword,
+            page: queryPage,
+            limit: SEARCH_LIMIT,
+            sort: 'averageRating',
+          })
 
+          const usersList = extractCollection(resData, ['users', 'data'])
           const activeUsers = usersList.filter(
             (user) =>
-              user.isDeactivated !== true && user.status !== 'deactivated'
+              user?.isDeactivated !== true && user?.status !== 'deactivated'
           )
 
-          setSearchResults(activeUsers)
+          const normalizedResults = activeUsers.map((user) => ({
+            kind: 'people',
+            data: user,
+          }))
+          setSearchResults(normalizedResults)
           setTotalPages(
-            resData.pagination?.totalPages || resData.totalPages || 1
+            resData?.pagination?.totalPages || resData?.totalPages || 1
           )
           setTotalResults(
-            resData.pagination?.totalCount ||
-              resData.totalCount ||
-              activeUsers.length ||
+            resData?.pagination?.totalCount ||
+              resData?.totalCount ||
+              normalizedResults.length ||
               0
           )
-        } else {
-          setSearchResults([])
-          setTotalResults(0)
-          setTotalPages(1)
+          return
         }
+
+        if (filterType === 'offers') {
+          const resData = await fetchOffers({
+            keyword,
+            page: queryPage,
+            limit: SEARCH_LIMIT,
+          })
+          const offersList = extractCollection(resData, [
+            'skillListings',
+            'data',
+          ])
+          const normalizedResults = offersList.map((offer) => ({
+            kind: 'offers',
+            data: offer,
+          }))
+          setSearchResults(normalizedResults)
+          setTotalPages(
+            resData?.pagination?.totalPages || resData?.totalPages || 1
+          )
+          setTotalResults(
+            resData?.pagination?.totalCount ||
+              resData?.totalCount ||
+              normalizedResults.length ||
+              0
+          )
+          return
+        }
+
+        if (filterType === 'requests') {
+          const resData = await fetchServiceRequests({
+            keyword,
+            page: queryPage,
+            limit: SEARCH_LIMIT,
+          })
+          const requestsList = extractCollection(resData, [
+            'serviceRequests',
+            'data',
+          ])
+          const normalizedResults = requestsList.map((request) => ({
+            kind: 'requests',
+            data: request,
+          }))
+          setSearchResults(normalizedResults)
+          setTotalPages(
+            resData?.pagination?.totalPages || resData?.totalPages || 1
+          )
+          setTotalResults(
+            resData?.pagination?.totalCount ||
+              resData?.totalCount ||
+              normalizedResults.length ||
+              0
+          )
+          return
+        }
+
+        const [usersResponse, offersResponse, requestsResponse] =
+          await Promise.allSettled([
+            fetchUsersService({
+              keyword,
+              page: queryPage,
+              limit: SEARCH_LIMIT,
+              sort: 'averageRating',
+            }),
+            fetchOffers({ keyword, page: queryPage, limit: SEARCH_LIMIT }),
+            fetchServiceRequests({
+              keyword,
+              page: queryPage,
+              limit: SEARCH_LIMIT,
+            }),
+          ])
+
+        const userItems =
+          usersResponse.status === 'fulfilled'
+            ? extractCollection(usersResponse.value, ['users', 'data'])
+            : []
+        const offerItems =
+          offersResponse.status === 'fulfilled'
+            ? extractCollection(offersResponse.value, ['skillListings', 'data'])
+            : []
+        const requestItems =
+          requestsResponse.status === 'fulfilled'
+            ? extractCollection(requestsResponse.value, [
+                'serviceRequests',
+                'data',
+              ])
+            : []
+
+        const activeUsers = userItems.filter(
+          (user) =>
+            user?.isDeactivated !== true && user?.status !== 'deactivated'
+        )
+
+        const normalizedResults = [
+          ...activeUsers.map((user) => ({ kind: 'people', data: user })),
+          ...offerItems.map((offer) => ({ kind: 'offers', data: offer })),
+          ...requestItems.map((request) => ({
+            kind: 'requests',
+            data: request,
+          })),
+        ]
+
+        setSearchResults(normalizedResults)
+        setTotalResults(normalizedResults.length)
+        setTotalPages(
+          Math.max(1, Math.ceil(normalizedResults.length / SEARCH_LIMIT))
+        )
       } catch (error) {
         console.error('Fetch error using service:', error)
         setSearchError(
@@ -90,7 +238,6 @@ export default function useSearchHeader() {
     e.preventDefault()
     const trimmed = keywordInput.trim()
     if (trimmed) {
-      // Force navigation onto our dedicated search dashboard view with clean state params
       navigate(`/search?q=${encodeURIComponent(trimmed)}&page=1&type=all`)
     } else {
       navigate('/search')
@@ -103,6 +250,14 @@ export default function useSearchHeader() {
 
   const handleFilterPeople = () => {
     setSearchParams({ q: queryKeyword, page: '1', type: 'people' })
+  }
+
+  const handleFilterOffers = () => {
+    setSearchParams({ q: queryKeyword, page: '1', type: 'offers' })
+  }
+
+  const handleFilterRequests = () => {
+    setSearchParams({ q: queryKeyword, page: '1', type: 'requests' })
   }
 
   const handlePageChange = (pageAction) => {
@@ -130,5 +285,7 @@ export default function useSearchHeader() {
     handlePageChange,
     handleFilterAll,
     handleFilterPeople,
+    handleFilterOffers,
+    handleFilterRequests,
   }
 }
