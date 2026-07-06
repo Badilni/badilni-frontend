@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import useAdvancedSearch from '../hooks/AdvancedSearch/useSearchHeader'
-import SearchHeader from '../components/AdvancedSearch/SearchHeader'
 import AdvancedResultsView from '../components/AdvancedSearch/searchResultView'
-import AdvancedSearchSystem from '../components/AdvancedSearch/AdvancedSearchSystem'
 
 export default function SearchPage() {
   const {
@@ -17,22 +15,20 @@ export default function SearchPage() {
     handlePageChange,
     handleFilterAll,
     handleFilterPeople,
+    handleFilterOffers,
+    handleFilterRequests,
   } = useAdvancedSearch()
 
-  // Scroll smoothly to top when current page indices change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [queryPage, queryKeyword])
 
   return (
-    <div
-      className="w-full min-h-screen flex flex-col"
-      style={{ backgroundColor: 'var(--background-light, #f8fafc)' }}
-    >
+    <div className="min-h-screen w-full bg-[var(--color-bg)]">
       <div className="flex-grow">
         {searchError ? (
-          <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-            <div className="inline-flex p-4 bg-red-50 dark:bg-red-950/30 rounded-full text-red-500 mb-4">
+          <div className="mx-auto max-w-4xl px-4 py-16 text-center">
+            <div className="mb-4 inline-flex rounded-full bg-red-50 p-4 text-red-500 dark:bg-red-950/30">
               <svg
                 width="32"
                 height="32"
@@ -48,8 +44,8 @@ export default function SearchPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-1">
-              Search Request Failed
+            <h3 className="mb-1 text-lg font-bold text-gray-800 dark:text-gray-200">
+              Search request failed
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {searchError}
@@ -65,7 +61,10 @@ export default function SearchPage() {
             totalResults={totalResults}
             onFilterAll={handleFilterAll}
             onFilterPeople={handleFilterPeople}
+            onFilterOffers={handleFilterOffers}
+            onFilterRequests={handleFilterRequests}
             currentFilter={currentFilter}
+            queryKeyword={queryKeyword}
           />
         )}
       </div>

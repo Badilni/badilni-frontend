@@ -302,7 +302,8 @@ const CreditsTab = ({ user }) => {
   // Upcoming sessions: fetch recent bookings and show those scheduled in future
   const { data: bookingsData } = useBookings({ page: 1, limit: 10 })
   console.log('bookingsData', bookingsData)
-  const bookings = bookingsData?.data?.bookings ?? []
+  const bookings = 
+  bookingsData?.data?.bookings ?? []
   const upcoming = bookings
     .filter(
       (b) =>

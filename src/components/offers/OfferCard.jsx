@@ -22,7 +22,7 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
     <>
       <div
         onClick={handleCardClick}
-        className="relative bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-blue-200 dark:hover:border-blue-800 flex flex-col overflow-hidden transition-all duration-300"
+        className="relative h-full bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-blue-200 dark:hover:border-blue-800 flex flex-col overflow-hidden transition-all duration-300"
       >
         <div className={`h-1 w-full bg-gradient-to-r ${accentColor}`} />
 
