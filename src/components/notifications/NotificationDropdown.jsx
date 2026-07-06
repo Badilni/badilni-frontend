@@ -106,6 +106,32 @@ export default function NotificationDropdown() {
 
   const handleNotificationClick = (n) => {
     if (!n.isRead) markAsRead(n._id)
+    setIsOpen(false)
+
+    const type = n.type
+    const bookingTypes = [
+      'BOOKING_REQUEST',
+      'BOOKING_ACCEPTED',
+      'BOOKING_DECLINED',
+      'BOOKING_CANCELLED',
+      'BOOKING_COMPLETED',
+      'DISPUTE_FILED',
+      'MEETING_LINK_ADDED',
+    ]
+    const creditsTypes = [
+      'CREDITS_RELEASED',
+      'CREDITS_REFUNDED',
+      'CREDITS_WELCOME_BONUS',
+      'CREDITS_ADMIN_ADJUSTMENT',
+    ]
+
+    if (bookingTypes.includes(type)) {
+      navigate('/booking')
+    } else if (creditsTypes.includes(type)) {
+      window.dispatchEvent(new Event('open-user-sidebar'))
+    } else if (type === 'NEW_REVIEW') {
+      navigate('/profile', { state: { scrollToReviews: true } })
+    }
   }
 
   const handleDelete = (e, id) => {

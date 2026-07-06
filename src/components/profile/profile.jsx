@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { FaGraduationCap } from 'react-icons/fa'
 import { FiSettings, FiLock, FiKey } from 'react-icons/fi'
 import ProfileHeader from './ProfileHeader'
@@ -70,6 +70,7 @@ const ProfileScreen = () => {
   const isOwnProfile = !userId || userId === currentLoggedUserId
 
   const navigate = useNavigate()
+  const location = useLocation()
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
   useEffect(() => {
@@ -77,6 +78,20 @@ const ProfileScreen = () => {
     window.addEventListener('trigger-deactivate-modal', handleTrigger)
     return () => window.removeEventListener('trigger-deactivate-modal', handleTrigger)
   }, [])
+
+  // Handle smooth scroll to reviews if redirected from notification click
+  useEffect(() => {
+    if (location.hash === '#reviews' || location.state?.scrollToReviews) {
+      // Small timeout to allow element rendering to complete
+      const t = setTimeout(() => {
+        const element = document.getElementById('profile-reviews-section')
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 300)
+      return () => clearTimeout(t)
+    }
+  }, [location.hash, location.state])
 
   if (isLoading) return <div className="py-20 text-center">Loading profile...</div>
 
@@ -110,9 +125,10 @@ const ProfileScreen = () => {
 
         {/* Right column */}
         <div className="lg:col-span-8 space-y-6">
-          <RatingsCard profile={profile} />
-
-          <ProfileReviewsSection userId={userId ? userId : null} />
+          <div id="profile-reviews-section" className="space-y-6 scroll-mt-20">
+            <RatingsCard profile={profile} />
+            <ProfileReviewsSection userId={userId ? userId : null} />
+          </div>
           <ProfileActivityTabs isOwnProfile={isOwnProfile} />
         </div>
       </div>
