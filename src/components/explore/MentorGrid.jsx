@@ -1,187 +1,136 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import MentorCard from './MentorCard'
+import { fetchUsersService } from '../../services/AdvancedSearch/search'
 
 const FILTERS = [
-  'All Mentors',
-  'Available Now',
+  'All Members',
   'Top Rated',
-  'Free Sessions',
   'Newest',
 ]
 
-const MENTORS = [
-  {
-    id: 1,
-    name: 'Sarah Jenkins',
-    role: 'Senior Product Designer',
-    company: 'Google',
-    rating: 4.9,
-    reviews: 128,
-    tags: ['UX Design', 'Figma', 'Career'],
-    bio: 'Expert in user research and scalable design systems for global consumer products.',
-    price: null,
-    available: true,
-    avatar:
-      'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
-    tagColor: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-    accentColor: 'from-blue-500 to-indigo-600',
-  },
-  {
-    id: 2,
-    name: 'Alex Rivera',
-    role: 'Full Stack Lead',
-    company: 'Vercel',
-    rating: 5.0,
-    reviews: 214,
-    tags: ['Next.js', 'AWS', 'Node.js'],
-    bio: 'Building high-performance serverless architectures and mentoring engineers globally.',
-    price: 40,
-    available: false,
-    avatar:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-    tagColor:
-      'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-    accentColor: 'from-emerald-500 to-teal-600',
-  },
-  {
-    id: 3,
-    name: 'Priya Sharma',
-    role: 'Marketing Director',
-    company: 'Nike',
-    rating: 4.8,
-    reviews: 96,
-    tags: ['Branding', 'Strategy', 'Growth'],
-    bio: 'Passionate about brand storytelling and building community-driven marketing campaigns.',
-    price: 65,
-    available: true,
-    avatar:
-      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face',
-    tagColor:
-      'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300',
-    accentColor: 'from-purple-500 to-pink-600',
-  },
-  {
-    id: 4,
-    name: 'Michael Chen',
-    role: 'ML Lead',
-    company: 'Spotify',
-    rating: 4.7,
-    reviews: 73,
-    tags: ['Python', 'MLOps', 'Stats'],
-    bio: 'Expert in recommendation algorithms and scaling machine learning pipelines.',
-    price: null,
-    available: true,
-    avatar:
-      'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop&crop=face',
-    tagColor:
-      'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300',
-    accentColor: 'from-orange-500 to-red-600',
-  },
-  {
-    id: 5,
-    name: 'Lena Mueller',
-    role: 'iOS Engineer',
-    company: 'Apple',
-    rating: 4.9,
-    reviews: 157,
-    tags: ['Swift', 'SwiftUI', 'iOS'],
-    bio: 'Crafting delightful iOS experiences at Apple. Helping engineers level up their mobile skills.',
-    price: 55,
-    available: false,
-    avatar:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
-    tagColor: 'bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300',
-    accentColor: 'from-teal-500 to-cyan-600',
-  },
-  {
-    id: 6,
-    name: 'James Okafor',
-    role: 'DevOps Architect',
-    company: 'Cloudflare',
-    rating: 4.6,
-    reviews: 51,
-    tags: ['Kubernetes', 'CI/CD', 'Terraform'],
-    bio: 'Automating everything at scale. DevOps, platform engineering, and cloud infrastructure.',
-    price: 70,
-    available: true,
-    avatar:
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
-    tagColor: 'bg-pink-50 text-pink-700 dark:bg-pink-950/40 dark:text-pink-300',
-    accentColor: 'from-pink-500 to-rose-600',
-  },
-  {
-    id: 7,
-    name: 'Yuki Tanaka',
-    role: 'Data Scientist',
-    company: 'OpenAI',
-    rating: 5.0,
-    reviews: 189,
-    tags: ['LLMs', 'PyTorch', 'Research'],
-    bio: 'Working on frontier AI research. Happy to guide those breaking into the ML space.',
-    price: null,
-    available: true,
-    avatar:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face',
-    tagColor:
-      'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300',
-    accentColor: 'from-indigo-500 to-blue-600',
-  },
-  {
-    id: 8,
-    name: 'Carlos Mendez',
-    role: 'Startup Founder',
-    company: 'YC Alumni',
-    rating: 4.8,
-    reviews: 62,
-    tags: ['Fundraising', 'GTM', 'Product'],
-    bio: 'Built and sold two startups. Mentoring founders on product-market fit and growth.',
-    price: 90,
-    available: false,
-    avatar:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-    tagColor:
-      'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
-    accentColor: 'from-amber-500 to-yellow-600',
-  },
-]
+function CardSkeleton() {
+  return (
+    <div className="flex flex-col h-[400px] bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-3xl overflow-hidden animate-pulse shadow-sm">
+      <div className="h-52 w-full bg-gray-200 dark:bg-slate-800" />
+      <div className="p-6 flex-1 space-y-4">
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 dark:bg-slate-800 rounded-md w-3/4" />
+          <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded-md w-1/2" />
+        </div>
+        <div className="flex gap-2">
+          <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded-lg w-12" />
+          <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded-lg w-16" />
+        </div>
+        <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded-md w-full" />
+      </div>
+    </div>
+  )
+}
 
-export default function MentorGrid({ searchQuery = '' }) {
-  const [activeFilter, setActiveFilter] = useState('All Mentors')
+export default function MentorGrid({ searchQuery = '', activeCategory = null }) {
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [activeFilter, setActiveFilter] = useState('All Members')
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalResults, setTotalResults] = useState(0)
 
-  // TODO: replace with real API data
-  const filteredMentors = MENTORS.filter((mentor) => {
-    const matchesFilter =
-      activeFilter === 'All Mentors' ||
-      (activeFilter === 'Available Now' && mentor.available) ||
-      (activeFilter === 'Top Rated' && mentor.rating >= 4.8) ||
-      (activeFilter === 'Free Sessions' && !mentor.price) ||
-      activeFilter === 'Newest'
+  // Reset pagination state when filters change
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery, activeFilter, activeCategory])
 
-    const matchesSearch =
-      !searchQuery ||
-      mentor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      mentor.tags.some((t) =>
-        t.toLowerCase().includes(searchQuery.toLowerCase())
-      ) ||
-      mentor.role.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    const fetchRealData = async () => {
+      try {
+        setLoading(true)
+        setError(false)
 
-    return matchesFilter && matchesSearch
-  })
+        let sort = 'averageRating'
+        if (activeFilter === 'Top Rated') {
+          sort = '-averageRating'
+        } else if (activeFilter === 'Newest') {
+          sort = '-createdAt'
+        }
+
+        let finalKeyword = searchQuery || undefined
+        if (activeCategory && activeCategory.name) {
+          finalKeyword = activeCategory.name
+        }
+
+        const resData = await fetchUsersService({
+          keyword: finalKeyword,
+          page,
+          limit: 12,
+          sort,
+        })
+
+        if (resData) {
+          const usersList =
+            resData.data?.users ||
+            resData.users ||
+            resData.data ||
+            (Array.isArray(resData) ? resData : [])
+
+          const activeUsers = usersList.filter(
+            (user) =>
+              user.isDeactivated !== true && user.status !== 'deactivated'
+          )
+
+          if (page === 1) {
+            setUsers(activeUsers)
+          } else {
+            setUsers((prev) => [...prev, ...activeUsers])
+          }
+
+          setTotalPages(
+            resData.pagination?.totalPages || resData.totalPages || 1
+          )
+          setTotalResults(
+            resData.pagination?.totalCount ||
+              resData.totalCount ||
+              activeUsers.length ||
+              0
+          )
+        } else {
+          if (page === 1) {
+            setUsers([])
+          }
+          setTotalPages(1)
+          setTotalResults(0)
+        }
+      } catch (err) {
+        console.error('Error fetching Explore users:', err)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRealData()
+  }, [searchQuery, activeFilter, activeCategory, page])
+
+  const handleLoadMore = () => {
+    if (page < totalPages) {
+      setPage((prev) => prev + 1)
+    }
+  }
 
   return (
-    <section>
+    <section className="py-8">
       {/* Header + filter pills */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-1">
-            Top Mentors for You
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-1">
+            Community Members
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             Showing{' '}
             <span className="font-semibold text-blue-600 dark:text-blue-400">
-              {filteredMentors.length}
+              {users.length}
             </span>{' '}
-            of 2,450 mentors
+            of {totalResults} active profiles
           </p>
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
@@ -189,10 +138,10 @@ export default function MentorGrid({ searchQuery = '' }) {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+              className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 activeFilter === filter
                   ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-md'
-                  : 'bg-[var(--whiteBackground)] dark:bg-slate-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600'
+                  : 'bg-[var(--whiteBackground)] dark:bg-slate-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-600'
               }`}
             >
               {filter}
@@ -201,53 +150,77 @@ export default function MentorGrid({ searchQuery = '' }) {
         </div>
       </div>
 
-      {/* Grid or empty state */}
-      {filteredMentors.length === 0 ? (
+      {/* Loading Skeletons */}
+      {loading && page === 1 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <CardSkeleton key={idx} />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="w-full flex flex-col items-center justify-center py-12 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-2xl p-6 text-center">
+          <p className="text-sm font-medium text-red-500 dark:text-red-400">
+            Failed to load members. Please check your connection or try again later.
+          </p>
+        </div>
+      ) : users.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="text-5xl mb-4">🔍</div>
           <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">
-            No mentors found
+            No members found
           </h3>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
-            Try adjusting your filters or search term
+          <p className="text-sm text-gray-450 dark:text-gray-500 mb-6">
+            Try adjusting your category selection or filter choice
           </p>
           <button
-            onClick={() => setActiveFilter('All Mentors')}
+            onClick={() => {
+              setActiveFilter('All Members')
+            }}
             className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-500 transition-colors"
           >
             Clear filters
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMentors.map((mentor) => (
-            <MentorCard key={mentor.id} mentor={mentor} />
-          ))}
-        </div>
-      )}
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {users.map((user, idx) => (
+              <MentorCard key={user._id || user.id} mentor={user} index={idx} />
+            ))}
+          </div>
 
-      {/* Load more */}
-      <div className="mt-16 flex flex-col items-center gap-3">
-        <button className="group flex items-center gap-3 bg-[var(--whiteBackground)] dark:bg-slate-900 border border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 text-gray-700 dark:text-gray-300 px-10 py-4 rounded-2xl text-sm font-bold transition-all duration-200 shadow-sm hover:shadow-md">
-          Load More Mentors
-          <svg
-            className="w-4 h-4 text-blue-500 group-hover:rotate-180 transition-transform duration-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2.5}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-        </button>
-        <p className="text-xs text-gray-400 dark:text-gray-500">
-          Showing {filteredMentors.length} of 2,450 mentors
-        </p>
-      </div>
+          {/* Load more button */}
+          {page < totalPages && (
+            <div className="mt-16 flex flex-col items-center gap-3">
+              <button
+                onClick={handleLoadMore}
+                disabled={loading}
+                className="group flex items-center gap-3 bg-[var(--whiteBackground)] dark:bg-slate-900 border border-gray-200 dark:border-slate-800 hover:border-blue-450 dark:hover:border-blue-500 text-gray-700 dark:text-gray-300 px-10 py-4 rounded-2xl text-sm font-bold transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50"
+              >
+                <span>{loading ? 'Loading...' : 'Load More Members'}</span>
+                {!loading && (
+                  <svg
+                    className="w-4 h-4 text-blue-500 group-hover:rotate-180 transition-transform duration-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                )}
+              </button>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                Showing {users.length} of {totalResults} members
+              </p>
+            </div>
+          )}
+        </>
+      )}
     </section>
   )
 }
