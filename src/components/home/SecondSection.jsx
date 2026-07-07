@@ -1,6 +1,6 @@
 import ExploreCategoryGrid from '../explore/ExploreCategoryGrid'
 import ExploreStats from '../explore/ExploreStats'
-import { useState} from 'react'
+import { useState } from 'react'
 
 const SecondSection = () => {
   const [activeCategory, setActiveCategory] = useState(null)

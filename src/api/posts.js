@@ -30,22 +30,36 @@ export const getAllServiceRequests = (params) =>
 
 export const getServiceRequest = (serviceRequestId, params) =>
   // `params` lets callers send sparse fieldsets: ?fields=title,description,category (img 3)
-  api.get(`/service-requests/${serviceRequestId}`, { params }).then((r) => r.data)
+  api
+    .get(`/service-requests/${serviceRequestId}`, { params })
+    .then((r) => r.data)
 
 export const createServiceRequest = (payload) =>
-  api.post('/service-requests', buildServiceRequestFormData(payload)).then((r) => r.data)
+  api
+    .post('/service-requests', buildServiceRequestFormData(payload))
+    .then((r) => r.data)
 
 export const editServiceRequest = (serviceRequestId, payload) =>
   // Only include keys that actually changed — confirmed PATCH is a true
   // partial update; img 7 shows a real PATCH with a single field checked.
-  api.patch(`/service-requests/${serviceRequestId}`, buildServiceRequestFormData(payload)).then((r) => r.data)
+  api
+    .patch(
+      `/service-requests/${serviceRequestId}`,
+      buildServiceRequestFormData(payload)
+    )
+    .then((r) => r.data)
 
 export const deleteServiceRequest = (serviceRequestId) =>
   api.delete(`/service-requests/${serviceRequestId}`).then((r) => r.data)
 
 export const getUserServiceRequests = (userId, params) =>
   api
-    .get(userId ? `/users/${userId}/service-requests` : '/users/me/service-requests', { params })
+    .get(
+      userId
+        ? `/users/${userId}/service-requests`
+        : '/users/me/service-requests',
+      { params }
+    )
     .then((r) => r.data)
 
 // ---------------------------------------------------------------------------
@@ -59,17 +73,24 @@ export const getSkillListing = (skillId, params) =>
   api.get(`/skill-listings/${skillId}`, { params }).then((r) => r.data)
 
 export const createSkillListing = (payload) =>
-  api.post('/skill-listings', buildSkillListingFormData(payload)).then((r) => r.data)
+  api
+    .post('/skill-listings', buildSkillListingFormData(payload))
+    .then((r) => r.data)
 
 export const editSkillListing = (skillId, payload) =>
-  api.patch(`/skill-listings/${skillId}`, buildSkillListingFormData(payload)).then((r) => r.data)
+  api
+    .patch(`/skill-listings/${skillId}`, buildSkillListingFormData(payload))
+    .then((r) => r.data)
 
 export const deleteSkillListing = (skillId) =>
   api.delete(`/skill-listings/${skillId}`).then((r) => r.data)
 
 export const getUserSkillListings = (userId, params) =>
   api
-    .get(userId ? `/users/${userId}/skill-listings` : '/users/me/skill-listings', { params })
+    .get(
+      userId ? `/users/${userId}/skill-listings` : '/users/me/skill-listings',
+      { params }
+    )
     .then((r) => r.data)
 
 // ---------------------------------------------------------------------------
@@ -107,7 +128,8 @@ export function buildServiceRequestFormData({
   appendIfPresent(fd, 'description', description)
   appendIfPresent(fd, 'creditsOffered', creditsOffered)
   appendIfPresent(fd, 'deadline', deadline)
-  if (Array.isArray(keepImageIds)) keepImageIds.forEach((id) => fd.append('existingReferenceImages', id))
+  if (Array.isArray(keepImageIds))
+    keepImageIds.forEach((id) => fd.append('existingReferenceImages', id))
   appendFiles(fd, 'referenceImages', referenceImages)
   return fd
 }
@@ -147,7 +169,8 @@ export function buildSkillListingFormData({
   appendIfPresent(fd, 'availabilityNotes', availabilityNotes)
   if (isActive !== undefined) fd.append('isActive', String(isActive))
   if (Array.isArray(tags)) tags.forEach((tag) => fd.append('tags', tag))
-  if (Array.isArray(keepImageIds)) keepImageIds.forEach((id) => fd.append('existingSampleWork', id))
+  if (Array.isArray(keepImageIds))
+    keepImageIds.forEach((id) => fd.append('existingSampleWork', id))
   appendFiles(fd, 'sampleWork', sampleWork)
   return fd
 }
@@ -160,7 +183,14 @@ export function buildSkillListingFormData({
 // creation even when the user was authenticated.
 // ---------------------------------------------------------------------------
 
-function buildBookingFormData({ listing, request, scheduledAt, durationHours, note, attachments } = {}) {
+function buildBookingFormData({
+  listing,
+  request,
+  scheduledAt,
+  durationHours,
+  note,
+  attachments,
+} = {}) {
   const fd = new FormData()
   appendIfPresent(fd, 'listing', listing)
   appendIfPresent(fd, 'request', request)
@@ -168,7 +198,9 @@ function buildBookingFormData({ listing, request, scheduledAt, durationHours, no
   appendIfPresent(fd, 'durationHours', durationHours)
   appendIfPresent(fd, 'note', note)
   if (attachments?.length) {
-    const files = Array.isArray(attachments) ? attachments : Array.from(attachments)
+    const files = Array.isArray(attachments)
+      ? attachments
+      : Array.from(attachments)
     files.slice(0, 3).forEach((file) => fd.append('attachments', file))
   }
   return fd
@@ -180,8 +212,7 @@ export const createBooking = (payload) =>
 export const getBookings = (params) =>
   api.get('/bookings', { params }).then((r) => r.data)
 
-export const getBooking = (id) =>
-  api.get(`/bookings/${id}`).then((r) => r.data)
+export const getBooking = (id) => api.get(`/bookings/${id}`).then((r) => r.data)
 
 export const acceptBooking = (id) =>
   api.patch(`/bookings/${id}/accept`).then((r) => r.data)
@@ -190,7 +221,9 @@ export const declineBooking = (id) =>
   api.patch(`/bookings/${id}/decline`).then((r) => r.data)
 
 export const cancelBooking = (id, cancellationReason) =>
-  api.patch(`/bookings/${id}/cancel`, { cancellationReason }).then((r) => r.data)
+  api
+    .patch(`/bookings/${id}/cancel`, { cancellationReason })
+    .then((r) => r.data)
 
 export const confirmBooking = (id) =>
   api.patch(`/bookings/${id}/confirm`).then((r) => r.data)

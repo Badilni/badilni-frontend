@@ -53,8 +53,12 @@ export const useCreateReview = (userId, listingId) => {
         queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
       }
       if (listingId) {
-        queryClient.invalidateQueries({ queryKey: ['listingReviews', listingId] })
-        queryClient.invalidateQueries({ queryKey: ['offers', 'detail', listingId] })
+        queryClient.invalidateQueries({
+          queryKey: ['listingReviews', listingId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['offers', 'detail', listingId],
+        })
         queryClient.invalidateQueries({ queryKey: ['reviews'] })
       }
       queryClient.invalidateQueries({ queryKey: ['bookings'] })
@@ -69,7 +73,10 @@ export const useBookingReviews = (bookingId, params = {}) => {
     enabled: Boolean(bookingId),
   })
 
-  return { ...query, reviews: query.data?.data?.reviews ?? query.data?.reviews ?? [] }
+  return {
+    ...query,
+    reviews: query.data?.data?.reviews ?? query.data?.reviews ?? [],
+  }
 }
 
 export const useCreateBookingReview = (bookingId) => {
@@ -79,7 +86,9 @@ export const useCreateBookingReview = (bookingId) => {
     mutationFn: (data) => createBookingReview(bookingId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookingReviews', bookingId] })
-      queryClient.invalidateQueries({ queryKey: ['bookings', 'detail', bookingId] })
+      queryClient.invalidateQueries({
+        queryKey: ['bookings', 'detail', bookingId],
+      })
       queryClient.invalidateQueries({ queryKey: ['bookings'] })
     },
   })
@@ -92,12 +101,20 @@ export const useUpdateReview = (listingId, bookingId, revieweeId) => {
     mutationFn: ({ id, data }) => updateReview(id, data),
     onSuccess: () => {
       if (listingId) {
-        queryClient.invalidateQueries({ queryKey: ['listingReviews', listingId] })
-        queryClient.invalidateQueries({ queryKey: ['offers', 'detail', listingId] })
+        queryClient.invalidateQueries({
+          queryKey: ['listingReviews', listingId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['offers', 'detail', listingId],
+        })
       }
       if (bookingId) {
-        queryClient.invalidateQueries({ queryKey: ['bookingReviews', bookingId] })
-        queryClient.invalidateQueries({ queryKey: ['bookings', 'detail', bookingId] })
+        queryClient.invalidateQueries({
+          queryKey: ['bookingReviews', bookingId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['bookings', 'detail', bookingId],
+        })
       }
       if (revieweeId) {
         queryClient.invalidateQueries({ queryKey: ['userReviews', revieweeId] })

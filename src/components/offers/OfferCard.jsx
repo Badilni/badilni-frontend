@@ -29,7 +29,10 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
         {owner && (
           <div className="absolute top-4 right-4 z-20">
             <button
-              onClick={(e) => { e.stopPropagation(); setShowMenu((p) => !p) }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowMenu((p) => !p)
+              }}
               className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500"
             >
               <FaEllipsisVertical size={20} />
@@ -40,13 +43,19 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  onClick={() => { onEdit?.(offer); setShowMenu(false) }}
+                  onClick={() => {
+                    onEdit?.(offer)
+                    setShowMenu(false)
+                  }}
                   className="w-full px-4 py-3 text-left text-sm hover:bg-gray-100 dark:hover:bg-slate-800"
                 >
                   Edit Offer
                 </button>
                 <button
-                  onClick={() => { onDelete?.(offer); setShowMenu(false) }}
+                  onClick={() => {
+                    onDelete?.(offer)
+                    setShowMenu(false)
+                  }}
                   className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   Delete Offer
@@ -67,7 +76,11 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
         </span>
 
         {offer.sampleWork?.[0]?.url && (
-          <img src={offer.sampleWork[0].url} alt="" className="w-full h-40 object-cover mt-8" />
+          <img
+            src={offer.sampleWork[0].url}
+            alt=""
+            className="w-full h-40 object-cover mt-8"
+          />
         )}
 
         <div className="p-7 flex flex-col flex-1">
@@ -103,11 +116,16 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
           <div className="flex items-center gap-3 pt-5 border-t border-gray-100 dark:border-slate-800">
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); profilePath && navigate(profilePath) }}
+              onClick={(e) => {
+                e.stopPropagation()
+                profilePath && navigate(profilePath)
+              }}
               className="shrink-0"
             >
               <img
-                src={offer.user?.avatar?.url || 'https://via.placeholder.com/80'}
+                src={
+                  offer.user?.avatar?.url || 'https://via.placeholder.com/80'
+                }
                 alt={offer.user?.name || 'User'}
                 className="w-11 h-11 rounded-full object-cover border-2 border-gray-100 dark:border-slate-700 shadow-sm hover:opacity-90 transition-opacity"
               />
@@ -119,7 +137,9 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
               <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
                 <FaStar className="text-amber-400 w-3 h-3" />
                 <span className="font-semibold text-gray-600 dark:text-gray-300">
-                  {typeof offer.averageRating === 'number' ? offer.averageRating.toFixed(1) : 'New'}
+                  {typeof offer.averageRating === 'number'
+                    ? offer.averageRating.toFixed(1)
+                    : 'New'}
                 </span>
                 <span>·</span>
                 <span>{offer.totalBookings ?? 0} bookings</span>
@@ -129,7 +149,10 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
             {!owner && offer.isActive && (
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); setBookingOpen(true) }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setBookingOpen(true)
+                }}
                 className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r ${accentColor} hover:brightness-110 transition-all active:scale-95`}
               >
                 Book

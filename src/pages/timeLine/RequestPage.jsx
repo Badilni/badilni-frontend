@@ -1,4 +1,4 @@
-import ServiceRequestPage from "../../components/requests/ServiceRequestPage"
+import ServiceRequestPage from '../../components/requests/ServiceRequestPage'
 
 const RequestPage = () => {
   return <ServiceRequestPage />

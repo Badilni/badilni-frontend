@@ -25,7 +25,12 @@ export default function BookingDetail({ booking }) {
               {listingOrRequest?.title ?? 'Session Booking'}
             </h1>
             <p className="text-sm text-gray-400 dark:text-gray-500">
-              Created {new Date(booking.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+              Created{' '}
+              {new Date(booking.createdAt).toLocaleDateString(undefined, {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}
             </p>
           </div>
           <BookingStatusBadge status={booking.status} />
@@ -46,25 +51,48 @@ export default function BookingDetail({ booking }) {
               label: 'Scheduled',
               value: booking.scheduledAt
                 ? new Date(booking.scheduledAt).toLocaleString(undefined, {
-                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
                   })
                 : '—',
             },
-            { label: 'Duration', value: booking.durationHours ? `${booking.durationHours}h` : '—' },
-            { label: 'Credits', value: booking.creditsTotal != null ? `${booking.creditsTotal}` : '—' },
-            { label: 'Your Role', value: permissions.isProvider ? 'Provider' : permissions.isReceiver ? 'Receiver' : '—' },
+            {
+              label: 'Duration',
+              value: booking.durationHours ? `${booking.durationHours}h` : '—',
+            },
+            {
+              label: 'Credits',
+              value:
+                booking.creditsTotal != null ? `${booking.creditsTotal}` : '—',
+            },
+            {
+              label: 'Your Role',
+              value: permissions.isProvider
+                ? 'Provider'
+                : permissions.isReceiver
+                  ? 'Receiver'
+                  : '—',
+            },
           ].map(({ label, value }) => (
-            <div key={label} className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-4">
+            <div
+              key={label}
+              className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-4"
+            >
               <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">
                 {label}
               </p>
-              <p className="text-sm font-bold text-gray-900 dark:text-white">{value}</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">
+                {value}
+              </p>
             </div>
           ))}
         </div>
 
         {/* Confirmation flags (only once accepted+) */}
-        {(booking.providerConfirmed != null || booking.receiverConfirmed != null) && (
+        {(booking.providerConfirmed != null ||
+          booking.receiverConfirmed != null) && (
           <div className="flex gap-4 flex-wrap">
             {[
               { label: 'Provider confirmed', done: booking.providerConfirmed },
@@ -87,8 +115,12 @@ export default function BookingDetail({ booking }) {
         {/* Note */}
         {booking.note && (
           <div>
-            <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">Note</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{booking.note}</p>
+            <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+              Note
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              {booking.note}
+            </p>
           </div>
         )}
 
@@ -98,7 +130,9 @@ export default function BookingDetail({ booking }) {
             <p className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wide mb-1">
               Cancellation reason
             </p>
-            <p className="text-sm text-gray-700 dark:text-gray-300">{booking.cancellationReason}</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              {booking.cancellationReason}
+            </p>
           </div>
         )}
 
@@ -122,7 +156,10 @@ export default function BookingDetail({ booking }) {
         )}
 
         {/* Meeting link */}
-        <BookingMeetingLink booking={booking} canEdit={permissions.canAddMeetingLink} />
+        <BookingMeetingLink
+          booking={booking}
+          canEdit={permissions.canAddMeetingLink}
+        />
 
         {/* Actions */}
         <BookingActions booking={booking} permissions={permissions} />

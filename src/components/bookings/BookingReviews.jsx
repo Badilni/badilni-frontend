@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { FaStar } from 'react-icons/fa6'
 import { FiStar } from 'react-icons/fi'
 import useAuthStore from '../../store/authStore'
-import { useBookingReviews, useCreateBookingReview } from '../../hooks/Review/useReviews'
+import {
+  useBookingReviews,
+  useCreateBookingReview,
+} from '../../hooks/Review/useReviews'
 import ReviewCard from '../reviews/ReviewCard'
 import { handleToastMessage } from '../../utils/helper'
 
@@ -24,8 +27,16 @@ export default function BookingReviews({ booking }) {
   const isCompleted = booking.status === 'completed'
 
   // Check if current user is a participant
-  const isProvider = currentUser && (booking.provider?._id === currentUser._id || booking.provider === currentUser._id || booking.provider?.id === currentUser.id)
-  const isReceiver = currentUser && (booking.receiver?._id === currentUser._id || booking.receiver === currentUser._id || booking.receiver?.id === currentUser.id)
+  const isProvider =
+    currentUser &&
+    (booking.provider?._id === currentUser._id ||
+      booking.provider === currentUser._id ||
+      booking.provider?.id === currentUser.id)
+  const isReceiver =
+    currentUser &&
+    (booking.receiver?._id === currentUser._id ||
+      booking.receiver === currentUser._id ||
+      booking.receiver?.id === currentUser.id)
   const isParticipant = isProvider || isReceiver
 
   // Check if user has already reviewed
@@ -37,7 +48,8 @@ export default function BookingReviews({ booking }) {
       r.reviewer?._id === currentUser?.id
   )
 
-  const canReview = isAuthenticated && isCompleted && isParticipant && !userHasReviewed
+  const canReview =
+    isAuthenticated && isCompleted && isParticipant && !userHasReviewed
 
   const handleSubmitReview = (e) => {
     e.preventDefault()
@@ -81,7 +93,8 @@ export default function BookingReviews({ booking }) {
             Rate this Session
           </h3>
           <p className="text-xs text-gray-500 mb-4">
-            This session is completed. Please share your feedback about the other participant!
+            This session is completed. Please share your feedback about the
+            other participant!
           </p>
 
           <form onSubmit={handleSubmitReview} className="space-y-4">

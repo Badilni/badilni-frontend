@@ -264,7 +264,7 @@ const CATEGORY_META = {
       </svg>
     ),
   },
-  'all':{
+  all: {
     bg: 'bg-gray-50 dark:bg-gray-800/50',
     iconColor: 'text-gray-600 dark:text-gray-400',
     activeBorder: 'border-gray-400 dark:border-gray-500',
@@ -283,7 +283,7 @@ const CATEGORY_META = {
         />
       </svg>
     ),
-  }
+  },
 }
 
 const DEFAULT_META = {
@@ -313,7 +313,7 @@ export default function CategoryCard({
   onClick,
   variant = 'compact',
 }) {
-  const meta = CATEGORY_META[category.slug] || DEFAULT_META;
+  const meta = CATEGORY_META[category.slug] || DEFAULT_META
 
   return (
     <button
@@ -344,5 +344,5 @@ export default function CategoryCard({
         {category.name}
       </span>
     </button>
-  );
+  )
 }

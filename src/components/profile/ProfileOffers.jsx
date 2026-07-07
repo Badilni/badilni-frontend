@@ -12,8 +12,14 @@ import ErrorState from '../shared/ErrorState'
  * user's own ("me") offers. OfferCard already hides Edit/Delete for
  * non-owners, so this works unchanged on both profile contexts.
  */
-export default function ProfileOffers({ userId, isOwnProfile = false, limit = 6 }) {
-  const { data, isLoading, isError, error, refetch } = useUserOffers(userId, { limit })
+export default function ProfileOffers({
+  userId,
+  isOwnProfile = false,
+  limit = 6,
+}) {
+  const { data, isLoading, isError, error, refetch } = useUserOffers(userId, {
+    limit,
+  })
   const deleteOffer = useDeleteOffer()
   const [editingOffer, setEditingOffer] = useState(null)
   const [deletingOffer, setDeletingOffer] = useState(null)
@@ -46,7 +52,9 @@ export default function ProfileOffers({ userId, isOwnProfile = false, limit = 6 
     return (
       <div className="bg-[var(--whiteBackground)] rounded-2xl p-8 text-center border border-[var(--secondary-light)]/10">
         <p className="text-sm text-[var(--gray-text)]">
-          {isOwnProfile ? "You haven't posted any offers yet." : 'No offers posted yet.'}
+          {isOwnProfile
+            ? "You haven't posted any offers yet."
+            : 'No offers posted yet.'}
         </p>
       </div>
     )
@@ -65,7 +73,11 @@ export default function ProfileOffers({ userId, isOwnProfile = false, limit = 6 
         ))}
       </div>
 
-      <EditOfferModal open={Boolean(editingOffer)} offer={editingOffer} onClose={() => setEditingOffer(null)} />
+      <EditOfferModal
+        open={Boolean(editingOffer)}
+        offer={editingOffer}
+        onClose={() => setEditingOffer(null)}
+      />
       <ConfirmDeleteModal
         open={Boolean(deletingOffer)}
         title="Delete this offer?"

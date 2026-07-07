@@ -27,16 +27,23 @@ const formatDate = (dateStr) => {
 export default function ReviewCard({ review }) {
   const currentUser = useAuthStore((state) => state.user)
   const reviewer = review?.reviewer || {}
-  const avatar = typeof reviewer.avatar === 'object' ? reviewer.avatar?.url : reviewer.avatar
+  const avatar =
+    typeof reviewer.avatar === 'object' ? reviewer.avatar?.url : reviewer.avatar
   const reviewerName = reviewer.name || 'Anonymous'
 
-  const reviewerId = reviewer._id || reviewer.id || (typeof reviewer === 'string' ? reviewer : null)
+  const reviewerId =
+    reviewer._id ||
+    reviewer.id ||
+    (typeof reviewer === 'string' ? reviewer : null)
   const currentUserId = currentUser?._id || currentUser?.id
-  const isAuthor = Boolean(currentUser && reviewerId && currentUserId && reviewerId === currentUserId)
+  const isAuthor = Boolean(
+    currentUser && reviewerId && currentUserId && reviewerId === currentUserId
+  )
 
   const listingId = review.listing?._id || review.listing?.id || review.listing
   const bookingId = review.booking?._id || review.booking?.id || review.booking
-  const revieweeId = review.reviewee?._id || review.reviewee?.id || review.reviewee
+  const revieweeId =
+    review.reviewee?._id || review.reviewee?.id || review.reviewee
 
   const updateReviewMutation = useUpdateReview(listingId, bookingId, revieweeId)
 
@@ -79,9 +86,9 @@ export default function ReviewCard({ review }) {
         },
         onError: (err) => {
           setError(
-            err?.response?.data?.message || 
-            err?.message || 
-            'Failed to update review. Please try again.'
+            err?.response?.data?.message ||
+              err?.message ||
+              'Failed to update review. Please try again.'
           )
         },
       }
@@ -96,7 +103,7 @@ export default function ReviewCard({ review }) {
             <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
               Edit Your Feedback
             </span>
-            
+
             {/* Star Selector */}
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -203,7 +210,7 @@ export default function ReviewCard({ review }) {
           )}
         </div>
       </div>
-      
+
       {review.comment && (
         <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed pl-1 pt-0.5 break-words">
           {review.comment}

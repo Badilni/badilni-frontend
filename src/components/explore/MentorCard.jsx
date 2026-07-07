@@ -21,15 +21,18 @@ const CARD_THEMES = [
   },
   {
     accentColor: 'from-emerald-500 to-teal-600',
-    tagColor: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
+    tagColor:
+      'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
   },
   {
     accentColor: 'from-purple-500 to-pink-650',
-    tagColor: 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300',
+    tagColor:
+      'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300',
   },
   {
     accentColor: 'from-orange-500 to-red-600',
-    tagColor: 'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300',
+    tagColor:
+      'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300',
   },
 ]
 
@@ -53,7 +56,9 @@ export default function MentorCard({ mentor: user, index = 0 }) {
   const company = 'Badilni Member'
   const tags = Array.isArray(user.skillTags) ? user.skillTags.slice(0, 3) : []
 
-  const bio = user.description || user.bio || 
+  const bio =
+    user.description ||
+    user.bio ||
     (user.skillTags && user.skillTags.length > 0
       ? `Interested in sharing skills like ${user.skillTags.slice(0, 3).join(', ')}.`
       : 'Badilni member passionate about swapping skills and learning new things.')

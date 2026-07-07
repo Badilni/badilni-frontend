@@ -26,7 +26,8 @@ export default function ExploreCTA() {
               Ready to Share Your Talents?
             </h3>
             <p className="text-slate-400 text-sm md:text-base max-w-md font-semibold">
-              Update your profile, list what you want to teach, and help others in the Badilni community grow.
+              Update your profile, list what you want to teach, and help others
+              in the Badilni community grow.
             </p>
           </div>
 

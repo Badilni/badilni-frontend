@@ -2,11 +2,7 @@ import { useState, useEffect } from 'react'
 import MentorCard from './MentorCard'
 import { fetchUsersService } from '../../services/AdvancedSearch/search'
 
-const FILTERS = [
-  'All Members',
-  'Top Rated',
-  'Newest',
-]
+const FILTERS = ['All Members', 'Top Rated', 'Newest']
 
 function CardSkeleton() {
   return (
@@ -27,7 +23,10 @@ function CardSkeleton() {
   )
 }
 
-export default function MentorGrid({ searchQuery = '', activeCategory = null }) {
+export default function MentorGrid({
+  searchQuery = '',
+  activeCategory = null,
+}) {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -160,7 +159,8 @@ export default function MentorGrid({ searchQuery = '', activeCategory = null }) 
       ) : error ? (
         <div className="w-full flex flex-col items-center justify-center py-12 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-2xl p-6 text-center">
           <p className="text-sm font-medium text-red-500 dark:text-red-400">
-            Failed to load members. Please check your connection or try again later.
+            Failed to load members. Please check your connection or try again
+            later.
           </p>
         </div>
       ) : users.length === 0 ? (
