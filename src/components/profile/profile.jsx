@@ -56,7 +56,9 @@ const AccountCard = ({ email, isOwnProfile }) => {
             Email Address
           </label>
           <div className="p-3 bg-[var(--background-light)] rounded-lg border border-[var(--gray-text)]/20 flex justify-between items-center">
-            <span className="text-sm text-[var(--black-text)]">{email || '—'}</span>
+            <span className="text-sm text-[var(--black-text)]">
+              {email || '—'}
+            </span>
             <FiLock size={14} className="text-[var(--gray-text)]" />
           </div>
         </div>
@@ -88,7 +90,8 @@ const ProfileScreen = () => {
   useEffect(() => {
     const handleTrigger = () => setIsConfirmOpen(true)
     window.addEventListener('trigger-deactivate-modal', handleTrigger)
-    return () => window.removeEventListener('trigger-deactivate-modal', handleTrigger)
+    return () =>
+      window.removeEventListener('trigger-deactivate-modal', handleTrigger)
   }, [])
 
   // Handle smooth scroll to reviews section
@@ -104,7 +107,8 @@ const ProfileScreen = () => {
     }
   }, [location.hash, location.state])
 
-  if (isLoading) return <div className="py-20 text-center">Loading profile...</div>
+  if (isLoading)
+    return <div className="py-20 text-center">Loading profile...</div>
 
   return (
     <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24">
@@ -116,16 +120,22 @@ const ProfileScreen = () => {
           <div className="bg-[var(--whiteBackground)] rounded-2xl p-4 border border-[var(--secondary-light)]/10 shadow-[0_6px_24px_rgba(15,23,42,0.04)]">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4">
               <div>
-                <div className="text-xs uppercase font-semibold opacity-90">Wallet Balance</div>
+                <div className="text-xs uppercase font-semibold opacity-90">
+                  Wallet Balance
+                </div>
                 <div className="text-2xl sm:text-3xl font-extrabold mt-1">
                   {Number(profile?.walletBalance ?? 0).toLocaleString()}
-                  <span className="text-sm font-semibold ml-2 text-blue-100">credits</span>
+                  <span className="text-sm font-semibold ml-2 text-blue-100">
+                    credits
+                  </span>
                 </div>
               </div>
             </div>
           </div>
           <AccountCard email={profile?.email} isOwnProfile={isOwnProfile} />
-          <SkillsCard skills={Array.isArray(profile?.skillTags) ? profile.skillTags : []} />
+          <SkillsCard
+            skills={Array.isArray(profile?.skillTags) ? profile.skillTags : []}
+          />
         </div>
 
         {/* Main profile section */}

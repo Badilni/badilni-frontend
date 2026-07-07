@@ -3,9 +3,9 @@ import { MdVerified } from 'react-icons/md'
 import { FiEdit2, FiShare2, FiMessageCircle, FiCalendar } from 'react-icons/fi'
 import { BsStarFill } from 'react-icons/bs'
 import { motion } from 'motion/react'
-// import SkillBadge from './SkillBadge'
 import { useReviewsCount } from '../../hooks/Review/RatingProfileHeader'
 
+// Helper function to format the user's join date
 const formatJoinDate = (dateStr) => {
   if (!dateStr) return null
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -14,13 +14,6 @@ const formatJoinDate = (dateStr) => {
   })
 }
 
-/**
- * Presentational header for the Profile page.
- *
- * Reusable for both the logged-in user's own profile (Edit/Share CTAs)
- * and a public read-only view of someone else's profile (Start Chat CTA),
- * toggled via `isOwnProfile`.
- */
 const ProfileHeader = ({
   profile,
   onEdit,
@@ -30,22 +23,23 @@ const ProfileHeader = ({
 }) => {
   const navigate = useNavigate()
 
-  const reviewsCount = useReviewsCount(profile?._id, isOwnProfile)
+  // Fetching review statistics using react-query hook
+  const { data: reviewsCount = 0 } = useReviewsCount(profile?._id, isOwnProfile)
 
+  // Extracting and normalizing profile data
   const displayName = profile?.name
   const email = profile?.email
   const bio = profile?.bio?.trim() || "This user hasn't added a bio yet."
-  // const skillTags = Array.isArray(profile?.skillTags) ? profile.skillTags : []
-  // Defensive: avatar can be `{ url }` (own profile shape) or a plain
-  // string (shape used elsewhere, e.g. UserCard).
   const avatarUrl =
     (typeof profile?.avatar === 'object'
       ? profile?.avatar?.url
       : profile?.avatar) || undefined
+
   const isVerified = Boolean(profile?.isVerified)
   const joinDate = formatJoinDate(profile?.createdAt)
   const averageRating = Number(profile?.averageRating ?? 0)
 
+  // Handler for navigation to edit profile
   const handleEditClick = () => {
     if (onEdit) {
       onEdit()
@@ -61,9 +55,11 @@ const ProfileHeader = ({
       transition={{ duration: 0.75 }}
       className="mb-8 bg-[var(--whiteBackground)] rounded-3xl p-8 border border-[var(--secondary-light)]/10 relative overflow-hidden shadow-[0_4px_24px_rgba(47,151,233,0.10)]"
     >
+      {/* Decorative top background gradient */}
       <div className="absolute top-0 left-0 w-full h-28 bg-gradient-to-r from-[var(--secondary-light)]/20 to-[var(--primary-light)]/10 pointer-events-none" />
 
       <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-8">
+        {/* Profile picture section */}
         <div className="w-36 h-36 rounded-full border-4 border-white shadow-xl overflow-hidden shrink-0 bg-[var(--background-light)]">
           <img
             src={avatarUrl}
@@ -72,6 +68,7 @@ const ProfileHeader = ({
           />
         </div>
 
+        {/* Profile details and metadata */}
         <div className="flex-1 text-center md:text-left pb-2">
           <div className="flex flex-col md:flex-row md:items-center gap-3 mb-1 justify-center md:justify-start">
             <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--black-text)]">
@@ -93,6 +90,7 @@ const ProfileHeader = ({
           {email && (
             <p className="text-sm text-[var(--gray-text)] mb-1">{email}</p>
           )}
+
           {joinDate && (
             <p className="text-xs text-[var(--gray-text)] mb-3 flex items-center gap-1 justify-center md:justify-start">
               <FiCalendar size={12} /> Joined {joinDate}
@@ -103,6 +101,7 @@ const ProfileHeader = ({
             {bio}
           </p>
 
+          {/* Action buttons (conditional based on profile ownership) */}
           <div className="flex flex-wrap justify-center md:justify-start gap-3">
             {isOwnProfile ? (
               <>
