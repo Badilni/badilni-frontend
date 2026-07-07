@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 import { FiStar } from 'react-icons/fi'
 import useAuthStore from '../../store/authStore'
-import { useListingReviews, useReviews, useCreateReview } from '../../hooks/Review/useReviews'
+import {
+  useListingReviews,
+  useReviews,
+  useCreateReview,
+} from '../../hooks/Review/useReviews'
 import { useBookingsLegacy } from '../../hooks/Booking/useBookings'
 import { handleToastMessage } from '../../utils/helper'
 import ReviewCard from '../reviews/ReviewCard'
@@ -10,21 +14,29 @@ import ReviewCard from '../reviews/ReviewCard'
 export default function OfferReviews({ listingId, listingOwnerId }) {
   const currentUser = useAuthStore((state) => state.user)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-  
+
   const [page, setPage] = useState(1)
   const limit = 5
 
   // Fetch reviews for the current listing
-  const { response, isLoading: isReviewsLoading } = useListingReviews(listingId, {
-    page,
-    limit,
-    sort: '-createdAt',
-    user: listingOwnerId,
-    type: 'received',
-  })
+  const { response, isLoading: isReviewsLoading } = useListingReviews(
+    listingId,
+    {
+      page,
+      limit,
+      sort: '-createdAt',
+      user: listingOwnerId,
+      type: 'received',
+    }
+  )
 
   const reviews = response?.data?.reviews ?? response?.reviews ?? []
-  const pagination = response?.pagination ?? { page: 1, limit: 5, totalCount: 0, totalPages: 1 }
+  const pagination = response?.pagination ?? {
+    page: 1,
+    limit: 5,
+    totalCount: 0,
+    totalPages: 1,
+  }
 
   // Fetch completed bookings of the current user to see if they can review
   const { bookings: completedBookings } = useBookingsLegacy(
@@ -45,11 +57,17 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
   const [comment, setComment] = useState('')
   const [formError, setFormError] = useState('')
 
-  const createReviewMutation = useCreateReview(currentUser?._id || currentUser?.id, listingId)
+  const createReviewMutation = useCreateReview(
+    currentUser?._id || currentUser?.id,
+    listingId
+  )
 
   // Determine if there is a booking that can be reviewed
   const completedBookingsForListing = completedBookings.filter(
-    (b) => b.listing?._id === listingId || b.listing?.id === listingId || b.listing === listingId
+    (b) =>
+      b.listing?._id === listingId ||
+      b.listing?.id === listingId ||
+      b.listing === listingId
   )
 
   const unreviewedBooking = completedBookingsForListing.find(
@@ -65,7 +83,9 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
       )
   )
 
-  const isOwner = currentUser && (currentUser._id === listingOwnerId || currentUser.id === listingOwnerId)
+  const isOwner =
+    currentUser &&
+    (currentUser._id === listingOwnerId || currentUser.id === listingOwnerId)
   const canReview = isAuthenticated && !isOwner && unreviewedBooking
 
   // Rating Breakdown Calculations based on all reviews of the listing
@@ -73,9 +93,11 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
   // Since we have a paginated list, we can show a nice placeholder or compute based on the loaded reviews.
   // The listing object itself has overall rating statistics. Let's make a beautiful breakdown.
   const totalReviewsCount = pagination.totalCount ?? 0
-  const averageRating = totalReviewsCount > 0
-    ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length) || 0
-    : 0
+  const averageRating =
+    totalReviewsCount > 0
+      ? reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length ||
+        0
+      : 0
 
   // Calculate stars breakdown percentages dynamically
   const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
@@ -127,8 +149,6 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
     )
   }
 
-
-
   return (
     <div className="space-y-6">
       {/* 1. Rating Stats Header */}
@@ -136,7 +156,7 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
           Reviews & Ratings
         </h3>
-        
+
         {totalReviewsCount > 0 ? (
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -148,12 +168,17 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
                   {[1, 2, 3, 4, 5].map((star) => (
                     <FaStar
                       key={star}
-                      className={star <= Math.round(averageRating) ? 'fill-amber-400 text-amber-400' : 'text-gray-200 dark:text-slate-700'}
+                      className={
+                        star <= Math.round(averageRating)
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-gray-200 dark:text-slate-700'
+                      }
                     />
                   ))}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Based on {totalReviewsCount} {totalReviewsCount === 1 ? 'review' : 'reviews'}
+                  Based on {totalReviewsCount}{' '}
+                  {totalReviewsCount === 1 ? 'review' : 'reviews'}
                 </div>
               </div>
             </div>
@@ -248,11 +273,14 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
       )}
 
       {/* Booking Status Prompt (Friendly banner) */}
-      {isAuthenticated && !isOwner && !canReview && completedBookingsForListing.length === 0 && (
-        <div className="bg-blue-50/50 dark:bg-blue-950/10 rounded-2xl p-4 border border-blue-100/30 dark:border-blue-950/20 text-center text-xs text-blue-600 dark:text-blue-400">
-          Book this service and complete the session to leave a review!
-        </div>
-      )}
+      {isAuthenticated &&
+        !isOwner &&
+        !canReview &&
+        completedBookingsForListing.length === 0 && (
+          <div className="bg-blue-50/50 dark:bg-blue-950/10 rounded-2xl p-4 border border-blue-100/30 dark:border-blue-950/20 text-center text-xs text-blue-600 dark:text-blue-400">
+            Book this service and complete the session to leave a review!
+          </div>
+        )}
 
       {/* 3. Reviews List */}
       <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm space-y-4">
@@ -289,7 +317,9 @@ export default function OfferReviews({ listingId, listingOwnerId }) {
                   Page {page} of {pagination.totalPages}
                 </span>
                 <button
-                  onClick={() => setPage((prev) => Math.min(prev + 1, pagination.totalPages))}
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, pagination.totalPages))
+                  }
                   disabled={page === pagination.totalPages}
                   className="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-slate-800 text-gray-600 dark:text-gray-400 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer disabled:cursor-not-allowed"
                 >

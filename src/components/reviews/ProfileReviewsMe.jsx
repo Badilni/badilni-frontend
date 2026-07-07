@@ -44,11 +44,18 @@ const ProfileReviewsSection = ({ userId }) => {
   )
 
   const myReviewsQuery = useMyReviews({ ...queryParams, enabled: !userId })
-  const userReviewsQuery = useUserReviews({ userId, ...queryParams, enabled: !!userId })
+  const userReviewsQuery = useUserReviews({
+    userId,
+    ...queryParams,
+    enabled: !!userId,
+  })
 
   const reviewsQuery = userId ? userReviewsQuery : myReviewsQuery
   const { data: reviewsData, isFetching, isError, error } = reviewsQuery
-  const listingOptionsQuery = useReviewListingOptions({ userId, type: reviewType })
+  const listingOptionsQuery = useReviewListingOptions({
+    userId,
+    type: reviewType,
+  })
 
   useEffect(() => {
     if (reviewsData?.data?.reviews) {
@@ -68,10 +75,15 @@ const ProfileReviewsSection = ({ userId }) => {
       <div className="bg-[var(--whiteBackground)] p-4 rounded-2xl border border-gray-100 shadow-sm space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-1">
-            <h3 className="font-bold text-lg text-[var(--black-text)]">Recent Feedback</h3>
+            <h3 className="font-bold text-lg text-[var(--black-text)]">
+              Recent Feedback
+            </h3>
             {reviewsData?.pagination?.averageRating > 0 && (
               <div className="flex items-center gap-2">
-                <StarRating rating={Math.round(reviewsData.pagination.averageRating)} size="sm" />
+                <StarRating
+                  rating={Math.round(reviewsData.pagination.averageRating)}
+                  size="sm"
+                />
                 <span className="text-xs font-bold text-[var(--gray-text)]">
                   {Number(reviewsData.pagination.averageRating).toFixed(1)}
                   <span className="font-normal ml-1">
@@ -99,7 +111,10 @@ const ProfileReviewsSection = ({ userId }) => {
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 min-w-[160px]">
-            <FiSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gray-text)]" />
+            <FiSearch
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gray-text)]"
+            />
             <input
               type="text"
               value={keywordInput}
@@ -120,8 +135,13 @@ const ProfileReviewsSection = ({ userId }) => {
 
           <select
             value={selectedListing}
-            onChange={(e) => handleFilterChange(setSelectedListing, e.target.value)}
-            disabled={listingOptionsQuery.isLoading || (listingOptionsQuery.data || []).length === 0}
+            onChange={(e) =>
+              handleFilterChange(setSelectedListing, e.target.value)
+            }
+            disabled={
+              listingOptionsQuery.isLoading ||
+              (listingOptionsQuery.data || []).length === 0
+            }
             className="text-sm bg-[var(--background-light)] border border-[var(--gray-text)]/20 rounded-xl px-3 py-2 disabled:opacity-50 min-w-[150px]"
           >
             <option value="">
@@ -150,22 +170,30 @@ const ProfileReviewsSection = ({ userId }) => {
           {isFetching && accumulatedReviews.length === 0 ? (
             <p className="text-xs text-center">Loading...</p>
           ) : accumulatedReviews.length === 0 ? (
-            <p className="text-xs text-center p-6 border border-dashed rounded-2xl">No reviews found.</p>
+            <p className="text-xs text-center p-6 border border-dashed rounded-2xl">
+              No reviews found.
+            </p>
           ) : (
             accumulatedReviews.map((r) => (
-              <UserReviewCard key={r._id} review={r} type={reviewType} profileUserId={userId} />
+              <UserReviewCard
+                key={r._id}
+                review={r}
+                type={reviewType}
+                profileUserId={userId}
+              />
             ))
           )}
 
-          {reviewsData?.pagination && currentPage < reviewsData.pagination.totalPages && (
-            <button
-              onClick={() => setCurrentPage((p) => p + 1)}
-              disabled={isFetching}
-              className="w-full py-3 text-sm font-bold text-blue-600 border border-blue-200 rounded-2xl hover:bg-blue-50 disabled:opacity-50"
-            >
-              {isFetching ? 'Loading...' : 'Load More'}
-            </button>
-          )}
+          {reviewsData?.pagination &&
+            currentPage < reviewsData.pagination.totalPages && (
+              <button
+                onClick={() => setCurrentPage((p) => p + 1)}
+                disabled={isFetching}
+                className="w-full py-3 text-sm font-bold text-blue-600 border border-blue-200 rounded-2xl hover:bg-blue-50 disabled:opacity-50"
+              >
+                {isFetching ? 'Loading...' : 'Load More'}
+              </button>
+            )}
         </>
       )}
     </div>

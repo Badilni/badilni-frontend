@@ -11,6 +11,8 @@ import api from './axios'
  * — omit it rather than guessing a value the backend might reject.
  */
 
-export const getWalletBalance = () => api.get('/transactions/balance').then((r) => r.data)
+export const getWalletBalance = () =>
+  api.get('/transactions/balance').then((r) => r.data)
 
-export const getTransactions = (params) => api.get('/transactions', { params }).then((r) => r.data)
+export const getTransactions = (params) =>
+  api.get('/transactions', { params }).then((r) => r.data)

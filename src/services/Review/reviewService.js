@@ -13,7 +13,9 @@ export const getUserReviews = (userId, params) =>
 export const createReview = (data) => {
   const bookingId = data.booking || data.bookingId
   if (!bookingId) {
-    return Promise.reject(new Error('Booking ID is required to create a review'))
+    return Promise.reject(
+      new Error('Booking ID is required to create a review')
+    )
   }
   const payload = {
     rating: data.rating,

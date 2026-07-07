@@ -1,7 +1,7 @@
-import { useCategories } from '../../hooks/useCategories';
-import CategoryCard from '../common/CategoryCard';
+import { useCategories } from '../../hooks/useCategories'
+import CategoryCard from '../common/CategoryCard'
 
-const ALL = { _id: '', name: 'All Requests', slug: 'all' };
+const ALL = { _id: '', name: 'All Requests', slug: 'all' }
 
 export default function RequestFilters({
   activeCategory,
@@ -10,9 +10,9 @@ export default function RequestFilters({
   onStatusChange,
   matchScore = 85,
 }) {
-  const { categories = [], loading, error: categoriesError } = useCategories();
+  const { categories = [], loading, error: categoriesError } = useCategories()
 
-  const combinedCategories = [ALL, ...categories];
+  const combinedCategories = [ALL, ...categories]
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-10">
@@ -47,7 +47,10 @@ export default function RequestFilters({
                 />
               ))
             : combinedCategories.map((cat) => (
-                <div key={cat._id} className="flex-shrink-0 w-40 h-[140px] snap-start">
+                <div
+                  key={cat._id}
+                  className="flex-shrink-0 w-40 h-[140px] snap-start"
+                >
                   <CategoryCard
                     category={cat}
                     isActive={activeCategory === cat._id}
@@ -95,5 +98,5 @@ export default function RequestFilters({
         </div>
       </div>
     </div>
-  );
+  )
 }

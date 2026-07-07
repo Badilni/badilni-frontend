@@ -24,7 +24,10 @@ const SkillsCard = ({ skills }) => (
     {skills?.length > 0 ? (
       <div className="flex flex-wrap gap-2">
         {skills.map((skill) => (
-          <span key={skill} className="px-4 py-1.5 bg-[var(--primary-light)]/10 text-[var(--primary-light)] rounded-full text-sm font-medium border border-[var(--primary-light)]/20">
+          <span
+            key={skill}
+            className="px-4 py-1.5 bg-[var(--primary-light)]/10 text-[var(--primary-light)] rounded-full text-sm font-medium border border-[var(--primary-light)]/20"
+          >
             {skill}
           </span>
         ))}
@@ -46,13 +49,20 @@ const AccountCard = ({ email, isOwnProfile }) => {
       </h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-semibold text-[var(--gray-text)] mb-1.5 uppercase">Email Address</label>
+          <label className="block text-xs font-semibold text-[var(--gray-text)] mb-1.5 uppercase">
+            Email Address
+          </label>
           <div className="p-3 bg-[var(--background-light)] rounded-lg border border-[var(--gray-text)]/20 flex justify-between items-center">
-            <span className="text-sm text-[var(--black-text)]">{email || '—'}</span>
+            <span className="text-sm text-[var(--black-text)]">
+              {email || '—'}
+            </span>
             <FiLock size={14} className="text-[var(--gray-text)]" />
           </div>
         </div>
-        <button onClick={() => navigate('/resetEmail')} className="w-full flex items-center justify-center gap-2 border border-[var(--primary-light)] text-[var(--primary-light)] font-semibold py-2.5 rounded-xl text-sm">
+        <button
+          onClick={() => navigate('/resetEmail')}
+          className="w-full flex items-center justify-center gap-2 border border-[var(--primary-light)] text-[var(--primary-light)] font-semibold py-2.5 rounded-xl text-sm"
+        >
           <FiKey size={15} /> Reset Email
         </button>
         <DeactivateButton onClick={openConfirmModal} />
@@ -76,7 +86,8 @@ const ProfileScreen = () => {
   useEffect(() => {
     const handleTrigger = () => setIsConfirmOpen(true)
     window.addEventListener('trigger-deactivate-modal', handleTrigger)
-    return () => window.removeEventListener('trigger-deactivate-modal', handleTrigger)
+    return () =>
+      window.removeEventListener('trigger-deactivate-modal', handleTrigger)
   }, [])
 
   // Handle smooth scroll to reviews if redirected from notification click
@@ -93,7 +104,8 @@ const ProfileScreen = () => {
     }
   }, [location.hash, location.state])
 
-  if (isLoading) return <div className="py-20 text-center">Loading profile...</div>
+  if (isLoading)
+    return <div className="py-20 text-center">Loading profile...</div>
 
   return (
     <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24">
@@ -120,7 +132,9 @@ const ProfileScreen = () => {
             </div>
           </div>
           <AccountCard email={profile?.email} isOwnProfile={isOwnProfile} />
-          <SkillsCard skills={Array.isArray(profile?.skillTags) ? profile.skillTags : []} />
+          <SkillsCard
+            skills={Array.isArray(profile?.skillTags) ? profile.skillTags : []}
+          />
         </div>
 
         {/* Right column */}
@@ -136,7 +150,10 @@ const ProfileScreen = () => {
       <DeactivateConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
-        onConfirm={() => { setIsConfirmOpen(false); navigate('/signIn') }}
+        onConfirm={() => {
+          setIsConfirmOpen(false)
+          navigate('/signIn')
+        }}
       />
     </main>
   )

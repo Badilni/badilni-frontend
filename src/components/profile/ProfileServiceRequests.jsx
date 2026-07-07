@@ -9,9 +9,20 @@ import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import RequestCardSkeleton from '../shared/RequestCardSkeleton'
 import ErrorState from '../shared/ErrorState'
 
-export default function ProfileServiceRequests({ userId, isOwnProfile = false, limit = 6 }) {
-  const { data, isLoading, isError, error, refetch } = useUserServiceRequests(userId, { limit })
-  const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
+export default function ProfileServiceRequests({
+  userId,
+  isOwnProfile = false,
+  limit = 6,
+}) {
+  const { data, isLoading, isError, error, refetch } = useUserServiceRequests(
+    userId,
+    { limit }
+  )
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories()
   const deleteRequest = useDeleteServiceRequest()
   const proposeSession = useProposeSession()
   const [editingRequest, setEditingRequest] = useState(null)
@@ -59,7 +70,9 @@ export default function ProfileServiceRequests({ userId, isOwnProfile = false, l
     return (
       <div className="bg-[var(--whiteBackground)] rounded-2xl p-8 text-center border border-[var(--secondary-light)]/10">
         <p className="text-sm text-[var(--gray-text)]">
-          {isOwnProfile ? "You haven't posted any service requests yet." : 'No service requests posted yet.'}
+          {isOwnProfile
+            ? "You haven't posted any service requests yet."
+            : 'No service requests posted yet.'}
         </p>
       </div>
     )

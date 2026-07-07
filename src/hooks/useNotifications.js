@@ -23,7 +23,9 @@ export function useNotifications(params = {}) {
       } catch (err) {
         const status = err?.response?.status
         if (status === 401 || status === 403) {
-          console.warn('[Notifications] Auth failure, forcing logout redirect...')
+          console.warn(
+            '[Notifications] Auth failure, forcing logout redirect...'
+          )
           useAuthStore.getState().clearUser()
           window.location.hash = '/signIn'
         }
@@ -32,22 +34,22 @@ export function useNotifications(params = {}) {
     },
     // Only query when logged in
     enabled: Boolean(user) && isAuthenticated,
-    staleTime: 1000 * 10, 
+    staleTime: 1000 * 10,
     // We disable background polling (refetchInterval) completely to prevent 401/429 loops.
     // Real-time notification:new socket events handle updates.
-    refetchInterval: false, 
+    refetchInterval: false,
     refetchOnWindowFocus: false, // disable refetch on window focus to avoid spamming server
-    retry: false, 
+    retry: false,
   })
 
   const notifications = query.data?.data?.notifications ?? []
-  const unreadCount   = query.data?.unreadCount ?? 0
-  const pagination    = query.data?.pagination  ?? {}
+  const unreadCount = query.data?.unreadCount ?? 0
+  const pagination = query.data?.pagination ?? {}
 
   const updateAllNotificationQueries = (updateFn) => {
     const cache = queryClient.getQueryCache()
     const queries = cache.findAll({ queryKey: NOTIFICATIONS_KEY, exact: false })
-    
+
     queries.forEach((q) => {
       queryClient.setQueryData(q.queryKey, updateFn)
     })
@@ -57,14 +59,19 @@ export function useNotifications(params = {}) {
   const markAsRead = useMutation({
     mutationFn: (id) => markAsReadRequest(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+      await queryClient.cancelQueries({
+        queryKey: NOTIFICATIONS_KEY,
+        exact: false,
+      })
 
       updateAllNotificationQueries((old) => {
         if (!old?.data?.notifications) return old
 
         const target = old.data.notifications.find((n) => n._id === id)
         const wasUnread = target && !target.isRead
-        const newUnread = wasUnread ? Math.max(0, (old.unreadCount ?? 0) - 1) : (old.unreadCount ?? 0)
+        const newUnread = wasUnread
+          ? Math.max(0, (old.unreadCount ?? 0) - 1)
+          : (old.unreadCount ?? 0)
 
         return {
           ...old,
@@ -80,7 +87,10 @@ export function useNotifications(params = {}) {
     },
     onSettled: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+        queryClient.invalidateQueries({
+          queryKey: NOTIFICATIONS_KEY,
+          exact: false,
+        })
       }, 1200)
     },
   })
@@ -89,7 +99,10 @@ export function useNotifications(params = {}) {
   const markAllAsRead = useMutation({
     mutationFn: markAllAsReadRequest,
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+      await queryClient.cancelQueries({
+        queryKey: NOTIFICATIONS_KEY,
+        exact: false,
+      })
 
       updateAllNotificationQueries((old) => {
         if (!old?.data?.notifications) return old
@@ -108,7 +121,10 @@ export function useNotifications(params = {}) {
     },
     onSettled: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+        queryClient.invalidateQueries({
+          queryKey: NOTIFICATIONS_KEY,
+          exact: false,
+        })
       }, 1200)
     },
   })
@@ -117,13 +133,18 @@ export function useNotifications(params = {}) {
   const deleteNotification = useMutation({
     mutationFn: (id) => deleteNotificationRequest(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+      await queryClient.cancelQueries({
+        queryKey: NOTIFICATIONS_KEY,
+        exact: false,
+      })
 
       updateAllNotificationQueries((old) => {
         if (!old?.data?.notifications) return old
         const target = old.data.notifications.find((n) => n._id === id)
         const wasUnread = target && !target.isRead
-        const newUnread = wasUnread ? Math.max(0, (old.unreadCount ?? 0) - 1) : (old.unreadCount ?? 0)
+        const newUnread = wasUnread
+          ? Math.max(0, (old.unreadCount ?? 0) - 1)
+          : (old.unreadCount ?? 0)
 
         return {
           ...old,
@@ -137,7 +158,10 @@ export function useNotifications(params = {}) {
     },
     onSettled: () => {
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+        queryClient.invalidateQueries({
+          queryKey: NOTIFICATIONS_KEY,
+          exact: false,
+        })
       }, 1200)
     },
   })
@@ -148,14 +172,14 @@ export function useNotifications(params = {}) {
     pagination,
 
     isLoading: query.isLoading,
-    isError:   query.isError,
-    refetch:   query.refetch,
+    isError: query.isError,
+    refetch: query.refetch,
 
-    markAsRead:         markAsRead.mutate,
-    markAllAsRead:      markAllAsRead.mutate,
+    markAsRead: markAsRead.mutate,
+    markAllAsRead: markAllAsRead.mutate,
     deleteNotification: deleteNotification.mutate,
 
     isMarkingAll: markAllAsRead.isPending,
-    isDeleting:   deleteNotification.isPending,
+    isDeleting: deleteNotification.isPending,
   }
 }

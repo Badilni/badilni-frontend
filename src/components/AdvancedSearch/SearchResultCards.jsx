@@ -78,11 +78,11 @@ function PersonSearchCard({ user }) {
 function OfferSearchCard({ offer }) {
   const navigate = useNavigate()
   return (
-      <OfferCard
-        key={offer?._id || offer?.id}
-        offer={offer}
-        onClick={() => navigate(`/offers/${offer?._id || offer?.id}`)}
-      />
+    <OfferCard
+      key={offer?._id || offer?.id}
+      offer={offer}
+      onClick={() => navigate(`/offers/${offer?._id || offer?.id}`)}
+    />
   )
 }
 

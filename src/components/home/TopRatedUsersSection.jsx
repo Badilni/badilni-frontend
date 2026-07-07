@@ -22,15 +22,18 @@ const cardThemes = [
   },
   {
     accentColor: 'from-emerald-500 to-teal-600',
-    tagColor: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
+    tagColor:
+      'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
   },
   {
     accentColor: 'from-purple-500 to-pink-600',
-    tagColor: 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300',
+    tagColor:
+      'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300',
   },
   {
     accentColor: 'from-orange-500 to-red-600',
-    tagColor: 'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300',
+    tagColor:
+      'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300',
   },
 ]
 
@@ -53,7 +56,7 @@ function LocalMentorCard({ user, theme }) {
   // Dynamic bio fallback based on actual skillTags to avoid identical text across cards
   const bio = user.bio
     ? user.bio
-    : (user.skillTags && user.skillTags.length > 0)
+    : user.skillTags && user.skillTags.length > 0
       ? `Interested in sharing skills like ${user.skillTags.slice(0, 3).join(', ')}.`
       : 'Badilni member passionate about swapping skills and learning new things.'
 
@@ -191,7 +194,10 @@ export default function TopRatedUsersSection() {
 
           // Double check sort client-side, and limit to top 8
           const sorted = activeUsers
-            .sort((a, b) => Number(b.averageRating || 0) - Number(a.averageRating || 0))
+            .sort(
+              (a, b) =>
+                Number(b.averageRating || 0) - Number(a.averageRating || 0)
+            )
             .slice(0, 8)
 
           setUsers(sorted)
@@ -212,7 +218,6 @@ export default function TopRatedUsersSection() {
   return (
     <section className="w-full py-16 bg-slate-50 dark:bg-slate-950/40 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
           <div>
@@ -230,8 +235,18 @@ export default function TopRatedUsersSection() {
               className="group flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white dark:bg-slate-900 text-sm font-bold text-slate-700 dark:text-slate-200 border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/80 shadow-sm transition-all duration-200 focus:outline-none cursor-pointer active:scale-95"
             >
               <span>View All Members</span>
-              <svg className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              <svg
+                className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform text-gray-400 dark:text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           )}
@@ -263,7 +278,8 @@ export default function TopRatedUsersSection() {
         ) : error ? (
           <div className="w-full flex flex-col items-center justify-center py-10 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-2xl p-6 text-center">
             <p className="text-sm font-medium text-red-500 dark:text-red-400">
-              Failed to load community members. Please check your network connection or try again later.
+              Failed to load community members. Please check your network
+              connection or try again later.
             </p>
           </div>
         ) : users.length === 0 ? (
@@ -286,7 +302,6 @@ export default function TopRatedUsersSection() {
             })}
           </div>
         )}
-
       </div>
     </section>
   )

@@ -34,7 +34,8 @@ export default function NavBar() {
   useEffect(() => {
     const handleOpenSidebar = () => setSidebarOpen(true)
     window.addEventListener('open-user-sidebar', handleOpenSidebar)
-    return () => window.removeEventListener('open-user-sidebar', handleOpenSidebar)
+    return () =>
+      window.removeEventListener('open-user-sidebar', handleOpenSidebar)
   }, [])
 
   // Automatically close mobile hamburger menu on route changes

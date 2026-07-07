@@ -32,7 +32,7 @@ export function useSocketNotifications() {
       const token = getAccessToken()
       if (token) {
         console.log('[Socket] Token is ready! Connecting to socket server...')
-        
+
         const socket = io(SOCKET_URL, {
           auth: { token },
           transports: ['websocket', 'polling'],
@@ -44,7 +44,10 @@ export function useSocketNotifications() {
         socketRef.current = socket
 
         socket.on('connect', () => {
-          console.log('[Socket] ✅ Connected, real-time events active. ID:', socket.id)
+          console.log(
+            '[Socket] ✅ Connected, real-time events active. ID:',
+            socket.id
+          )
         })
 
         socket.on('connect_error', (err) => {
@@ -56,12 +59,16 @@ export function useSocketNotifications() {
 
           // Instantly update ALL cache permutations in queryClient
           const cache = queryClient.getQueryCache()
-          const queries = cache.findAll({ queryKey: NOTIFICATIONS_KEY, exact: false })
+          const queries = cache.findAll({
+            queryKey: NOTIFICATIONS_KEY,
+            exact: false,
+          })
 
           queries.forEach((q) => {
             queryClient.setQueryData(q.queryKey, (old) => {
               if (!old?.data?.notifications) return old
-              if (old.data.notifications.some((n) => n._id === payload._id)) return old
+              if (old.data.notifications.some((n) => n._id === payload._id))
+                return old
 
               return {
                 ...old,
@@ -75,12 +82,17 @@ export function useSocketNotifications() {
           })
 
           // Invalidate to fetch fresh stats
-          queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY, exact: false })
+          queryClient.invalidateQueries({
+            queryKey: NOTIFICATIONS_KEY,
+            exact: false,
+          })
         })
       } else {
         // Token not ready yet (checkAuth is still setting up the memory state).
         // Retry in 1.5 seconds. This runs dynamically until token is retrieved.
-        console.log('[Socket] Token not ready in memory yet, scheduling retry in 1.5s...')
+        console.log(
+          '[Socket] Token not ready in memory yet, scheduling retry in 1.5s...'
+        )
         delayTimeout = setTimeout(tryConnect, 1500)
       }
     }

@@ -3,7 +3,8 @@ import { MdVerified } from 'react-icons/md'
 import { FiEdit2, FiShare2, FiMessageCircle, FiCalendar } from 'react-icons/fi'
 import { BsStarFill } from 'react-icons/bs'
 import { motion } from 'motion/react'
-import SkillBadge from './SkillBadge'
+// import SkillBadge from './SkillBadge'
+import { useReviewsCount } from '../../hooks/Review/RatingProfileHeader'
 
 const formatJoinDate = (dateStr) => {
   if (!dateStr) return null
@@ -29,10 +30,12 @@ const ProfileHeader = ({
 }) => {
   const navigate = useNavigate()
 
+  const reviewsCount = useReviewsCount(profile?._id, isOwnProfile)
+
   const displayName = profile?.name
   const email = profile?.email
   const bio = profile?.bio?.trim() || "This user hasn't added a bio yet."
-  const skillTags = Array.isArray(profile?.skillTags) ? profile.skillTags : []
+  // const skillTags = Array.isArray(profile?.skillTags) ? profile.skillTags : []
   // Defensive: avatar can be `{ url }` (own profile shape) or a plain
   // string (shape used elsewhere, e.g. UserCard).
   const avatarUrl =
@@ -42,7 +45,6 @@ const ProfileHeader = ({
   const isVerified = Boolean(profile?.isVerified)
   const joinDate = formatJoinDate(profile?.createdAt)
   const averageRating = Number(profile?.averageRating ?? 0)
-  const reviewsCount = profile?.reviewsCount ?? 0
 
   const handleEditClick = () => {
     if (onEdit) {
@@ -82,12 +84,10 @@ const ProfileHeader = ({
               </span>
             )}
 
-            {!isOwnProfile && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-50 text-yellow-600 text-sm rounded-full font-bold border border-yellow-200">
-                <BsStarFill size={11} /> {averageRating.toFixed(1)} ·{' '}
-                {reviewsCount} reviews
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-50 text-yellow-600 text-sm rounded-full font-bold border border-yellow-200">
+              <BsStarFill size={11} /> {averageRating.toFixed(1)} ·{' '}
+              {reviewsCount} reviews
+            </span>
           </div>
 
           {email && (
@@ -102,14 +102,6 @@ const ProfileHeader = ({
           <p className="text-[var(--gray-text)] max-w-2xl mb-4 text-sm md:text-base leading-relaxed mx-auto md:mx-0">
             {bio}
           </p>
-
-          {/* {skillTags.length > 0 && (
-            <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-5">
-              {skillTags.map((tag) => (
-                <SkillBadge key={tag} skill={tag} />
-              ))}
-            </div>
-          )} */}
 
           <div className="flex flex-wrap justify-center md:justify-start gap-3">
             {isOwnProfile ? (

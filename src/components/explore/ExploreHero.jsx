@@ -20,7 +20,8 @@ export default function ExploreHero() {
         </h1>
 
         <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-2xl font-medium">
-          Discover talented members, inspect verified ratings, and start exchanging your skills instantly through real-time communication.
+          Discover talented members, inspect verified ratings, and start
+          exchanging your skills instantly through real-time communication.
         </p>
       </div>
 

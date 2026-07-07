@@ -43,9 +43,19 @@ export default function BookingParticipants({ booking }) {
 
   return (
     <div className="flex items-center gap-6 flex-wrap">
-      <Participant label="Provider" user={booking?.provider} onClick={() => go(booking?.provider)} />
-      <div className="text-gray-300 dark:text-slate-600 text-lg font-light select-none">→</div>
-      <Participant label="Receiver" user={booking?.receiver} onClick={() => go(booking?.receiver)} />
+      <Participant
+        label="Provider"
+        user={booking?.provider}
+        onClick={() => go(booking?.provider)}
+      />
+      <div className="text-gray-300 dark:text-slate-600 text-lg font-light select-none">
+        →
+      </div>
+      <Participant
+        label="Receiver"
+        user={booking?.receiver}
+        onClick={() => go(booking?.receiver)}
+      />
     </div>
   )
 }

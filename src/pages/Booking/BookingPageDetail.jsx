@@ -1,8 +1,6 @@
 import BookingPage from '../../components/bookings/BookingPage'
 const BookingPageDetail = () => {
-  return (
-    <BookingPage/>
-  )
+  return <BookingPage />
 }
 
 export default BookingPageDetail

@@ -13,9 +13,14 @@ const formatDate = (dateStr) => {
 const UserReviewCard = ({ review, type = 'received' }) => {
   const user = type === 'received' ? review?.reviewer : review?.reviewee
 
-  const avatarUrl = typeof user?.avatar === 'object' ? user?.avatar?.url : user?.avatar
+  const avatarUrl =
+    typeof user?.avatar === 'object' ? user?.avatar?.url : user?.avatar
   const initials = user?.name
-    ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2)
+    ? user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
     : '?'
 
   return (

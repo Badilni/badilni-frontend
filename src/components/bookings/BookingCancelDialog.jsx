@@ -25,12 +25,17 @@ export default function BookingCancelDialog({ bookingId, open, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+    >
       <div
         className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-sm p-7"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Cancel Booking</h3>
+        <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">
+          Cancel Booking
+        </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Let the other party know why you're cancelling.
         </p>

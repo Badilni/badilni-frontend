@@ -1,7 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { getMyReviewsRequest, getUserReviewsRequest } from '../../api/reviewApi'
 
-export function useReviewListingOptions({ userId, type = 'received', enabled = true } = {}) {
+export function useReviewListingOptions({
+  userId,
+  type = 'received',
+  enabled = true,
+} = {}) {
   return useQuery({
     queryKey: ['review-listing-options', userId || 'me', type],
     enabled,
@@ -15,7 +19,10 @@ export function useReviewListingOptions({ userId, type = 'received', enabled = t
       const seen = new Map()
       reviews.forEach((r) => {
         if (r?.listing?._id && !seen.has(r.listing._id)) {
-          seen.set(r.listing._id, { _id: r.listing._id, title: r.listing.title })
+          seen.set(r.listing._id, {
+            _id: r.listing._id,
+            title: r.listing.title,
+          })
         }
       })
 
