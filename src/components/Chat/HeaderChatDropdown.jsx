@@ -2,16 +2,21 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { FiX, FiMaximize2, FiLoader } from 'react-icons/fi'
+import { io } from 'socket.io-client'
 import ChatWindow from './ChatWindow'
 import {
   getConversations,
   getMessages,
   sendMessage,
   markMessagesAsRead,
+  getUnreadCount,
 } from '../../api/chatApi'
+import { getAccessToken } from '../../api/axios'
+import useAuthStore from '../../store/authStore'
 
 const HeaderChatDropdown = () => {
   const navigate = useNavigate()
+  const currentUser = useAuthStore((state) => state.user)
   const [chats, setChats] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -19,21 +24,67 @@ const HeaderChatDropdown = () => {
   const [selectedChat, setSelectedChat] = useState(null)
   const [messageText, setMessageText] = useState('')
   const [dropdownCoords, setDropdownCoords] = useState({ top: 0, left: 0 })
+  const [unreadCount, setUnreadCount] = useState(0)
 
   const buttonRef = useRef(null)
   const dropdownRef = useRef(null)
-  const messagesEndRef = useRef(null)
+
+  // Fetch initial unread count
+  useEffect(() => {
+    if (!currentUser) return
+    getUnreadCount()
+      .then((res) => {
+        setUnreadCount(res?.data?.unreadCount || 0)
+      })
+      .catch((err) => console.error('Error fetching unread count:', err))
+  }, [currentUser])
+
+  // Connect to Socket.io for live unread updates
+  useEffect(() => {
+    const token = getAccessToken()
+    if (!token || !currentUser) return
+
+    const socket = io('http://localhost:3000', {
+      auth: { token },
+      transports: ['websocket', 'polling'],
+    })
+
+    socket.on('message:new', (payload) => {
+      if (selectedChat?.id !== payload.conversation) {
+        setUnreadCount((prev) => prev + 1)
+      }
+    })
+
+    socket.on('message:read', () => {
+      getUnreadCount().then((res) => {
+        setUnreadCount(res?.data?.unreadCount || 0)
+      })
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [currentUser, selectedChat])
 
   useEffect(() => {
     if (isDropdownOpen) {
-      setIsLoading(true)
       getConversations(1, 20)
         .then((data) => {
           console.log('API Response for conversations:', data)
-          const chatList = Array.isArray(data)
-            ? data
-            : data.conversations || data.data || []
-          setChats(chatList)
+          const rawConversations = data?.data?.conversations || []
+          const transformed = rawConversations.map((chat) => {
+            const otherParticipant = chat.participants?.find((p) => p._id !== currentUser?._id)
+            return {
+              id: chat._id,
+              recipientId: otherParticipant?._id,
+              name: otherParticipant?.name || 'Unknown User',
+              img: otherParticipant?.avatar?.url || '/avatar.png',
+              lastMessage: chat.lastMessage?.body || (chat.lastMessage ? '📎 Attachment' : ''),
+              unreadCount: chat.unreadCount || 0,
+              participants: chat.participants // pass participants for ChatWindow
+            }
+          })
+          setChats(transformed)
         })
         .catch((err) => {
           console.error('Error fetching conversations:', err)
@@ -41,7 +92,7 @@ const HeaderChatDropdown = () => {
         })
         .finally(() => setIsLoading(false))
     }
-  }, [isDropdownOpen])
+  }, [isDropdownOpen, currentUser?._id])
 
   useEffect(() => {
     if (isDropdownOpen && buttonRef.current) {
@@ -58,7 +109,8 @@ const HeaderChatDropdown = () => {
     setIsDropdownOpen(false)
     setIsPopupOpen(true)
     try {
-      const messagesData = await getMessages(chat.id)
+      const res = await getMessages(chat.id)
+      const messagesData = res?.data?.messages || []
       setSelectedChat((prev) => ({
         ...prev,
         messages: Array.isArray(messagesData) ? messagesData : [],
@@ -73,12 +125,13 @@ const HeaderChatDropdown = () => {
     e.preventDefault()
     if (!messageText.trim()) return
     const formData = new FormData()
-    formData.append('text', messageText)
+    formData.append('body', messageText)
     try {
-      const newMessage = await sendMessage(
+      const response = await sendMessage(
         selectedChat.recipientId || selectedChat.id,
         formData
       )
+      const newMessage = response?.data?.message || response
       setSelectedChat((prev) => ({
         ...prev,
         messages: [...prev.messages, newMessage],
@@ -94,10 +147,14 @@ const HeaderChatDropdown = () => {
       <button
         ref={buttonRef}
         onClick={() => {
-          setIsDropdownOpen(!isDropdownOpen)
+          const nextState = !isDropdownOpen
+          setIsDropdownOpen(nextState)
+          if (nextState) {
+            setIsLoading(true)
+          }
           setIsPopupOpen(false)
         }}
-        className={`p-2.5 rounded-xl transition-all duration-300 ${isDropdownOpen || isPopupOpen ? 'bg-gray-200 dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400'}`}
+        className={`relative p-2.5 rounded-xl transition-all duration-300 ${isDropdownOpen || isPopupOpen ? 'bg-gray-200 dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400'}`}
         aria-label="Open chat application wrapper"
       >
         <svg
@@ -114,6 +171,14 @@ const HeaderChatDropdown = () => {
             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
           />
         </svg>
+        {unreadCount > 0 && (
+          <span
+            id="chat-unread-badge"
+            className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1 shadow-md animate-bounce-once"
+          >
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
       </button>
 
       {isDropdownOpen &&
@@ -121,9 +186,9 @@ const HeaderChatDropdown = () => {
           <div
             ref={dropdownRef}
             style={{ top: dropdownCoords.top, left: dropdownCoords.left }}
-            className="fixed w-[calc(100vw-32px)] sm:w-[350px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 z-[9999] overflow-hidden"
+            className="fixed w-[calc(100vw-32px)] sm:w-[350px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800/80 z-[9999] overflow-hidden"
           >
-            <div className="p-4 border-b dark:border-slate-800 font-bold text-sm text-gray-800 dark:text-white flex justify-between">
+            <div className="p-4 border-b border-gray-100 dark:border-slate-800 font-bold text-sm text-gray-800 dark:text-white flex justify-between">
               Messages {isLoading && <FiLoader className="animate-spin" />}
             </div>
             <div className="max-h-[400px] overflow-y-auto">
@@ -138,7 +203,7 @@ const HeaderChatDropdown = () => {
                   <div
                     key={chat.id}
                     onClick={() => handleSelectChat(chat)}
-                    className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer border-b dark:border-slate-800/50"
+                    className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer border-b border-gray-100 dark:border-slate-800/50"
                   >
                     <img
                       src={chat.img || '/avatar.png'}
@@ -163,9 +228,17 @@ const HeaderChatDropdown = () => {
       {isPopupOpen &&
         selectedChat &&
         createPortal(
-          <div className="fixed bottom-0 right-4 sm:right-8 w-full sm:w-[380px] h-[500px] bg-white dark:bg-slate-900 rounded-t-xl shadow-2xl border flex flex-col z-[9998] overflow-hidden">
-            <div className="bg-white dark:bg-slate-800 p-3 border-b dark:border-slate-700 flex justify-between items-center shadow-sm">
-              <span className="font-bold text-sm dark:text-white truncate">
+          <div className="fixed bottom-0 right-4 sm:right-8 w-full sm:w-[380px] h-[500px] bg-white dark:bg-slate-900 rounded-t-2xl shadow-2xl border border-gray-100 dark:border-slate-800/80 flex flex-col z-[9998] overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 p-3 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center shadow-sm">
+              <span
+                onClick={() => {
+                  if (selectedChat.recipientId) {
+                    navigate(`/profile/${selectedChat.recipientId}`)
+                    setIsPopupOpen(false)
+                  }
+                }}
+                className="font-bold text-sm dark:text-white truncate cursor-pointer hover:text-blue-500 transition-colors"
+              >
                 {selectedChat.name}
               </span>
               <div className="flex gap-1">
@@ -189,9 +262,11 @@ const HeaderChatDropdown = () => {
             <div className="flex-1 bg-gray-50 dark:bg-slate-950 overflow-hidden">
               <ChatWindow
                 currentChat={selectedChat}
+                messages={selectedChat.messages || []}
                 messageText={messageText}
                 setMessageText={setMessageText}
                 onSendMessage={handleSendMessage}
+                compact
               />
             </div>
           </div>,

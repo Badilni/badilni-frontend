@@ -3,7 +3,11 @@ import {
   FiChevronRight,
   FiFileText,
   FiFolder,
+  FiImage,
+  FiVideo,
 } from 'react-icons/fi'
+import useAuthStore from '../../store/authStore'
+import { useNavigate } from 'react-router-dom'
 
 const ChatInfoPanel = ({
   viewMode,
@@ -12,10 +16,100 @@ const ChatInfoPanel = ({
   isInfoOpen,
   setIsInfoOpen,
 }) => {
-  // Unified visibility logic: panel shows if toggled via state or if view mode is explicitly set to 'info'
+  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user)
   const shouldShow = isInfoOpen || viewMode === 'info'
 
-  // Handles closing the panel and resetting the view mode back to the main chat window
+  const otherParticipant = currentChat?.participants?.find(
+    (p) => p._id !== user?._id
+  )
+
+  // Dynamically calculate statistics from currentChat.messages
+  const messages = currentChat?.messages || []
+  let docCount = 0
+  let photoCount = 0
+  let videoCount = 0
+  let otherCount = 0
+  let docSize = 0
+  let photoSize = 0
+  let videoSize = 0
+  let otherSize = 0
+  let linksCount = 0
+
+  messages.forEach((msg) => {
+    if (msg.attachments && Array.isArray(msg.attachments)) {
+      msg.attachments.forEach((att) => {
+        const type = att.fileType || ''
+        const size = att.fileSize || 0
+        if (type === 'image' || att.url?.match(/\.(jpeg|jpg|gif|png|webp)/i)) {
+          photoCount++
+          photoSize += size
+        } else if (type === 'video' || att.url?.match(/\.(mp4|mov|avi|mkv|webm)/i)) {
+          videoCount++
+          videoSize += size
+        } else if (
+          type === 'document' ||
+          att.fileName?.match(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|rtf)/i)
+        ) {
+          docCount++
+          docSize += size
+        } else {
+          otherCount++
+          otherSize += size
+        }
+      })
+    }
+
+    if (msg.body) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g
+      const matches = msg.body.match(urlRegex)
+      if (matches) {
+        linksCount += matches.length
+      }
+    }
+  })
+
+  const formatSize = (bytes) => {
+    if (bytes === 0) return '0B'
+    const k = 1024
+    const sizes = ['B', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i]
+  }
+
+  const dynamicBreakdown = [
+    {
+      name: 'Documents',
+      count: `${docCount} files`,
+      size: formatSize(docSize),
+      color: 'text-[var(--primary-light)]',
+      icon: FiFileText,
+    },
+    {
+      name: 'Photos',
+      count: `${photoCount} files`,
+      size: formatSize(photoSize),
+      color: 'text-[var(--success)]',
+      icon: FiImage,
+    },
+    {
+      name: 'Movies',
+      count: `${videoCount} files`,
+      size: formatSize(videoSize),
+      color: 'text-[var(--danger)]',
+      icon: FiVideo,
+    },
+    {
+      name: 'Other',
+      count: `${otherCount} files`,
+      size: formatSize(otherSize),
+      color: 'text-[var(--gray-text)]',
+      icon: FiFolder,
+    },
+  ].filter((item) => parseInt(item.count) > 0)
+
+  const filesCount = docCount + photoCount + videoCount + otherCount
+
   const handleClosePanel = () => {
     setIsInfoOpen(false)
     if (setViewMode) {
@@ -25,7 +119,7 @@ const ChatInfoPanel = ({
 
   return (
     <>
-      {/* Mobile/Tablet Backdrop Overlay: Closes the panel when clicking outside on smaller screens */}
+      {/* Mobile/Tablet Backdrop Overlay */}
       {shouldShow && (
         <div
           onClick={handleClosePanel}
@@ -33,22 +127,13 @@ const ChatInfoPanel = ({
         />
       )}
 
-      {/* Main Panel Container: Uses responsive positioning and transitions */}
+      {/* Main Panel Container */}
       <div
         className={`
-        /* Base positioning & Responsive width */
         fixed top-0 right-0 h-full w-full sm:w-80 bg-[var(--whiteBackground)] z-[1000]
-
-        /* Desktop transformation: becomes static (inline) to coexist with the chat window */
         lg:static lg:h-full lg:w-80 xl:w-1/4 lg:z-auto
-
-        /* Layout flex flow & inner paddings */
         p-4 md:p-6 shrink-0
-
-        /* Smooth Slide-in/Out animation transitions */
         transition-all duration-300 ease-in-out transform
-
-        /* Conditional styling for visibility, opacity, and display to prevent layout shifts */
         ${
           shouldShow
             ? 'translate-x-0 flex opacity-100'
@@ -56,11 +141,9 @@ const ChatInfoPanel = ({
         }
       `}
       >
-        {/* Main Content Wrapper: Prevents layout overflow */}
         <div className="w-full h-full flex flex-col overflow-hidden min-w-[240px]">
           {/* Panel Header Controls */}
           <div className="flex items-center gap-3 mb-6 shrink-0">
-            {/* Close button for Mobile/Tablets */}
             <button
               onClick={handleClosePanel}
               className="p-1.5 bg-[var(--background-light)] rounded-lg text-[var(--gray-text)] lg:hidden hover:text-[var(--black-text)] transition-colors"
@@ -68,7 +151,6 @@ const ChatInfoPanel = ({
               <FiChevronLeft size={18} />
             </button>
 
-            {/* Close button for Desktop (Toggle hide) */}
             <button
               onClick={handleClosePanel}
               className="p-1.5 bg-[var(--background-light)] rounded-lg text-[var(--gray-text)] hover:text-[var(--black-text)] transition-colors hidden lg:block"
@@ -85,25 +167,34 @@ const ChatInfoPanel = ({
           {currentChat && (
             <>
               {/* User Profile Overview Section */}
-              <div className="flex flex-col items-center text-center mb-6 shrink-0">
+              <div
+                onClick={() => {
+                  if (otherParticipant?._id) {
+                    navigate(`/profile/${otherParticipant._id}`)
+                  }
+                }}
+                className="flex flex-col items-center text-center mb-6 shrink-0 cursor-pointer group"
+              >
                 <div className="relative">
                   <img
-                    src={currentChat?.img}
-                    className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover mb-3 shadow-md"
+                    src={
+                      otherParticipant?.avatar?.url ||
+                      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
+                    }
+                    className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover mb-3 shadow-md border transition-transform duration-300 group-hover:scale-105"
                     alt="User avatar"
                   />
-                  {/* Active status indicator */}
                   <span className="absolute bottom-3 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-[var(--whiteBackground)] rounded-full"></span>
                 </div>
-                <h4 className="font-bold text-sm md:text-base text-[var(--black-text)] truncate max-w-full px-2">
-                  {currentChat?.name}
+                <h4 className="font-bold text-sm md:text-base text-[var(--black-text)] truncate max-w-full px-2 group-hover:text-blue-500 transition-colors">
+                  {otherParticipant?.name || 'Unknown User'}
                 </h4>
-                <span className="text-xs text-[var(--gray-text)] font-medium mt-0.5">
+                {/* <span className="text-xs text-[var(--gray-text)] font-medium mt-0.5">
                   Active now
-                </span>
+                </span> */}
               </div>
 
-              {/* Shared Media Analytics Grid: Displays counts for Files and Links */}
+              {/* Shared Media Analytics Grid */}
               <div className="grid grid-cols-2 gap-2 md:gap-3 mb-6 shrink-0">
                 <div className="bg-[var(--backgSuccessOpacity)] p-3 rounded-xl flex items-center gap-2 md:gap-3">
                   <FiFileText className="text-[var(--success)] size-5 md:size-6 shrink-0" />
@@ -112,7 +203,7 @@ const ChatInfoPanel = ({
                       All files
                     </div>
                     <div className="text-sm md:text-base font-black text-[var(--black-text)] leading-tight">
-                      {currentChat?.filesCount}
+                      {filesCount}
                     </div>
                   </div>
                 </div>
@@ -123,7 +214,7 @@ const ChatInfoPanel = ({
                       All links
                     </div>
                     <div className="text-sm md:text-base font-black text-[var(--black-text)] leading-tight">
-                      {currentChat?.linksCount}
+                      {linksCount}
                     </div>
                   </div>
                 </div>
@@ -133,11 +224,10 @@ const ChatInfoPanel = ({
                 File type
               </span>
 
-              {/* Shared Files Categorized List: Maps through breakdown array to render file categories */}
+              {/* Shared Files Categorized List */}
               <div className="flex-1 overflow-y-auto space-y-3 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                {currentChat?.fileBreakdown &&
-                currentChat.fileBreakdown.length > 0 ? (
-                  currentChat.fileBreakdown.map((file, i) => {
+                {dynamicBreakdown.length > 0 ? (
+                  dynamicBreakdown.map((file, i) => {
                     const Icon = file.icon
                     return (
                       <div
@@ -145,13 +235,11 @@ const ChatInfoPanel = ({
                         className="flex items-center justify-between group cursor-pointer hover:bg-[var(--background-light)]/60 p-1.5 rounded-xl transition-colors"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          {/* Category Icon Wrapper */}
                           <div
                             className={`p-2 rounded-xl bg-[var(--background-light)] ${file.color} shrink-0`}
                           >
                             <Icon size={18} />
                           </div>
-                          {/* Category Metadata */}
                           <div className="min-w-0">
                             <h5 className="font-bold text-xs text-[var(--black-text)] truncate">
                               {file.name}
@@ -166,7 +254,6 @@ const ChatInfoPanel = ({
                     )
                   })
                 ) : (
-                  // Fallback state if no media exists
                   <p className="text-xs text-[var(--gray-text)] italic text-center pt-4">
                     No shared media yet
                   </p>
