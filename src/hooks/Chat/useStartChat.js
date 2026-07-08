@@ -7,15 +7,25 @@ export const useStartChat = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ userId, messageText }) =>
-      startConversation(userId, messageText),
-    onSuccess: (data) => {
-      const conversationId = data?.conversation?._id || data?._id
+    mutationFn: (variables) => {
+      const uId =
+        typeof variables === 'object' && variables !== null && 'userId' in variables
+          ? variables.userId
+          : variables
+      const msgText =
+        typeof variables === 'object' && variables !== null && 'messageText' in variables
+          ? variables.messageText
+          : undefined
+      return startConversation(uId, msgText)
+    },
+    onSuccess: (data, variables) => {
+      const recipientId =
+        typeof variables === 'object' && variables !== null && 'userId' in variables
+          ? variables.userId
+          : variables
 
-      if (conversationId) {
-        queryClient.invalidateQueries({ queryKey: ['chat', 'conversations'] })
-        navigate('/chat', { state: { selectUserId: conversationId } })
-      }
+      queryClient.invalidateQueries({ queryKey: ['chat', 'conversations'] })
+      navigate('/chat', { state: { selectUserId: recipientId } })
     },
     onError: (error) => {
       console.error('Mutation failed:', error)

@@ -21,12 +21,12 @@ const ChatSidebar = ({
 
   return (
     <div
-      className={`w-full md:w-80 lg:w-1/4 h-full bg-[var(--whiteBackground)] dark:border-r dark:border-[var(--border-color)] flex flex-col p-4 md:p-6 shrink-0 transition-all duration-300 ${
+      className={`w-full md:w-80 lg:w-1/4 h-full bg-[var(--whiteBackground)] border-r border-gray-100 dark:border-[var(--border-color)] flex flex-col p-4 md:p-6 shrink-0 transition-all duration-300 ${
         viewMode === 'sidebar' ? 'flex' : 'hidden md:flex'
       }`}
     >
       {/* User Profile Section */}
-      <div className="flex flex-col items-center text-center mb-6">
+      <div className="relative flex flex-col items-center text-center mb-6 p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/30 dark:from-slate-800/40 dark:to-slate-800/10 border border-blue-100/20 dark:border-slate-800">
         <div className="relative">
           <img
             src={
@@ -34,33 +34,33 @@ const ChatSidebar = ({
               'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
             }
             alt="My Profile"
-            className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-[var(--success)]"
+            className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover ring-4 ring-white dark:ring-slate-800 shadow-md border-2 border-[var(--success)] transition-transform duration-300 hover:scale-105"
           />
-          <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-[var(--success)] border-2 border-[var(--whiteBackground)] rounded-full"></span>
+          <span className="absolute bottom-0.5 right-0.5 w-4 h-4 bg-[var(--success)] border-2 border-white dark:border-slate-800 rounded-full shadow-sm"></span>
         </div>
-        <h2 className="text-lg md:text-xl font-bold mt-3 text-[var(--black-text)]">
-          {user?.name || 'Jontray Arnold'}
+        <h2 className="text-base md:text-lg font-bold mt-3 text-[var(--black-text)] tracking-tight">
+          {user?.name || 'User Profile'}
         </h2>
-        <button className="mt-1 px-3 py-0.5 bg-[var(--backgSuccessOpacity)] text-[var(--success)] text-[11px] font-semibold rounded-full flex items-center gap-1">
-          available <span className="text-[9px]">▼</span>
-        </button>
+        <div className="mt-1.5 px-3 py-0.5 bg-green-500/10 text-[var(--success)] text-[10px] font-bold uppercase tracking-wider rounded-full flex items-center gap-1">
+          available
+        </div>
       </div>
 
       {/* Search Input Section */}
-      <div className="relative mb-6">
-        <FiSearch className="absolute left-4 top-3.5 text-[var(--gray-text)] size-4" />
+      <div className="relative mb-6 group">
+        <FiSearch className="absolute left-4 top-3.5 text-[var(--gray-text)] size-4 transition-colors group-focus-within:text-blue-500" />
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search conversations..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[var(--background-light)] text-[var(--black-text)] pl-11 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]/40"
+          className="w-full bg-gray-50 dark:bg-slate-800/60 text-[var(--black-text)] border border-gray-100 dark:border-slate-700/50 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-sm focus:shadow-md"
         />
       </div>
 
       {/* Section Header */}
-      <div className="flex justify-between items-center mb-4">
-        <span className="font-bold text-sm md:text-base text-[var(--black-text)]">
+      <div className="flex justify-between items-center mb-4 shrink-0">
+        <span className="font-bold text-xs uppercase tracking-wider text-[var(--gray-text)]">
           Last chats
         </span>
       </div>
@@ -83,18 +83,21 @@ const ChatSidebar = ({
             <div
               key={chat._id}
               onClick={() => onSelectChat(chat._id)}
-              className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all ${
+              className={`flex items-center gap-3.5 p-3.5 rounded-2xl cursor-pointer transition-all duration-300 relative border ${
                 isActive
-                  ? 'bg-[var(--background-light)] scale-[0.99]'
-                  : 'hover:bg-[var(--background-light)]/40'
+                  ? 'bg-gradient-to-r from-blue-50/80 to-blue-50/20 dark:from-slate-800/80 dark:to-slate-800/30 border-blue-100 dark:border-slate-700 shadow-sm'
+                  : 'bg-transparent border-transparent hover:bg-gray-50/50 dark:hover:bg-slate-800/30'
               }`}
             >
+              {isActive && (
+                <span className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-blue-500 rounded-r-full"></span>
+              )}
               <img
                 src={
                   otherParticipant?.avatar?.url ||
                   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
                 }
-                className="w-11 h-11 md:w-12 md:h-12 rounded-full object-cover shrink-0"
+                className="w-11 h-11 md:w-12 md:h-12 rounded-full object-cover shrink-0 border border-gray-100 dark:border-slate-700/60 shadow-sm"
                 alt=""
               />
 

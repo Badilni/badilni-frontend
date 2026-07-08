@@ -8,6 +8,27 @@ const api = axios.create({
 
 // ---- Access token store (in-memory, not localStorage, to limit XSS exposure) ----
 let accessToken = null
+let navigateFn = null
+
+export const setNavigate = (fn) => {
+  navigateFn = fn
+}
+
+export const navigateTo = (path) => {
+  if (navigateFn) {
+    navigateFn(path)
+  } else {
+    try {
+      if (window.location.hash || window.location.href.includes('#')) {
+        window.location.hash = path
+      } else {
+        window.location.assign(path)
+      }
+    } catch {
+      // ignore
+    }
+  }
+}
 
 export const setAccessToken = (token) => {
   accessToken = token
@@ -96,10 +117,10 @@ api.interceptors.response.use(
         processQueue(refreshError)
         clearAccessToken()
 
-        // Fallback navigation outside React context — use full redirect
+        // Redirect via registered useNavigate SPA navigation helper
         try {
-          window.location.assign('/signIn')
-        } catch (e) {
+          navigateTo('/signIn')
+        } catch {
           // ignore in non-browser environments
         }
         return Promise.reject(refreshError)

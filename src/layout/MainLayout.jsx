@@ -10,11 +10,14 @@ const MainLayout = () => {
 
   useEffect(() => {
     // Show spinner on initial load and on every route change
-    setLoading(true)
+    setTimeout(() => {
+      setLoading(true)
+    }, 0)
     const t = setTimeout(() => setLoading(false), 3000) // Lowered from 6000ms
     return () => clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
+
+  const isChatRoute = location.pathname.startsWith('/chat')
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -26,7 +29,7 @@ const MainLayout = () => {
         <>
           <NavBar />
           <Outlet />
-          <Footer />
+          {!isChatRoute && <Footer />}
         </>
       )}
     </div>
