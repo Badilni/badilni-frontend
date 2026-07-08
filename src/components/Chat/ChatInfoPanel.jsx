@@ -12,9 +12,10 @@ const ChatInfoPanel = ({
   isInfoOpen,
   setIsInfoOpen,
 }) => {
-  // دمج الحالات التي يجب فيها إظهار اللوحة بشكل صريح
+  // Unified visibility logic: panel shows if toggled via state or if view mode is explicitly set to 'info'
   const shouldShow = isInfoOpen || viewMode === 'info'
 
+  // Handles closing the panel and resetting the view mode back to the main chat window
   const handleClosePanel = () => {
     setIsInfoOpen(false)
     if (setViewMode) {
@@ -24,7 +25,7 @@ const ChatInfoPanel = ({
 
   return (
     <>
-      {/* Mobile/Tablet Backdrop Overlay: Closes the panel when clicking outside */}
+      {/* Mobile/Tablet Backdrop Overlay: Closes the panel when clicking outside on smaller screens */}
       {shouldShow && (
         <div
           onClick={handleClosePanel}
@@ -32,12 +33,13 @@ const ChatInfoPanel = ({
         />
       )}
 
+      {/* Main Panel Container: Uses responsive positioning and transitions */}
       <div
         className={`
         /* Base positioning & Responsive width */
         fixed top-0 right-0 h-full w-full sm:w-80 bg-[var(--whiteBackground)] z-[1000]
 
-        /* Desktop transformation: turns into a standard inline layout dynamically */
+        /* Desktop transformation: becomes static (inline) to coexist with the chat window */
         lg:static lg:h-full lg:w-80 xl:w-1/4 lg:z-auto
 
         /* Layout flex flow & inner paddings */
@@ -46,7 +48,7 @@ const ChatInfoPanel = ({
         /* Smooth Slide-in/Out animation transitions */
         transition-all duration-300 ease-in-out transform
 
-        /* التحكم المطلق في الظهور والاختفاء بناءً على الحالة الموحدة لمنع أي تعليق */
+        /* Conditional styling for visibility, opacity, and display to prevent layout shifts */
         ${
           shouldShow
             ? 'translate-x-0 flex opacity-100'
@@ -54,11 +56,11 @@ const ChatInfoPanel = ({
         }
       `}
       >
-        {/* Main Content Wrapper */}
+        {/* Main Content Wrapper: Prevents layout overflow */}
         <div className="w-full h-full flex flex-col overflow-hidden min-w-[240px]">
           {/* Panel Header Controls */}
           <div className="flex items-center gap-3 mb-6 shrink-0">
-            {/* Close button for Mobile/Tablets viewports */}
+            {/* Close button for Mobile/Tablets */}
             <button
               onClick={handleClosePanel}
               className="p-1.5 bg-[var(--background-light)] rounded-lg text-[var(--gray-text)] lg:hidden hover:text-[var(--black-text)] transition-colors"
@@ -66,7 +68,7 @@ const ChatInfoPanel = ({
               <FiChevronLeft size={18} />
             </button>
 
-            {/* Close button for Desktop viewports */}
+            {/* Close button for Desktop (Toggle hide) */}
             <button
               onClick={handleClosePanel}
               className="p-1.5 bg-[var(--background-light)] rounded-lg text-[var(--gray-text)] hover:text-[var(--black-text)] transition-colors hidden lg:block"
@@ -82,14 +84,15 @@ const ChatInfoPanel = ({
 
           {currentChat && (
             <>
-              {/* Target User Profile Overview */}
+              {/* User Profile Overview Section */}
               <div className="flex flex-col items-center text-center mb-6 shrink-0">
                 <div className="relative">
                   <img
                     src={currentChat?.img}
                     className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover mb-3 shadow-md"
-                    alt=""
+                    alt="User avatar"
                   />
+                  {/* Active status indicator */}
                   <span className="absolute bottom-3 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-[var(--whiteBackground)] rounded-full"></span>
                 </div>
                 <h4 className="font-bold text-sm md:text-base text-[var(--black-text)] truncate max-w-full px-2">
@@ -100,7 +103,7 @@ const ChatInfoPanel = ({
                 </span>
               </div>
 
-              {/* Shared Media Numerical Analytics Grid */}
+              {/* Shared Media Analytics Grid: Displays counts for Files and Links */}
               <div className="grid grid-cols-2 gap-2 md:gap-3 mb-6 shrink-0">
                 <div className="bg-[var(--backgSuccessOpacity)] p-3 rounded-xl flex items-center gap-2 md:gap-3">
                   <FiFileText className="text-[var(--success)] size-5 md:size-6 shrink-0" />
@@ -130,7 +133,7 @@ const ChatInfoPanel = ({
                 File type
               </span>
 
-              {/* Shared Files Categorized Scrollable List Container */}
+              {/* Shared Files Categorized List: Maps through breakdown array to render file categories */}
               <div className="flex-1 overflow-y-auto space-y-3 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {currentChat?.fileBreakdown &&
                 currentChat.fileBreakdown.length > 0 ? (
@@ -142,11 +145,13 @@ const ChatInfoPanel = ({
                         className="flex items-center justify-between group cursor-pointer hover:bg-[var(--background-light)]/60 p-1.5 rounded-xl transition-colors"
                       >
                         <div className="flex items-center gap-3 min-w-0">
+                          {/* Category Icon Wrapper */}
                           <div
                             className={`p-2 rounded-xl bg-[var(--background-light)] ${file.color} shrink-0`}
                           >
                             <Icon size={18} />
                           </div>
+                          {/* Category Metadata */}
                           <div className="min-w-0">
                             <h5 className="font-bold text-xs text-[var(--black-text)] truncate">
                               {file.name}
@@ -161,6 +166,7 @@ const ChatInfoPanel = ({
                     )
                   })
                 ) : (
+                  // Fallback state if no media exists
                   <p className="text-xs text-[var(--gray-text)] italic text-center pt-4">
                     No shared media yet
                   </p>

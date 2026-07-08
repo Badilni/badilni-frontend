@@ -1,148 +1,101 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import ChatSidebar from './ChatSidebar'
 import ChatWindow from './ChatWindow'
 import ChatInfoPanel from './ChatInfoPanel'
-
-// Mock Data Source
-const initialChatsData = [
-  {
-    id: 'chat_1',
-    userId: 'user_kate',
-    name: 'Kate Johnson',
-    img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
-    filesCount: 12,
-    linksCount: 2,
-    typing: false,
-    messages: [
-      {
-        id: 1,
-        text: 'Recently I saw properties in a great location that I did not pay attention to before 🤔',
-        time: '11:24 AM',
-        isMe: false,
-      },
-      {
-        id: 2,
-        text: 'He creates an atmosphere of mystery ✨',
-        time: '11:26 AM',
-        isMe: true,
-      },
-    ],
-    fileBreakdown: [
-      {
-        name: 'Documents',
-        count: '10 files',
-        size: '15MB',
-        color: 'text-blue-500',
-        icon: () => <span className="font-bold text-xs">DOC</span>,
-      },
-      {
-        name: 'Photos',
-        count: '2 files',
-        size: '4MB',
-        color: 'text-green-500',
-        icon: () => <span className="font-bold text-xs">IMG</span>,
-      },
-    ],
-  },
-  {
-    id: 'chat_2',
-    userId: 'user_tamara',
-    name: 'Tamara Shevchenko',
-    img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-    filesCount: 5,
-    linksCount: 1,
-    typing: true,
-    messages: [
-      {
-        id: 1,
-        text: 'Are you going to a business meeting tomorrow?',
-        time: '10:05 AM',
-        isMe: false,
-      },
-    ],
-    fileBreakdown: [
-      {
-        name: 'Photos',
-        count: '5 files',
-        size: '12MB',
-        color: 'text-green-500',
-        icon: () => <span className="font-bold text-xs">IMG</span>,
-      },
-    ],
-  },
-]
+import { getConversations, getMessages, sendMessage } from '../../api/chatApi'
+import useAuthStore from '../../store/authStore'
 
 const ChatPage = () => {
   const location = useLocation()
-  const [chats, setChats] = useState(initialChatsData)
+  const user = useAuthStore((s) => s.user)
+  const [chats, setChats] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [messageText, setMessageText] = useState('')
   const [isInfoOpen, setIsInfoOpen] = useState(true)
-
+  const [activeChatId, setActiveChatId] = useState(null)
+  const [viewMode, setViewMode] = useState('sidebar')
+  const [currentChat, setCurrentChat] = useState(null)
   const messagesEndRef = useRef(null)
 
-  // Initialize active chat fallback based on redirected router navigation state
-  const [activeChatId, setActiveChatId] = useState(() => {
-    const targetUserId = location.state?.selectUserId
-    if (targetUserId) {
-      const targetChat = initialChatsData.find(
-        (chat) => chat.userId === targetUserId || chat.id === targetUserId
+  useEffect(() => {
+    getConversations().then((data) => {
+      const chatsArray = Array.isArray(data) ? data : data?.data || []
+      setChats(chatsArray)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (chats.length > 0 && location.state?.selectUserId) {
+      const targetUserId = location.state.selectUserId
+      const targetChat = chats.find((chat) =>
+        chat.participants?.some((p) => p._id === targetUserId)
       )
-      if (targetChat) return targetChat.id
+
+      if (targetChat) {
+        setActiveChatId(targetChat._id)
+        setViewMode('chat')
+      }
     }
-    return 'chat_1'
-  })
+  }, [location.state?.selectUserId, chats])
 
-  // Toggle layout display mode for responsive viewports
-  const [viewMode, setViewMode] = useState(() => {
-    return location.state?.selectUserId ? 'chat' : 'sidebar'
-  })
+  useEffect(() => {
+    if (activeChatId) {
+      const selected = chats.find((c) => c._id === activeChatId)
+      if (selected) {
+        getMessages(activeChatId).then((msgs) => {
+          setCurrentChat({ ...selected, messages: msgs || [] })
+        })
+      }
+    }
+  }, [activeChatId, chats])
 
-  // Extract selected conversation reference object
-  const currentChat = chats.find((c) => c.id === activeChatId) || chats[0]
-
-  // Switch conversation channel profile
   const handleSelectChat = (id) => {
     setActiveChatId(id)
     setViewMode('chat')
   }
 
-  // Push new context message object into dataset stream array
-  const handleSendMessage = (e) => {
-    e.preventDefault()
-    if (!messageText.trim()) return
+  const handleSendMessage = async (e, file) => {
+    if (e) e.preventDefault()
+    if (!messageText.trim() && !file) return
 
-    const newMessage = {
-      id: Date.now(),
-      text: messageText,
-      time: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      isMe: true,
-    }
-
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === activeChatId
-          ? { ...chat, messages: [...chat.messages, newMessage] }
-          : chat
-      )
+    const recipient = currentChat?.participants?.find(
+      (p) => p._id !== user?._id
     )
 
-    setMessageText('')
+    const formData = new FormData()
+    formData.append('body', messageText)
+
+    if (recipient?._id) {
+      formData.append('recipientId', recipient._id)
+    }
+
+    if (file) formData.append('file', file)
+
+    try {
+      const newMessage = await sendMessage(activeChatId, formData)
+
+      setCurrentChat((prev) => ({
+        ...prev,
+        messages: [...(prev?.messages || []), newMessage],
+      }))
+
+      setMessageText('')
+    } catch (error) {
+      console.error('Error sending message:', error)
+      alert('Failed to send message. Please try again.')
+    }
   }
 
-  // Filter channel nodes matches using search string matching query
-  const filteredChats = chats.filter((chat) =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredChats = Array.isArray(chats)
+    ? chats.filter((chat) =>
+        chat.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : []
 
   return (
     <div className="flex h-screen w-full bg-[var(--background-light)] text-[var(--black-text)] font-sans overflow-hidden">
       <div className="flex w-full h-full relative">
-        {/* Channels List Component Sidebar */}
         <ChatSidebar
           viewMode={viewMode}
           searchQuery={searchQuery}
@@ -153,11 +106,11 @@ const ChatPage = () => {
           currentChat={currentChat}
         />
 
-        {/* Core Message Thread Stream Window */}
         <ChatWindow
           viewMode={viewMode}
           setViewMode={setViewMode}
           currentChat={currentChat}
+          messages={currentChat?.messages || []}
           messageText={messageText}
           setMessageText={setMessageText}
           onSendMessage={handleSendMessage}
@@ -166,7 +119,6 @@ const ChatPage = () => {
           setIsInfoOpen={setIsInfoOpen}
         />
 
-        {/* Detailed Metadata Metrics Side Panel */}
         <ChatInfoPanel
           viewMode={viewMode}
           setViewMode={setViewMode}

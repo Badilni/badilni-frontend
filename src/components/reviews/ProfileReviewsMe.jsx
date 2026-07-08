@@ -24,6 +24,7 @@ const ProfileReviewsSection = ({ userId }) => {
     return () => clearTimeout(timer)
   }, [keywordInput])
 
+  // عند تغيير الفلتر، نقوم بتصفير البيانات للبدء من جديد
   const handleFilterChange = (setter, value) => {
     setCurrentPage(1)
     setAccumulatedReviews([])
@@ -57,6 +58,7 @@ const ProfileReviewsSection = ({ userId }) => {
     type: reviewType,
   })
 
+  // تحديث المصفوفة التراكمية عند وصول بيانات جديدة
   useEffect(() => {
     if (reviewsData?.data?.reviews) {
       const newReviews = reviewsData.data.reviews
@@ -174,14 +176,14 @@ const ProfileReviewsSection = ({ userId }) => {
               No reviews found.
             </p>
           ) : (
-            accumulatedReviews.map((r) => (
-              <UserReviewCard
-                key={r._id}
-                review={r}
-                type={reviewType}
-                profileUserId={userId}
-              />
-            ))
+            accumulatedReviews.map((r) => {
+              // نحدد المستخدم بناءً على النوع قبل تمريره للكارت
+              const displayUser =
+                reviewType === 'given' ? r.reviewee : r.reviewer
+              return (
+                <UserReviewCard key={r._id} review={r} user={displayUser} />
+              )
+            })
           )}
 
           {reviewsData?.pagination &&
