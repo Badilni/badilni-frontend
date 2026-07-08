@@ -6,7 +6,7 @@ export function useMyReviews({
   page = 1,
   limit = 10,
   sort = '-createdAt',
-  enabled = true, // استقبليها هنا
+  enabled = true,
   ...extraParams
 }) {
   return useQuery({
@@ -19,16 +19,15 @@ export function useMyReviews({
       JSON.stringify(extraParams),
     ],
     queryFn: async () => {
-      // الحل: تمرير البارامترات المطلوبة فقط للـ API
       return await getMyReviewsRequest({
         type,
         page,
         limit,
         sort,
-        ...extraParams, // enabled ليست هنا، لذا لن تذهب للـ API
+        ...extraParams,
       })
     },
-    enabled: !!enabled, // استخدميها هنا للتحكم في الـ Query فقط
+    enabled: !!enabled,
     placeholderData: (previousData) => previousData,
   })
 }

@@ -1,5 +1,6 @@
 import { StarRating } from './ReviewCard'
-import { Link } from 'react-router-dom' // إضافة Link
+import { Link } from 'react-router-dom'
+
 
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
@@ -10,17 +11,13 @@ const formatDate = (dateStr) => {
   })
 }
 
-const UserReviewCard = ({ review, type = 'received' }) => {
-  const user = type === 'received' ? review?.reviewer : review?.reviewee
+const UserReviewCard = ({ review, user }) => {
+  // إذا لم توجد بيانات للمستخدم، لا نعرض الكارت
+  if (!user) return null
 
-  const avatarUrl =
-    typeof user?.avatar === 'object' ? user?.avatar?.url : user?.avatar
+  const avatarUrl = typeof user?.avatar === 'object' ? user?.avatar?.url : user?.avatar
   const initials = user?.name
-    ? user.name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .slice(0, 2)
+    ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
     : '?'
 
   return (
@@ -61,6 +58,7 @@ const UserReviewCard = ({ review, type = 'received' }) => {
         </div>
         <StarRating rating={review?.rating ?? 0} size="sm" />
       </div>
+
       <p className="text-sm text-[var(--gray-text)] leading-relaxed italic">
         "{review?.comment}"
       </p>
