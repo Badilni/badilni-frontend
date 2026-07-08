@@ -12,7 +12,7 @@ const ChatPage = () => {
   const [chats, setChats] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [messageText, setMessageText] = useState('')
-  const [isInfoOpen, setIsInfoOpen] = useState(true);
+  const [isInfoOpen, setIsInfoOpen] = useState(true)
   const [activeChatId, setActiveChatId] = useState(null)
   const [viewMode, setViewMode] = useState('sidebar')
   const [currentChat, setCurrentChat] = useState(null)
@@ -20,7 +20,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     getConversations().then((data) => {
-      const chatsArray = Array.isArray(data) ? data : (data?.data || [])
+      const chatsArray = Array.isArray(data) ? data : data?.data || []
       setChats(chatsArray)
     })
   }, [])
@@ -28,8 +28,8 @@ const ChatPage = () => {
   useEffect(() => {
     if (chats.length > 0 && location.state?.selectUserId) {
       const targetUserId = location.state.selectUserId
-      const targetChat = chats.find(chat =>
-        chat.participants?.some(p => p._id === targetUserId)
+      const targetChat = chats.find((chat) =>
+        chat.participants?.some((p) => p._id === targetUserId)
       )
 
       if (targetChat) {
@@ -41,9 +41,9 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (activeChatId) {
-      const selected = chats.find(c => c._id === activeChatId)
+      const selected = chats.find((c) => c._id === activeChatId)
       if (selected) {
-        getMessages(activeChatId).then(msgs => {
+        getMessages(activeChatId).then((msgs) => {
           setCurrentChat({ ...selected, messages: msgs || [] })
         })
       }
@@ -59,13 +59,15 @@ const ChatPage = () => {
     if (e) e.preventDefault()
     if (!messageText.trim() && !file) return
 
-    const recipient = currentChat?.participants?.find(p => p._id !== user?._id)
+    const recipient = currentChat?.participants?.find(
+      (p) => p._id !== user?._id
+    )
 
     const formData = new FormData()
     formData.append('body', messageText)
 
     if (recipient?._id) {
-        formData.append('recipientId', recipient._id)
+      formData.append('recipientId', recipient._id)
     }
 
     if (file) formData.append('file', file)
@@ -73,20 +75,22 @@ const ChatPage = () => {
     try {
       const newMessage = await sendMessage(activeChatId, formData)
 
-      setCurrentChat(prev => ({
+      setCurrentChat((prev) => ({
         ...prev,
-        messages: [...(prev?.messages || []), newMessage]
+        messages: [...(prev?.messages || []), newMessage],
       }))
 
       setMessageText('')
     } catch (error) {
-      console.error("Error sending message:", error)
-      alert("Failed to send message. Please try again.")
+      console.error('Error sending message:', error)
+      alert('Failed to send message. Please try again.')
     }
   }
 
   const filteredChats = Array.isArray(chats)
-    ? chats.filter((chat) => chat.name?.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? chats.filter((chat) =>
+        chat.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     : []
 
   return (

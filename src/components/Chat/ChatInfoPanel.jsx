@@ -58,7 +58,6 @@ const ChatInfoPanel = ({
       >
         {/* Main Content Wrapper: Prevents layout overflow */}
         <div className="w-full h-full flex flex-col overflow-hidden min-w-[240px]">
-
           {/* Panel Header Controls */}
           <div className="flex items-center gap-3 mb-6 shrink-0">
             {/* Close button for Mobile/Tablets */}

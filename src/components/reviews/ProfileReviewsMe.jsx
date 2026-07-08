@@ -178,13 +178,10 @@ const ProfileReviewsSection = ({ userId }) => {
           ) : (
             accumulatedReviews.map((r) => {
               // نحدد المستخدم بناءً على النوع قبل تمريره للكارت
-              const displayUser = reviewType === 'given' ? r.reviewee : r.reviewer;
+              const displayUser =
+                reviewType === 'given' ? r.reviewee : r.reviewer
               return (
-                <UserReviewCard
-                  key={r._id}
-                  review={r}
-                  user={displayUser}
-                />
+                <UserReviewCard key={r._id} review={r} user={displayUser} />
               )
             })
           )}

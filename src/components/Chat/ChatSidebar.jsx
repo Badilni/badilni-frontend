@@ -12,7 +12,12 @@ const ChatSidebar = ({
   const user = useAuthStore((s) => s.user)
 
   const formatTime = (iso) =>
-    iso ? new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''
+    iso
+      ? new Date(iso).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : ''
 
   return (
     <div
@@ -24,7 +29,10 @@ const ChatSidebar = ({
       <div className="flex flex-col items-center text-center mb-6">
         <div className="relative">
           <img
-            src={user?.avatar?.url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"}
+            src={
+              user?.avatar?.url ||
+              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
+            }
             alt="My Profile"
             className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-[var(--success)]"
           />
@@ -60,11 +68,15 @@ const ChatSidebar = ({
       {/* Chats Scrollable Container List */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {filteredChats.map((chat) => {
-          console.log("Rendering Chat Item:", chat);
+          console.log('Rendering Chat Item:', chat)
 
-          const otherParticipant = chat.participants?.find((p) => p._id !== user?._id)
+          const otherParticipant = chat.participants?.find(
+            (p) => p._id !== user?._id
+          )
           const lastMessageText = chat.lastMessage?.body || ''
-          const lastMessageTime = formatTime(chat.lastMessage?.createdAt || chat.updatedAt)
+          const lastMessageTime = formatTime(
+            chat.lastMessage?.createdAt || chat.updatedAt
+          )
           const isActive = chat._id === activeChatId
 
           return (
@@ -78,7 +90,10 @@ const ChatSidebar = ({
               }`}
             >
               <img
-                src={otherParticipant?.avatar?.url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"}
+                src={
+                  otherParticipant?.avatar?.url ||
+                  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
+                }
                 className="w-11 h-11 md:w-12 md:h-12 rounded-full object-cover shrink-0"
                 alt=""
               />

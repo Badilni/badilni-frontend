@@ -1,7 +1,6 @@
 import { StarRating } from './ReviewCard'
 import { Link } from 'react-router-dom'
 
-
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -15,9 +14,15 @@ const UserReviewCard = ({ review, user }) => {
   // إذا لم توجد بيانات للمستخدم، لا نعرض الكارت
   if (!user) return null
 
-  const avatarUrl = typeof user?.avatar === 'object' ? user?.avatar?.url : user?.avatar
+  const avatarUrl =
+    typeof user?.avatar === 'object' ? user?.avatar?.url : user?.avatar
   const initials = user?.name
-    ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+    ? user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
     : '?'
 
   return (

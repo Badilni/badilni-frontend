@@ -7,7 +7,8 @@ export const useStartChat = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ userId, messageText }) => startConversation(userId, messageText),
+    mutationFn: ({ userId, messageText }) =>
+      startConversation(userId, messageText),
     onSuccess: (data) => {
       const conversationId = data?.conversation?._id || data?._id
 
