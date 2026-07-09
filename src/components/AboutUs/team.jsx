@@ -1,6 +1,6 @@
 import shahdImg from '../../assets/TeamImage/shahd.png'
 import asmaaImg from '../../assets/TeamImage/asmaa.jpeg'
-import BeminImg from '../../assets/TeamImage/404.avif'
+import BeminImg from '../../assets/TeamImage/bemin.png'
 import SajaImg from '../../assets/TeamImage/Saja.jpeg'
 import sohilaImg from '../../assets/TeamImage/sohila.jpeg'
 import { FaLinkedin, FaGithub } from 'react-icons/fa'
