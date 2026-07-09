@@ -1,140 +1,109 @@
 import { useState } from 'react'
 import { useCategories } from '../../hooks/useCategories'
 import ImageUploader from '../shared/ImageUploder'
+import { RequestSchema, requestDefaultValues } from '../../utils/RequestSchema'
 
-const blankState = {
-  category: '',
-  title: '',
-  description: '',
-  creditsOffered: '',
-  deadline: '', // bound to a <input type="datetime-local">
-  images: { existing: [], files: [] },
-}
-
-export default function ServiceRequestForm({
+export default function RequestForm({
   initialValues,
   onSubmit,
   isSubmitting,
   fieldErrors = {},
   submitLabel = 'Post Request',
 }) {
-  const [form, setForm] = useState(() =>
-    initialValues ? { ...blankState, ...initialValues } : blankState
-  )
-  const { categories, loading, error: categoriesError } = useCategories()
+  const [form, setForm] = useState(() => initialValues || requestDefaultValues)
+  const [localErrors, setLocalErrors] = useState({})
+  const { categories } = useCategories()
 
-  const update = (key, value) => setForm((f) => ({ ...f, [key]: value }))
+  const update = (key, value) => {
+    setForm((f) => ({ ...f, [key]: value }))
+    if (localErrors[key]) setLocalErrors(prev => ({ ...prev, [key]: undefined }))
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSubmit(form)
+
+    const result = RequestSchema.safeParse(form)
+
+    if (!result.success) {
+      const formattedErrors = result.error.flatten().fieldErrors
+      setLocalErrors(formattedErrors)
+      return
+    }
+
+    onSubmit(result.data)
   }
+
+  const getError = (key) => localErrors[key]?.[0] || fieldErrors[key]
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Category */}
       <div>
-        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
-          Category
-        </label>
+        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Category</label>
         <select
-          required
           value={form.category}
           onChange={(e) => update('category', e.target.value)}
-          className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
         >
-          <option value="" disabled>
-            Select a category
-          </option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
+          <option value="" disabled>Select a category</option>
+          {categories.map((cat) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
         </select>
-        {fieldErrors.category && (
-          <p className="text-xs text-red-500 mt-1">{fieldErrors.category}</p>
-        )}
+        {getError('category') && <p className="text-xs text-red-500 mt-1">{getError('category')}</p>}
       </div>
 
+      {/* Title */}
       <div>
-        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
-          Title
-        </label>
+        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Title</label>
         <input
-          required
-          maxLength={120}
           value={form.title}
           onChange={(e) => update('title', e.target.value)}
-          placeholder="Need help proofreading and localizing a flyer"
-          className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
         />
-        {fieldErrors.title && (
-          <p className="text-xs text-red-500 mt-1">{fieldErrors.title}</p>
-        )}
+        {getError('title') && <p className="text-xs text-red-500 mt-1">{getError('title')}</p>}
       </div>
 
+      {/* Description */}
       <div>
-        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
-          Description
-        </label>
+        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Description</label>
         <textarea
-          required
           rows={4}
           value={form.description}
           onChange={(e) => update('description', e.target.value)}
-          className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white resize-none"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
         />
-        {fieldErrors.description && (
-          <p className="text-xs text-red-500 mt-1">{fieldErrors.description}</p>
-        )}
+        {getError('description') && <p className="text-xs text-red-500 mt-1">{getError('description')}</p>}
       </div>
 
+      {/* Credits & Deadline */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
-            Credits Offered
-          </label>
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Credits</label>
           <input
-            required
             type="number"
-            min={1}
             value={form.creditsOffered}
             onChange={(e) => update('creditsOffered', e.target.value)}
-            className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
           />
-          {fieldErrors.creditsOffered && (
-            <p className="text-xs text-red-500 mt-1">
-              {fieldErrors.creditsOffered}
-            </p>
-          )}
+          {getError('creditsOffered') && <p className="text-xs text-red-500 mt-1">{getError('creditsOffered')}</p>}
         </div>
         <div>
-          <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
-            Deadline
-          </label>
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Deadline</label>
           <input
-            required
             type="datetime-local"
             value={form.deadline}
             onChange={(e) => update('deadline', e.target.value)}
-            className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
           />
-          {fieldErrors.deadline && (
-            <p className="text-xs text-red-500 mt-1">{fieldErrors.deadline}</p>
-          )}
+          {getError('deadline') && <p className="text-xs text-red-500 mt-1">{getError('deadline')}</p>}
         </div>
       </div>
 
-      <ImageUploader
-        value={form.images}
-        onChange={(value) => update('images', value)}
-        label="Reference Images (optional)"
-      />
+      <ImageUploader value={form.images} onChange={(v) => update('images', v)} label="Images" />
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110 transition-all disabled:opacity-60"
+        className="w-full py-3.5 rounded-xl text-sm font-bold text-white bg-blue-600"
       >
         {isSubmitting ? 'Saving…' : submitLabel}
       </button>

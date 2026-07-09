@@ -16,7 +16,7 @@ import {
   markBookingMessagesAsRead,
 } from '../../api/bookingApi'
 import { getAccessToken } from '../../api/axios'
-import { serverBaseUrl } from '../../utils/constants'
+import { socketBaseUrl } from '../../utils/constants'
 
 export default function BookingChatCard({ bookingId, booking }) {
   const [messages, setMessages] = useState([])
@@ -80,7 +80,7 @@ export default function BookingChatCard({ bookingId, booking }) {
 
   // 3. Socket.IO — listen on both possible event names the server might emit
   useEffect(() => {
-    const socket = io(serverBaseUrl, {
+    const socket = io(socketBaseUrl, {
       auth: { token: getAccessToken() },
       transports: ['websocket', 'polling'],
     })
@@ -208,8 +208,8 @@ export default function BookingChatCard({ bookingId, booking }) {
       {/* Messages */}
       <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-slate-950/20 scrollbar-hide">
         {isLoading ? (
-          <div className="h-full flex items-center justify-center text-xs text-gray-400">
-            Loading messages...
+          <div className="h-full flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 dark:border-blue-400"></div>
           </div>
         ) : messages.length === 0 ? (
           <div className="h-full flex items-center justify-center text-xs text-gray-400 italic">

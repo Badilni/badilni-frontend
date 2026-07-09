@@ -8,6 +8,7 @@ import { getConversations, getMessages, sendMessage, markMessagesAsRead } from '
 import { getUserProfileRequest } from '../../api/authApi'
 import { getAccessToken } from '../../api/axios'
 import useAuthStore from '../../store/authStore'
+import { socketBaseUrl } from '../../utils/constants'
 
 const ChatPage = () => {
   const location = useLocation()
@@ -174,7 +175,7 @@ const ChatPage = () => {
     const token = getAccessToken()
     if (!token) return
 
-    const socket = io('http://localhost:3000', {
+    const socket = io(socketBaseUrl, {
       auth: { token },
       transports: ['websocket', 'polling'],
     })

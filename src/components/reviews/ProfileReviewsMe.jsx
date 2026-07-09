@@ -24,7 +24,6 @@ const ProfileReviewsSection = ({ userId }) => {
     return () => clearTimeout(timer)
   }, [keywordInput])
 
-  // عند تغيير الفلتر، نقوم بتصفير البيانات للبدء من جديد
   const handleFilterChange = (setter, value) => {
     setCurrentPage(1)
     setAccumulatedReviews([])
@@ -177,7 +176,9 @@ const ProfileReviewsSection = ({ userId }) => {
       {!isError && (
         <>
           {isFetching && accumulatedReviews.length === 0 ? (
-            <p className="text-xs text-center">Loading...</p>
+            <div className="flex justify-center py-6">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 dark:border-blue-400"></div>
+            </div>
           ) : accumulatedReviews.length === 0 ? (
             <p className="text-xs text-center p-6 border border-dashed rounded-2xl">
               No reviews found.

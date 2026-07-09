@@ -4,8 +4,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getAccessToken } from '../api/axios'
 import useAuthStore from '../store/authStore'
 import { NOTIFICATIONS_KEY } from './useNotifications'
+import { socketBaseUrl } from '../utils/constants'
 
-const SOCKET_URL = 'http://localhost:3000'
+const SOCKET_URL = socketBaseUrl
 
 export function useSocketNotifications() {
   const user = useAuthStore((state) => state.user)

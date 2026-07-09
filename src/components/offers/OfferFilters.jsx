@@ -34,12 +34,6 @@ export default function OfferFilters({
   return (
     <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm mb-10 space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <input
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          placeholder="Search offers…"
-          className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
-        />
 
         <select
           value={filters.category || ''}
@@ -69,7 +63,7 @@ export default function OfferFilters({
         <input
           type="number"
           min={0}
-          placeholder="Min rate"
+          placeholder="Min Credits"
           value={filters.hourlyRateGreaterThan || ''}
           onChange={(e) =>
             onChange({ hourlyRateGreaterThan: e.target.value || undefined })
@@ -79,7 +73,7 @@ export default function OfferFilters({
         <input
           type="number"
           min={0}
-          placeholder="Max rate"
+          placeholder="Max Credits"
           value={filters.hourlyRateLessThan || ''}
           onChange={(e) =>
             onChange({ hourlyRateLessThan: e.target.value || undefined })
