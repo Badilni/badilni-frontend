@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import { getBookingPermissions } from '../../utils/bookingPermissions'
 import BookingStatusBadge from './BookingStatusBadge'
@@ -21,9 +22,22 @@ export default function BookingDetail({ booking }) {
         {/* Title row */}
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">
-              {listingOrRequest?.title ?? 'Session Booking'}
-            </h1>
+            {listingOrRequest ? (
+              <Link
+                to={
+                  booking.listing
+                    ? `/offers/${booking.listing._id ?? booking.listing.id}`
+                    : `/requests/${booking.request._id ?? booking.request.id}`
+                }
+                className="text-2xl font-black text-gray-900 dark:text-white mb-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer inline-block"
+              >
+                {listingOrRequest.title}
+              </Link>
+            ) : (
+              <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">
+                Session Booking
+              </h1>
+            )}
             <p className="text-sm text-gray-400 dark:text-gray-500">
               Created{' '}
               {new Date(booking.createdAt).toLocaleDateString(undefined, {

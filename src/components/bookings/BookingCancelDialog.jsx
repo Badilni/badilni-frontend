@@ -1,10 +1,10 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useCancelBooking } from '../../hooks/booking/useBookingMutation'
 
 /**
- * Inline cancel dialog rendered inside the booking detail/card — not a
- * modal overlay, so it avoids double-stacking modals. Shows/hides via the
- * `open` prop so the parent controls the trigger button.
+ * Inline cancel dialog rendered inside the booking detail/card — wrapped in a Portal
+ * to escape CSS transform containment from the parent card, rendering as a true modal.
  */
 export default function BookingCancelDialog({ bookingId, open, onClose }) {
   const [reason, setReason] = useState('')
@@ -24,13 +24,13 @@ export default function BookingCancelDialog({ bookingId, open, onClose }) {
     )
   }
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-sm p-7"
+        className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-7 border border-gray-100 dark:border-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">
@@ -65,6 +65,7 @@ export default function BookingCancelDialog({ bookingId, open, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

@@ -42,8 +42,8 @@ export default function OfferPageComponent() {
 
   if (isLoading)
     return (
-      <div className="p-10 text-center text-gray-500 dark:text-gray-400">
-        Loading…
+      <div className="flex items-center justify-center p-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
       </div>
     )
   if (isError) return <ErrorState message={error?.message} onRetry={refetch} />

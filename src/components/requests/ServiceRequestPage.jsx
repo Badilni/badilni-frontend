@@ -46,14 +46,15 @@ export default function ServiceRequestPage() {
     ? new Date(safeRequest.deadline).getTime()
     : NaN
   const msUntilDeadline = Number.isFinite(deadlineMs)
+    // eslint-disable-next-line react-hooks/purity
     ? deadlineMs - Date.now()
     : Number.POSITIVE_INFINITY
   const isExpired = Number.isFinite(deadlineMs) && msUntilDeadline <= 0
 
   if (isLoading)
     return (
-      <div className="p-10 text-center text-gray-500 dark:text-gray-400">
-        Loading…
+      <div className="flex items-center justify-center p-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
       </div>
     )
   if (isError) return <ErrorState message={error?.message} onRetry={refetch} />

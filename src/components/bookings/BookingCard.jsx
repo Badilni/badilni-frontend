@@ -57,7 +57,7 @@ export default function BookingCard({ booking }) {
       <div className="bg-[var(--whiteBackground)] flex flex-col sm:flex-row dark:bg-slate-900 p-6 border border-t-0 border-gray-100 dark:border-slate-800 rounded-b-3xl justify-between items-start gap-4">
         <button
           type="button"
-          className="text-left w-full sm:w-auto mb-4 group"
+          className="text-left w-full sm:max-w-[60%] mb-4 group"
         >
           <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors line-clamp-1">
             {booking.listing?.title ?? booking.request?.title ?? 'Booking'}
@@ -89,6 +89,12 @@ export default function BookingCard({ booking }) {
               </span>
             )}
           </div>
+          {booking.note && (
+            <p className="mt-3 text-xs text-gray-500 dark:text-gray-400 border-l-2 border-blue-500/40 pl-2 line-clamp-2">
+              <span className="font-bold text-gray-400 dark:text-gray-500 mr-1">Note:</span>
+              {booking.note}
+            </p>
+          )}
         </button>
 
         <div onClick={(e) => e.stopPropagation()}>
