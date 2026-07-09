@@ -16,7 +16,7 @@ import {
   markBookingMessagesAsRead,
 } from '../../api/bookingApi'
 import { getAccessToken } from '../../api/axios'
-import { serverBaseUrl } from '../../utils/constants'
+import { socketBaseUrl } from '../../utils/constants'
 
 export default function BookingChatCard({ bookingId, booking }) {
   const [messages, setMessages] = useState([])
@@ -80,7 +80,7 @@ export default function BookingChatCard({ bookingId, booking }) {
 
   // 3. Socket.IO — listen on both possible event names the server might emit
   useEffect(() => {
-    const socket = io(serverBaseUrl, {
+    const socket = io(socketBaseUrl, {
       auth: { token: getAccessToken() },
       transports: ['websocket', 'polling'],
     })
