@@ -227,10 +227,10 @@ export default function NotificationDropdown() {
       const isMobile = window.innerWidth < 640
       const panelW = Math.min(window.innerWidth - 32, 380)
       setDropdownCoords({
-        top: rect.bottom + window.scrollY + 10,
+        top: rect.bottom + 10,
         left: isMobile
           ? (window.innerWidth - panelW) / 2
-          : Math.max(8, rect.right + window.scrollX - panelW),
+          : Math.max(8, rect.right - panelW),
       })
     }
   }, [isOpen])

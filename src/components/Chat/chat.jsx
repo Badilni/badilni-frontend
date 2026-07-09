@@ -149,6 +149,26 @@ const ChatPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChatId])
 
+  // Polling fallback: re-fetch active conversation messages every 5s silently
+  useEffect(() => {
+    if (!activeChatId || activeChatId.startsWith('pending_')) return
+    const interval = setInterval(() => {
+      getMessages(activeChatId)
+        .then((res) => {
+          const msgs = res?.data?.messages || []
+          setCurrentChat((prev) => {
+            if (!prev) return prev
+            const existingIds = new Set((prev.messages || []).map((m) => m._id))
+            const added = msgs.filter((m) => !existingIds.has(m._id))
+            if (added.length === 0) return prev
+            return { ...prev, messages: [...(prev.messages || []), ...added] }
+          })
+        })
+        .catch(() => {})
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [activeChatId])
+
   // Socket.IO real-time connection and event registration
   useEffect(() => {
     const token = getAccessToken()
@@ -168,8 +188,13 @@ const ChatPage = () => {
     socket.on('message:new', (payload) => {
       console.log('[Chat Socket] New message:', payload)
 
+      // conversation can be a populated object or a plain string id
+      const conversationId =
+        typeof payload.conversation === 'object'
+          ? payload.conversation?._id
+          : payload.conversation
+
       setChats((prevChats) => {
-        const conversationId = payload.conversation
         const existingChatIdx = prevChats.findIndex((c) => c._id === conversationId)
 
         if (existingChatIdx > -1) {
@@ -200,7 +225,7 @@ const ChatPage = () => {
       })
 
       // Append message if it belongs to current active conversation
-      if (payload.conversation === activeChatIdRef.current) {
+      if (conversationId === activeChatIdRef.current) {
         setCurrentChat((prev) => {
           if (!prev) return prev
           if (prev.messages?.some((m) => m._id === payload._id)) return prev
@@ -211,7 +236,7 @@ const ChatPage = () => {
         })
 
         // Instantly mark as read
-        markMessagesAsRead(payload.conversation).catch((err) =>
+        markMessagesAsRead(conversationId).catch((err) =>
           console.error('Error marking message read:', err)
         )
       }

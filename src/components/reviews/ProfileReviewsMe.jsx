@@ -52,16 +52,22 @@ const ProfileReviewsSection = ({ userId }) => {
   })
 
   const reviewsQuery = userId ? userReviewsQuery : myReviewsQuery
-  const { data: reviewsData, isFetching, isError, error } = reviewsQuery
+  const { data: reviewsData, isFetching, isError, error, isPlaceholderData } = reviewsQuery
   const listingOptionsQuery = useReviewListingOptions({
     userId,
     type: reviewType,
   })
 
   // تحديث المصفوفة التراكمية عند وصول بيانات جديدة
+  // نتجاهل isPlaceholderData عشان React Query بيرجع بيانات قديمة جوالياً لما بيتغير التاب وده بيخلي reviewType يتعارض مع البيانات
   useEffect(() => {
-    if (reviewsData?.data?.reviews) {
-      const newReviews = reviewsData.data.reviews
+    if (reviewsData?.data?.reviews && !isPlaceholderData) {
+      const fetchedType = queryParams.type
+      const newReviews = reviewsData.data.reviews.map((r) => ({
+        ...r,
+        _fetchedType: fetchedType,
+      }))
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAccumulatedReviews((prev) => {
         if (currentPage === 1) return newReviews
         const filtered = newReviews.filter(
@@ -70,7 +76,8 @@ const ProfileReviewsSection = ({ userId }) => {
         return [...prev, ...filtered]
       })
     }
-  }, [reviewsData?.data?.reviews, currentPage])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reviewsData?.data?.reviews, currentPage, isPlaceholderData])
 
   return (
     <div className="space-y-4">
@@ -177,9 +184,9 @@ const ProfileReviewsSection = ({ userId }) => {
             </p>
           ) : (
             accumulatedReviews.map((r) => {
-              // نحدد المستخدم بناءً على النوع قبل تمريره للكارت
+              // نستخدم _fetchedType المخزون مع الريفيو عشان نضمن عرض الشخص الصح دائماً
               const displayUser =
-                reviewType === 'given' ? r.reviewee : r.reviewer
+                r._fetchedType === 'given' ? r.reviewee : r.reviewer
               return (
                 <UserReviewCard key={r._id} review={r} user={displayUser} />
               )
