@@ -86,6 +86,8 @@ const ProfileRatingContainer = ({ userId, averageRating, reviewsCount }) => {
     enabled: !userId,
   })
 
+  console.log(myReviewsQuery)
+
   // Determine which data source to use based on profile ownership
   const query = userId ? userReviewsQuery : myReviewsQuery
   const statsReviews = query?.data?.data?.reviews || []

@@ -52,13 +52,12 @@ const ProfileReviewsSection = ({ userId }) => {
 
   const reviewsQuery = userId ? userReviewsQuery : myReviewsQuery
   const { data: reviewsData, isFetching, isError, error, isPlaceholderData } = reviewsQuery
+
   const listingOptionsQuery = useReviewListingOptions({
     userId,
     type: reviewType,
   })
 
-  // تحديث المصفوفة التراكمية عند وصول بيانات جديدة
-  // نتجاهل isPlaceholderData عشان React Query بيرجع بيانات قديمة جوالياً لما بيتغير التاب وده بيخلي reviewType يتعارض مع البيانات
   useEffect(() => {
     if (reviewsData?.data?.reviews && !isPlaceholderData) {
       const fetchedType = queryParams.type
@@ -66,7 +65,6 @@ const ProfileReviewsSection = ({ userId }) => {
         ...r,
         _fetchedType: fetchedType,
       }))
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAccumulatedReviews((prev) => {
         if (currentPage === 1) return newReviews
         const filtered = newReviews.filter(
@@ -80,8 +78,9 @@ const ProfileReviewsSection = ({ userId }) => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-[var(--whiteBackground)] p-4 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-        <div className="flex justify-between items-center">
+      {/* Header card */}
+      <div className="bg-[var(--whiteBackground)] p-4 rounded-2xl border border-[var(--secondary-light)]/10 shadow-[0_2px_12px_rgba(47,151,233,0.07)] space-y-4">
+        <div className="flex justify-between items-center flex-wrap gap-3">
           <div className="flex flex-col gap-1">
             <h3 className="font-bold text-lg text-[var(--black-text)]">
               Recent Feedback
@@ -101,23 +100,35 @@ const ProfileReviewsSection = ({ userId }) => {
               </div>
             )}
           </div>
+
+          {/* Received / Given toggle */}
           <div className="flex gap-2">
             <button
               onClick={() => handleFilterChange(setReviewType, 'received')}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold ${reviewType === 'received' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 active:scale-95 ${
+                reviewType === 'received'
+                  ? 'bg-[var(--primary-light)] text-white shadow-sm'
+                  : 'bg-[var(--background-light)] text-[var(--gray-text)] hover:text-[var(--black-text)]'
+              }`}
             >
               Received
             </button>
             <button
               onClick={() => handleFilterChange(setReviewType, 'given')}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold ${reviewType === 'given' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 active:scale-95 ${
+                reviewType === 'given'
+                  ? 'bg-[var(--primary-light)] text-white shadow-sm'
+                  : 'bg-[var(--background-light)] text-[var(--gray-text)] hover:text-[var(--black-text)]'
+              }`}
             >
               Given
             </button>
           </div>
         </div>
 
+        {/* Filters row */}
         <div className="flex flex-col sm:flex-row gap-3">
+          {/* Keyword search */}
           <div className="relative flex-1 min-w-[160px]">
             <FiSearch
               size={14}
@@ -128,29 +139,28 @@ const ProfileReviewsSection = ({ userId }) => {
               value={keywordInput}
               onChange={(e) => setKeywordInput(e.target.value)}
               placeholder="Search in reviews..."
-              className="w-full pl-9 pr-8 py-2 text-sm bg-[var(--background-light)] border border-[var(--gray-text)]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]/20"
+              className="w-full pl-9 pr-8 py-2 text-sm bg-[var(--background-light)] border border-[var(--gray-text)]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]/20 text-[var(--black-text)] placeholder:text-[var(--Disabled)]"
             />
             {keywordInput && (
               <button
                 type="button"
                 onClick={() => setKeywordInput('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--gray-text)] hover:text-[var(--black-text)]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--gray-text)] hover:text-[var(--black-text)] transition-colors"
               >
                 <FiX size={14} />
               </button>
             )}
           </div>
 
+          {/* Service / listing filter */}
           <select
             value={selectedListing}
-            onChange={(e) =>
-              handleFilterChange(setSelectedListing, e.target.value)
-            }
+            onChange={(e) => handleFilterChange(setSelectedListing, e.target.value)}
             disabled={
               listingOptionsQuery.isLoading ||
               (listingOptionsQuery.data || []).length === 0
             }
-            className="text-sm bg-[var(--background-light)] border border-[var(--gray-text)]/20 rounded-xl px-3 py-2 disabled:opacity-50 min-w-[150px]"
+            className="text-sm bg-[var(--background-light)] border border-[var(--gray-text)]/20 rounded-xl px-3 py-2 text-[var(--black-text)] disabled:opacity-50 min-w-[150px] focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]/20"
           >
             <option value="">
               {listingOptionsQuery.isLoading ? 'Loading…' : 'All services'}
@@ -164,44 +174,73 @@ const ProfileReviewsSection = ({ userId }) => {
         </div>
       </div>
 
+      {/* Error state */}
       {isError && (
-        <div className="bg-red-50 border border-red-200 p-4 rounded-2xl flex items-start gap-2">
-          <FiAlertTriangle className="text-red-500 shrink-0 mt-0.5" size={16} />
-          <p className="text-xs text-red-700">
+        <div
+          className="p-4 rounded-2xl flex items-start gap-2"
+          style={{
+            backgroundColor: 'var(--backgDangerOpacity)',
+            border: '1px solid var(--danger)',
+          }}
+        >
+          <FiAlertTriangle
+            size={16}
+            className="shrink-0 mt-0.5"
+            style={{ color: 'var(--danger)' }}
+          />
+          <p className="text-xs" style={{ color: 'var(--danger)' }}>
             {error?.response?.data?.message || 'Could not load reviews.'}
           </p>
         </div>
       )}
 
+      {/* Reviews list */}
       {!isError && (
         <>
           {isFetching && accumulatedReviews.length === 0 ? (
             <div className="flex justify-center py-6">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 dark:border-blue-400"></div>
+              <div
+                className="animate-spin rounded-full h-5 w-5 border-b-2"
+                style={{ borderColor: 'var(--primary-light)' }}
+              />
             </div>
           ) : accumulatedReviews.length === 0 ? (
-            <p className="text-xs text-center p-6 border border-dashed rounded-2xl">
+            <p
+              className="text-xs text-center p-6 rounded-2xl border border-dashed"
+              style={{
+                color: 'var(--gray-text)',
+                borderColor: 'var(--gray-text)',
+              }}
+            >
               No reviews found.
             </p>
           ) : (
-            accumulatedReviews.map((r) => {
-              // نستخدم _fetchedType المخزون مع الريفيو عشان نضمن عرض الشخص الصح دائماً
-              const displayUser =
-                r._fetchedType === 'given' ? r.reviewee : r.reviewer
-              return (
-                <UserReviewCard key={r._id} review={r} user={displayUser} />
-              )
-            })
+            accumulatedReviews.map((r) => (
+              <UserReviewCard key={r._id} review={r} user={r.reviewer} />
+            ))
           )}
 
+          {/* Load more */}
           {reviewsData?.pagination &&
             currentPage < reviewsData.pagination.totalPages && (
               <button
                 onClick={() => setCurrentPage((p) => p + 1)}
                 disabled={isFetching}
-                className="w-full py-3 text-sm font-bold text-blue-600 border border-blue-200 rounded-2xl hover:bg-blue-50 disabled:opacity-50"
+                className="w-full py-3 text-sm font-bold rounded-2xl border border-dashed transition-colors active:scale-95 disabled:opacity-50"
+                style={{
+                  color: 'var(--primary-light)',
+                  borderColor: 'var(--primary-light)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary-light)'
+                  e.currentTarget.style.color = '#fff'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = 'var(--primary-light)'
+                }}
               >
-                {isFetching ? 'Loading...' : 'Load More'}
+                {isFetching ? 'Loading…' : 'Load More'}
               </button>
             )}
         </>
