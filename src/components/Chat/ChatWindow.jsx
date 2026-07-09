@@ -169,7 +169,7 @@ const ChatWindow = ({
           return (
             <div
               key={msg._id}
-              className={`flex gap-2.5 items-end mb-4 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}
+              className={`flex gap-2.5 items-start mb-4 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}
             >
               {/* Message Sender Avatar */}
               <div className="w-8 h-8 rounded-full overflow-hidden border border-white dark:border-slate-800 shadow-sm shrink-0">
