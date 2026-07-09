@@ -8,10 +8,24 @@ export default function CreateServiceRequestModal({
 }) {
   const { mutate, isPending, error } = useCreateServiceRequest()
 
-  // Backend validation errors are expected as { errors: { fieldName: 'message' } }
-  // via the axios interceptor's normalized error shape — adjust the key path
-  // here once the real error response shape is confirmed.
-  const fieldErrors = error?.errors || {}
+  let parsedError = null
+  try {
+    if (error?.message) {
+      parsedError = JSON.parse(error.message)[0].message
+    }
+  } catch (e) {
+  }
+
+  const errorPayload = parsedError || error?.response?.data || error?.data || error
+  const fieldErrors = Array.isArray(errorPayload)
+    ? errorPayload.reduce((acc, err) => {
+        const field = err.path?.[0]
+        if (field) {
+          acc[field] = err.message
+        }
+        return acc
+      }, {})
+    : error?.errors || {}
 
   if (!open) return null
 
@@ -71,7 +85,7 @@ export default function CreateServiceRequestModal({
 
         {error && !Object.keys(fieldErrors).length && (
           <div className="mb-4 text-sm font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 rounded-xl px-4 py-3">
-            {error.message || "Couldn't post your request. Try again."}
+            {errorPayload || "Couldn't post your request. Try again."}
           </div>
         )}
 

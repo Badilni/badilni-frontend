@@ -155,38 +155,6 @@ export default function OfferForm({
         )}
       </div>
 
-      <div>
-        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5 block">
-          Tags / Skills
-        </label>
-        <div className="flex flex-wrap items-center gap-1.5 p-2 border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-800">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="flex items-center gap-1 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded text-xs font-semibold border border-gray-200 dark:border-slate-700"
-            >
-              {tag}
-              <button
-                type="button"
-                onClick={() => removeTag(tag)}
-                className="text-gray-400 hover:text-red-500 font-bold leading-none"
-              >
-                ×
-              </button>
-            </span>
-          ))}
-          <input
-            type="text"
-            onKeyDown={addTag}
-            placeholder="Add a tag and press Enter"
-            className="flex-1 min-w-[120px] bg-transparent text-xs text-gray-900 dark:text-white outline-none"
-          />
-        </div>
-        {errors.tags && (
-          <p className="text-xs text-red-500 mt-1">{errors.tags.message}</p>
-        )}
-      </div>
-
       <Controller
         name="images"
         control={control}

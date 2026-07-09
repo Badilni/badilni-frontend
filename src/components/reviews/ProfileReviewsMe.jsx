@@ -24,7 +24,6 @@ const ProfileReviewsSection = ({ userId }) => {
     return () => clearTimeout(timer)
   }, [keywordInput])
 
-  // عند تغيير الفلتر، نقوم بتصفير البيانات للبدء من جديد
   const handleFilterChange = (setter, value) => {
     setCurrentPage(1)
     setAccumulatedReviews([])

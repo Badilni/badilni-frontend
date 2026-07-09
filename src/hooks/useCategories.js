@@ -7,7 +7,7 @@ import {
 export function useCategories(params = {}) {
   const query = useQuery({
     queryKey: ['categories', params],
-    queryFn: () => getAllCategoriesRequest({ limit: 13, ...params }),
+    queryFn: () => getAllCategoriesRequest({ limit: 14, ...params }),
     select: (res) => res?.data?.categories ?? [],
     staleTime: 1000 * 60 * 5,
   })
