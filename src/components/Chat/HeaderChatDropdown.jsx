@@ -13,6 +13,7 @@ import {
 } from '../../api/chatApi'
 import { getAccessToken } from '../../api/axios'
 import useAuthStore from '../../store/authStore'
+import { socketBaseUrl } from '../../utils/constants'
 
 const HeaderChatDropdown = () => {
   const navigate = useNavigate()
@@ -28,6 +29,11 @@ const HeaderChatDropdown = () => {
 
   const buttonRef = useRef(null)
   const dropdownRef = useRef(null)
+  const selectedChatRef = useRef(selectedChat)
+
+  useEffect(() => {
+    selectedChatRef.current = selectedChat
+  }, [selectedChat])
 
   // Fetch initial unread count
   useEffect(() => {
@@ -39,18 +45,37 @@ const HeaderChatDropdown = () => {
       .catch((err) => console.error('Error fetching unread count:', err))
   }, [currentUser])
 
-  // Connect to Socket.io for live unread updates
+  // Connect to Socket.io for live unread updates and active popup message updates
   useEffect(() => {
     const token = getAccessToken()
     if (!token || !currentUser) return
 
-    const socket = io('http://localhost:3000', {
+    const socket = io(socketBaseUrl, {
       auth: { token },
       transports: ['websocket', 'polling'],
     })
 
     socket.on('message:new', (payload) => {
-      if (selectedChat?.id !== payload.conversation) {
+      console.log('[Header Chat Socket] New message:', payload)
+      const conversationId =
+        typeof payload.conversation === 'object'
+          ? payload.conversation?._id
+          : payload.conversation
+
+      const activeChat = selectedChatRef.current
+
+      if (activeChat && activeChat.id === conversationId) {
+        setSelectedChat((prev) => {
+          if (!prev) return prev
+          const msgs = prev.messages || []
+          if (msgs.some((m) => m._id === payload._id)) return prev
+          return {
+            ...prev,
+            messages: [...msgs, payload],
+          }
+        })
+        markMessagesAsRead(conversationId).catch(() => {})
+      } else {
         setUnreadCount((prev) => prev + 1)
       }
     })
@@ -64,7 +89,30 @@ const HeaderChatDropdown = () => {
     return () => {
       socket.disconnect()
     }
-  }, [currentUser, selectedChat])
+  }, [currentUser])
+
+  // Polling fallback when popup is open
+  useEffect(() => {
+    if (!isPopupOpen || !selectedChat?.id) return
+    const interval = setInterval(() => {
+      getMessages(selectedChat.id)
+        .then((res) => {
+          const msgs = res?.data?.messages || []
+          setSelectedChat((prev) => {
+            if (!prev) return prev
+            const existingIds = new Set((prev.messages || []).map((m) => m._id))
+            const added = msgs.filter((m) => !existingIds.has(m._id))
+            if (added.length === 0) return prev
+            return {
+              ...prev,
+              messages: [...(prev.messages || []), ...added],
+            }
+          })
+        })
+        .catch(() => {})
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [isPopupOpen, selectedChat?.id])
 
   useEffect(() => {
     if (isDropdownOpen) {
