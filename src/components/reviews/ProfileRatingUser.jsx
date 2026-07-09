@@ -76,6 +76,8 @@ const ProfileRatingContainer = ({ userId, averageRating, reviewsCount }) => {
     enabled: !!userId,
   })
 
+  console.log(userReviewsQuery)
+
   // Fetch reviews for the logged-in user
   const myReviewsQuery = useMyReviews({
     type: 'received',
