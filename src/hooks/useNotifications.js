@@ -35,9 +35,8 @@ export function useNotifications(params = {}) {
     // Only query when logged in
     enabled: Boolean(user) && isAuthenticated,
     staleTime: 1000 * 10,
-    // We disable background polling (refetchInterval) completely to prevent 401/429 loops.
-    // Real-time notification:new socket events handle updates.
-    refetchInterval: false,
+    // Enable background polling (every 8s) for robust real-time fallback updates
+    refetchInterval: 8000,
     refetchOnWindowFocus: false, // disable refetch on window focus to avoid spamming server
     retry: false,
   })

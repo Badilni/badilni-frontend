@@ -169,11 +169,12 @@ const HeaderChatDropdown = () => {
     }
   }
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault()
-    if (!messageText.trim()) return
+  const handleSendMessage = async (e, file) => {
+    if (e) e.preventDefault()
+    if (!messageText.trim() && !file) return
     const formData = new FormData()
-    formData.append('body', messageText)
+    if (messageText.trim()) formData.append('body', messageText)
+    if (file) formData.append('attachments', file)
     try {
       const response = await sendMessage(
         selectedChat.recipientId || selectedChat.id,
@@ -276,7 +277,7 @@ const HeaderChatDropdown = () => {
       {isPopupOpen &&
         selectedChat &&
         createPortal(
-          <div className="fixed bottom-0 right-4 sm:right-8 w-full sm:w-[380px] h-[500px] bg-white dark:bg-slate-900 rounded-t-2xl shadow-2xl border border-gray-100 dark:border-slate-800/80 flex flex-col z-[9998] overflow-hidden">
+          <div className="fixed bottom-0 left-4 right-4 sm:left-auto sm:right-8 w-auto sm:w-[380px] h-[500px] bg-white dark:bg-slate-900 rounded-t-2xl shadow-2xl border border-gray-100 dark:border-slate-800/80 flex flex-col z-[9998] overflow-hidden">
             <div className="bg-white dark:bg-slate-800 p-3 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center shadow-sm">
               <span
                 onClick={() => {

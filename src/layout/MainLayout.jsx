@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react'
 import NavBar from '../components/layout/NavBar'
 import Footer from '../components/layout/Footer'
 import Spinner from '../components/common/Spinner'
+import { useSocketNotifications } from '../hooks/useSocketNotifications'
 
 const MainLayout = () => {
+  useSocketNotifications()
   const location = useLocation()
   const [loading, setLoading] = useState(true)
 
