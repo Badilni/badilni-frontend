@@ -11,7 +11,6 @@ const formatDate = (dateStr) => {
 }
 
 const UserReviewCard = ({ review, user }) => {
-  // إذا لم توجد بيانات للمستخدم، لا نعرض الكارت
   if (!user) return null
 
   const avatarUrl =
@@ -54,9 +53,12 @@ const UserReviewCard = ({ review, user }) => {
                 {formatDate(review?.createdAt)}
               </p>
               {review?.listing?.title && (
-                <p className="text-[11px] text-[var(--primary-light)] font-medium">
+                <Link
+                  to={`/offers/${review.listing._id}`}
+                  className="text-[11px] text-[var(--primary-light)] font-medium hover:underline transition-all cursor-pointer"
+                >
                   For: {review.listing.title}
-                </p>
+                </Link>
               )}
             </div>
           </div>
