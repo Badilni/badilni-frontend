@@ -98,8 +98,8 @@ const HeaderChatDropdown = () => {
     if (isDropdownOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
       setDropdownCoords({
-        top: rect.bottom + window.scrollY + 12,
-        left: window.innerWidth < 640 ? 16 : rect.right + window.scrollX - 340,
+        top: rect.bottom + 12,
+        left: window.innerWidth < 640 ? 16 : rect.right - 340,
       })
     }
   }, [isDropdownOpen])

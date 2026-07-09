@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { FaStar } from 'react-icons/fa6'
 import { FiStar } from 'react-icons/fi'
 import useAuthStore from '../../store/authStore'
 import {
@@ -85,10 +84,10 @@ export default function BookingReviews({ booking }) {
   }
 
   return (
-    <div className="space-y-6 mt-8 lg:mt-0">
+    <div className="space-y-6">
       {/* 1. Leave a Review Form */}
       {canReview && (
-        <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
+        <div className="space-y-4 border-b border-gray-100 dark:border-slate-800 pb-6">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
             Rate this Session
           </h3>
@@ -146,7 +145,7 @@ export default function BookingReviews({ booking }) {
       )}
 
       {/* 2. Review List for this Booking */}
-      <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm space-y-4">
+      <div className="space-y-4">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
           Session Feedback
         </h3>
