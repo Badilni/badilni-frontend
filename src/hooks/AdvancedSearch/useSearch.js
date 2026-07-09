@@ -6,7 +6,11 @@ export default function useSearch() {
 
   const queryKeyword = searchParams.get('keyword') || ''
 
+  const querySmartSearch = searchParams.get('smartSearch') || false
+
   const [keywordInput, setKeywordInput] = useState(queryKeyword)
+
+  const [smartSearch, setSmartSearch] = useState(querySmartSearch)
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
@@ -16,6 +20,7 @@ export default function useSearch() {
       setSearchParams({})
     }
   }
+
 
   const handleClearSearch = () => {
     setKeywordInput('')

@@ -12,30 +12,28 @@ import { applyRangeFilter } from '../../utils/applyRangeFilter'
  */
 export const fetchOffers = async ({
   keyword,
-  category, // category _id (ObjectId string), not a slug or name
-  isActive, // 'true' | 'false' | undefined ('' = no filter)
+  smartSearch, // AI-powered search — mutually exclusive with keyword; takes priority when set
+  category,
+  isActive,
   hourlyRateGreaterThan,
   hourlyRateLessThan,
   averageRatingGreaterThan,
   createdAtGreaterThan,
   createdAtLessThan,
   page = 1,
-  limit = 9,
+  limit = 10,
   sort = '-averageRating',
   fields,
 } = {}) => {
   const params = { page, limit, sort }
-  if (keyword) params.keyword = keyword
+  // smartSearch and keyword are mutually exclusive — smartSearch takes priority
+  if (smartSearch) params.smartSearch = smartSearch
+  else if (keyword) params.keyword = keyword
   if (category) params.category = category
   if (isActive !== undefined && isActive !== '') params.isActive = isActive
   if (fields) params.fields = fields
 
-  applyRangeFilter(
-    params,
-    'hourlyRate',
-    hourlyRateGreaterThan,
-    hourlyRateLessThan
-  )
+  applyRangeFilter(params, 'hourlyRate', hourlyRateGreaterThan, hourlyRateLessThan)
   applyRangeFilter(params, 'averageRating', averageRatingGreaterThan, undefined)
   applyRangeFilter(params, 'createdAt', createdAtGreaterThan, createdAtLessThan)
 

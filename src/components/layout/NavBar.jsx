@@ -61,52 +61,56 @@ export default function NavBar() {
   return (
     <>
       <header className="w-full sticky top-0 z-40 transition-colors duration-200 border-b border-gray-200/80 dark:border-slate-800/80 bg-[var(--whiteBackground)]/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          {/* Brand Logo Group */}
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 shrink-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 p-1 hover:opacity-90 transition-all duration-200"
-            aria-label="Go to homepage"
-          >
-            <img
-              src={Logo}
-              alt="Badilni Logo"
-              className="w-9 h-9 object-contain"
-            />
-            <span className="text-2xl font-black tracking-tight hidden sm:block bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-300 font-sans">
-              Badilni
-            </span>
-          </button>
+        <div className="w-[96%] xl:w-11/12 max-w-[1600px] mx-auto px-2 sm:px-4 h-16 flex items-center justify-between gap-4">
+          
+          {/* ── 1. LEFT SECTION (Logo + Nav Links) ────────────────────────── */}
+          <div className="flex items-center gap-4 xl:gap-8 shrink-0">
+            {/* Brand Logo */}
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 shrink-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 p-1 hover:opacity-90 transition-all duration-200"
+              aria-label="Go to homepage"
+            >
+              <img
+                src={Logo}
+                alt="Badilni Logo"
+                className="w-9 h-9 object-contain"
+              />
+              <span className="text-2xl font-black tracking-tight hidden sm:block bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-300 font-sans">
+                Badilni
+              </span>
+            </button>
 
-          {/* Desktop Links (Hidden below Large Viewports to secure room for inputs) */}
-          <nav
-            className="hidden xl:flex items-center gap-1"
-            aria-label="Main navigation"
-          >
-            {NAV_ITEMS.map((item) => {
-              const active = isActiveRoute(item.path)
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
-                    active
-                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              )
-            })}
-          </nav>
+            {/* Desktop Links */}
+            <nav
+              className="hidden xl:flex items-center gap-1"
+              aria-label="Main navigation"
+            >
+              {NAV_ITEMS.map((item) => {
+                const active = isActiveRoute(item.path)
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
+                      active
+                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                )
+              })}
+            </nav>
+          </div>
 
-          {/* Persistent Dynamic Search Field (Expanded desktop layout) */}
-          <div className="hidden md:block flex-1 max-w-sm lg:max-w-md transition-all duration-200">
+          {/* ── 2. MIDDLE SECTION (Centered Search Field) ─────────────────── */}
+          <div className="hidden md:flex flex-1 justify-center items-center transition-all duration-200">
             <AdvancedSearchSystem compact />
           </div>
 
-          {/* Header Action Utilities */}
+          {/* ── 3. RIGHT SECTION (Header Action Utilities) ────────────────── */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Inbox Chat Triggers */}
             <HeaderChatDropdown />
@@ -145,17 +149,9 @@ export default function NavBar() {
                 strokeWidth={2}
               >
                 {menuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
             </button>
@@ -166,7 +162,7 @@ export default function NavBar() {
         {menuOpen && (
           <div className="xl:hidden border-t border-gray-100 dark:border-slate-800 bg-[var(--whiteBackground)] dark:bg-slate-900 transition-all duration-300 ease-in-out px-4 py-4 space-y-4 shadow-inner">
             {/* Mobile View Standalone Search Input Overlay */}
-            <div className="md:hidden">
+            <div className="md:hidden flex justify-center">
               <AdvancedSearchSystem compact />
             </div>
 
@@ -221,10 +217,6 @@ export default function NavBar() {
   )
 }
 
-/**
- * Reusable Local Avatar Button Component
- * Eliminates layout logic duplication across viewport breakpoints.
- */
 function AvatarButton({ user, onClick }) {
   return (
     <button
