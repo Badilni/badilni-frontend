@@ -33,7 +33,12 @@ export const fetchOffers = async ({
   if (isActive !== undefined && isActive !== '') params.isActive = isActive
   if (fields) params.fields = fields
 
-  applyRangeFilter(params, 'hourlyRate', hourlyRateGreaterThan, hourlyRateLessThan)
+  applyRangeFilter(
+    params,
+    'hourlyRate',
+    hourlyRateGreaterThan,
+    hourlyRateLessThan
+  )
   applyRangeFilter(params, 'averageRating', averageRatingGreaterThan, undefined)
   applyRangeFilter(params, 'createdAt', createdAtGreaterThan, createdAtLessThan)
 

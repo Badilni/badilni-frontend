@@ -71,14 +71,17 @@ export default function BookingPage() {
 
           {/* Shared fixed-height tab container — both panels always rendered, toggled with hidden/block */}
           <div className="relative w-full h-[500px]">
-
             {/* Chat Discussion Panel */}
-            <div className={`absolute inset-0 ${activeTab === 'chat' ? 'block' : 'hidden'}`}>
+            <div
+              className={`absolute inset-0 ${activeTab === 'chat' ? 'block' : 'hidden'}`}
+            >
               <BookingChatCard bookingId={bookingId} booking={booking} />
             </div>
 
             {/* Session Feedback Panel */}
-            <div className={`absolute inset-0 ${activeTab === 'feedback' ? 'block' : 'hidden'}`}>
+            <div
+              className={`absolute inset-0 ${activeTab === 'feedback' ? 'block' : 'hidden'}`}
+            >
               <div className="w-full bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800/80 overflow-hidden flex flex-col h-full">
                 {/* Header */}
                 <div className="bg-gray-50 dark:bg-slate-800/50 p-4 border-b border-gray-100 dark:border-slate-800 flex items-center shrink-0">
@@ -97,7 +100,6 @@ export default function BookingPage() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

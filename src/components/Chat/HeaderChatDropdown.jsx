@@ -121,15 +121,19 @@ const HeaderChatDropdown = () => {
           console.log('API Response for conversations:', data)
           const rawConversations = data?.data?.conversations || []
           const transformed = rawConversations.map((chat) => {
-            const otherParticipant = chat.participants?.find((p) => p._id !== currentUser?._id)
+            const otherParticipant = chat.participants?.find(
+              (p) => p._id !== currentUser?._id
+            )
             return {
               id: chat._id,
               recipientId: otherParticipant?._id,
               name: otherParticipant?.name || 'Unknown User',
               img: otherParticipant?.avatar?.url || '/avatar.png',
-              lastMessage: chat.lastMessage?.body || (chat.lastMessage ? '📎 Attachment' : ''),
+              lastMessage:
+                chat.lastMessage?.body ||
+                (chat.lastMessage ? '📎 Attachment' : ''),
               unreadCount: chat.unreadCount || 0,
-              participants: chat.participants // pass participants for ChatWindow
+              participants: chat.participants, // pass participants for ChatWindow
             }
           })
           setChats(transformed)

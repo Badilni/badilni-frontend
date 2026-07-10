@@ -44,7 +44,10 @@ const ChatInfoPanel = ({
         if (type === 'image' || att.url?.match(/\.(jpeg|jpg|gif|png|webp)/i)) {
           photoCount++
           photoSize += size
-        } else if (type === 'video' || att.url?.match(/\.(mp4|mov|avi|mkv|webm)/i)) {
+        } else if (
+          type === 'video' ||
+          att.url?.match(/\.(mp4|mov|avi|mkv|webm)/i)
+        ) {
           videoCount++
           videoSize += size
         } else if (

@@ -91,7 +91,9 @@ export default function BookingCard({ booking }) {
           </div>
           {booking.note && (
             <p className="mt-3 text-xs text-gray-500 dark:text-gray-400 border-l-2 border-blue-500/40 pl-2 line-clamp-2">
-              <span className="font-bold text-gray-400 dark:text-gray-500 mr-1">Note:</span>
+              <span className="font-bold text-gray-400 dark:text-gray-500 mr-1">
+                Note:
+              </span>
               {booking.note}
             </p>
           )}

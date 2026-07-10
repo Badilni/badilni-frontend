@@ -46,8 +46,8 @@ export default function ServiceRequestPage() {
     ? new Date(safeRequest.deadline).getTime()
     : NaN
   const msUntilDeadline = Number.isFinite(deadlineMs)
-    // eslint-disable-next-line react-hooks/purity
-    ? deadlineMs - Date.now()
+    ? // eslint-disable-next-line react-hooks/purity
+      deadlineMs - Date.now()
     : Number.POSITIVE_INFINITY
   const isExpired = Number.isFinite(deadlineMs) && msUntilDeadline <= 0
 

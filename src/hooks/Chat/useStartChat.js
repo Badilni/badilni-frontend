@@ -9,18 +9,24 @@ export const useStartChat = () => {
   return useMutation({
     mutationFn: (variables) => {
       const uId =
-        typeof variables === 'object' && variables !== null && 'userId' in variables
+        typeof variables === 'object' &&
+        variables !== null &&
+        'userId' in variables
           ? variables.userId
           : variables
       const msgText =
-        typeof variables === 'object' && variables !== null && 'messageText' in variables
+        typeof variables === 'object' &&
+        variables !== null &&
+        'messageText' in variables
           ? variables.messageText
           : undefined
       return startConversation(uId, msgText)
     },
     onSuccess: (data, variables) => {
       const recipientId =
-        typeof variables === 'object' && variables !== null && 'userId' in variables
+        typeof variables === 'object' &&
+        variables !== null &&
+        'userId' in variables
           ? variables.userId
           : variables
 
