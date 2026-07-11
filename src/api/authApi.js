@@ -1,9 +1,9 @@
-import api from './axios'
+import api, { executeLogout } from './axios'
 
 export const loginRequest = (email, password) =>
   api.post('/auth/login', { email, password }).then((r) => r.data)
 
-export const logoutRequest = () => api.post('/auth/logout').then((r) => r.data)
+export const logoutRequest = () => executeLogout()
 
 export const getMeRequest = () =>
   api.get('/users/me', { skipAuthRefresh: true }).then((r) => r.data)

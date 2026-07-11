@@ -53,12 +53,12 @@ const router = createHashRouter([
           { path: 'offers/:offerId', element: <OfferPage /> },
           { path: 'explore', element: <ExplorePage /> },
           { path: 'search', element: <SearchPage /> },
+          { path: 'profile', element: <ProfilePage /> },
+          { path: 'profile/:userId', element: <OtherProfile /> },
           {
             element: <RequireAuth />,
             children: [
-              { path: 'profile', element: <ProfilePage /> },
               { path: 'profile/edit', element: <EditProfilePage /> },
-              { path: 'profile/:userId', element: <OtherProfile /> },
               { path: 'chat', element: <ChatBadilni /> },
               { path: 'notifications', element: <NotificationsPageWrapper /> },
               { path: 'booking', element: <BookingPage /> },

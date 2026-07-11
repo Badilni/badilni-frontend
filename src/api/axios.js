@@ -40,6 +40,16 @@ export const clearAccessToken = () => {
   accessToken = null
 }
 
+
+export const executeLogout = async () => {
+  try {
+    const response = await api.post('/auth/logout')
+    return response.data
+  } finally {
+    clearAccessToken()
+  }
+}
+
 // ---- Attach token to every outgoing request ----
 api.interceptors.request.use((config) => {
   if (accessToken) {
