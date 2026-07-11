@@ -118,7 +118,7 @@ const ChatWindow = ({
 
   return (
     <div
-      className={`flex-1 h-full flex flex-col transition-all duration-300 bg-blue-50/50 dark:bg-slate-950 ${compact ? 'p-2' : 'p-4 md:p-6'} ${compact ? 'flex' : (viewMode === 'chat' ? 'flex' : 'hidden lg:flex')}`}
+      className={`flex-1 h-full flex flex-col transition-all duration-300 bg-blue-50/50 dark:bg-slate-950 ${compact ? 'p-2' : 'p-4 md:p-6'} ${compact ? 'flex' : viewMode === 'chat' ? 'flex' : 'hidden lg:flex'}`}
     >
       {/* Chat Header */}
       {!compact && (
@@ -163,7 +163,9 @@ const ChatWindow = ({
       )}
 
       {/* Messages List Section */}
-      <div className={`flex-1 overflow-y-auto pr-1 scrollbar-hide ${compact ? 'my-2 space-y-2' : 'my-4 space-y-4'}`}>
+      <div
+        className={`flex-1 overflow-y-auto pr-1 scrollbar-hide ${compact ? 'my-2 space-y-2' : 'my-4 space-y-4'}`}
+      >
         {messages.map((msg) => {
           const isMe = (msg.sender?._id || msg.sender) === user?._id
           return (
@@ -176,15 +178,19 @@ const ChatWindow = ({
                 <img
                   src={
                     isMe
-                      ? (user?.avatar?.url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150')
-                      : (otherParticipant?.avatar?.url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150')
+                      ? user?.avatar?.url ||
+                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
+                      : otherParticipant?.avatar?.url ||
+                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
                   }
                   alt="avatar"
                   className="w-full h-full object-cover"
                 />
               </div>
 
-              <div className={`flex flex-col max-w-[70%] ${isMe ? 'items-end' : 'items-start'}`}>
+              <div
+                className={`flex flex-col max-w-[70%] ${isMe ? 'items-end' : 'items-start'}`}
+              >
                 <div
                   className={`p-3 rounded-2xl shadow-sm leading-relaxed ${isMe ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-tr-none shadow-md shadow-blue-500/10' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-gray-100 dark:border-slate-700/50'}`}
                 >
@@ -192,7 +198,9 @@ const ChatWindow = ({
                   {msg.attachments && msg.attachments.length > 0 && (
                     <div className="space-y-2 mt-1 mb-2">
                       {msg.attachments.map((att, index) => {
-                        const isImg = att.fileType === 'image' || att.url?.match(/\.(jpeg|jpg|gif|png|webp)/i);
+                        const isImg =
+                          att.fileType === 'image' ||
+                          att.url?.match(/\.(jpeg|jpg|gif|png|webp)/i)
                         return isImg ? (
                           <img
                             key={index}
@@ -225,22 +233,27 @@ const ChatWindow = ({
                     />
                   )}
 
-                  {msg.fileType && !msg.fileType.startsWith('image/') && msg.fileUrl && (
-                    <a
-                      href={msg.fileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 mb-2 p-2 bg-blue-100/50 dark:bg-slate-700 rounded-lg text-xs"
-                    >
-                      <FiFileText /> {msg.fileName || 'Download File'}
-                    </a>
-                  )}
+                  {msg.fileType &&
+                    !msg.fileType.startsWith('image/') &&
+                    msg.fileUrl && (
+                      <a
+                        href={msg.fileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 mb-2 p-2 bg-blue-100/50 dark:bg-slate-700 rounded-lg text-xs"
+                      >
+                        <FiFileText /> {msg.fileName || 'Download File'}
+                      </a>
+                    )}
 
                   {/* Render Text message body */}
                   {msg.body && <p className="text-sm">{msg.body}</p>}
                 </div>
                 <span className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 px-1">
-                  {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(msg.createdAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </span>
               </div>
             </div>

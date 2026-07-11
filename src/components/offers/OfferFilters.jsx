@@ -34,7 +34,6 @@ export default function OfferFilters({
   return (
     <div className="bg-[var(--whiteBackground)] dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm mb-10 space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
         <select
           value={filters.category || ''}
           onChange={(e) => onChange({ category: e.target.value || undefined })}

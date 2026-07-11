@@ -13,10 +13,10 @@ export default function CreateServiceRequestModal({
     if (error?.message) {
       parsedError = JSON.parse(error.message)[0].message
     }
-  } catch (e) {
-  }
+  } catch (e) {}
 
-  const errorPayload = parsedError || error?.response?.data || error?.data || error
+  const errorPayload =
+    parsedError || error?.response?.data || error?.data || error
   const fieldErrors = Array.isArray(errorPayload)
     ? errorPayload.reduce((acc, err) => {
         const field = err.path?.[0]

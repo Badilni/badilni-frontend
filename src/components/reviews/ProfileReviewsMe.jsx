@@ -51,7 +51,13 @@ const ProfileReviewsSection = ({ userId }) => {
   })
 
   const reviewsQuery = userId ? userReviewsQuery : myReviewsQuery
-  const { data: reviewsData, isFetching, isError, error, isPlaceholderData } = reviewsQuery
+  const {
+    data: reviewsData,
+    isFetching,
+    isError,
+    error,
+    isPlaceholderData,
+  } = reviewsQuery
 
   const listingOptionsQuery = useReviewListingOptions({
     userId,
@@ -73,7 +79,7 @@ const ProfileReviewsSection = ({ userId }) => {
         return [...prev, ...filtered]
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reviewsData?.data?.reviews, currentPage, isPlaceholderData])
 
   return (
@@ -155,7 +161,9 @@ const ProfileReviewsSection = ({ userId }) => {
           {/* Service / listing filter */}
           <select
             value={selectedListing}
-            onChange={(e) => handleFilterChange(setSelectedListing, e.target.value)}
+            onChange={(e) =>
+              handleFilterChange(setSelectedListing, e.target.value)
+            }
             disabled={
               listingOptionsQuery.isLoading ||
               (listingOptionsQuery.data || []).length === 0

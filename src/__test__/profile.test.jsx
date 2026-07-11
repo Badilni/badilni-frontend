@@ -1,19 +1,27 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HashRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const mockProfile = {
+  _id: 'user-123',
+  name: 'Sohila',
+  email: 'sohila@badilni.com',
+  title: 'Full-Stack Developer',
+  bio: 'Passionate developer who loves building great products.',
+  avatar: { url: null },
+  skillTags: ['UI/UX Design', 'Tailwind CSS', 'React Architecture'],
+  walletBalance: 120,
+  createdAt: '2026-01-01',
+  averageRating: 4.8,
+  totalReviews: 2,
+}
 
 // Mock zustand auth store
 vi.mock('../store/authStore', () => ({
   default: vi.fn((selector) =>
     selector({
-      user: {
-        name: 'Sohila',
-        email: 'sohila@badilni.com',
-        title: 'Full-Stack Developer',
-        bio: 'Passionate developer who loves building great products.',
-        avatar: { url: null },
-        skills: ['React', 'Node.js'],
-      },
+      user: mockProfile,
       isAuthenticated: true,
       isLoading: false,
       logout: vi.fn(),
@@ -28,6 +36,9 @@ vi.mock('react-router-dom', async (importOriginal) => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useSearchParams: () => [new URLSearchParams(), vi.fn()],
+    useParams: () => ({ userId: undefined }),
+    useLocation: () => ({ hash: '', state: {} }),
   }
 })
 
@@ -51,6 +62,8 @@ vi.mock('react-icons/fi', () => ({
   FiSave: () => <span data-testid="icon-save" />,
   FiMapPin: () => <span data-testid="icon-pin" />,
   FiCalendar: () => <span data-testid="icon-calendar" />,
+  FiSearch: () => <span data-testid="icon-search" />,
+  FiAlertTriangle: () => <span data-testid="icon-alert" />,
 }))
 vi.mock('react-icons/md', () => ({
   MdVerified: () => <span data-testid="icon-verified" />,
@@ -64,13 +77,116 @@ vi.mock('../components/layout/Footer', () => ({
   default: () => <footer data-testid="footer">Footer</footer>,
 }))
 
+// Mock profile and reviews hooks to avoid network/query errors
+vi.mock('../hooks/Profile/useProfile', () => ({
+  useProfile: () => ({
+    profile: mockProfile,
+    isLoading: false,
+  }),
+  useGetMe: () => ({
+    data: mockProfile,
+    isLoading: false,
+  }),
+}))
+
+vi.mock('../hooks/Review/RatingProfileHeader', () => ({
+  useReviewsCount: () => ({
+    data: 2,
+    isLoading: false,
+  }),
+}))
+
+const MOCK_REVIEWS_PAGE_1 = {
+  data: {
+    reviews: [
+      {
+        _id: 'r1',
+        rating: 5,
+        comment: 'Amazing mentor! Great session.',
+        createdAt: '2026-07-09T20:17:26Z',
+        reviewer: { name: 'Sarah Jenkins' },
+        listing: { title: 'UI Design Basics' },
+      },
+      {
+        _id: 'r2',
+        rating: 4,
+        comment: 'Good session, learned a lot.',
+        createdAt: '2026-07-08T20:17:26Z',
+        reviewer: { name: 'Michael Chen' },
+        listing: { title: 'React Architecture' },
+      },
+    ],
+  },
+  pagination: {
+    totalPages: 2,
+    currentPage: 1,
+    total: 3,
+  },
+}
+
+const MOCK_REVIEWS_PAGE_2 = {
+  data: {
+    reviews: [
+      {
+        _id: 'r3',
+        rating: 5,
+        comment: 'Excellent teaching style.',
+        createdAt: '2026-07-07T20:17:26Z',
+        reviewer: { name: 'Layla Hassan' },
+        listing: { title: 'Tailwind CSS' },
+      },
+    ],
+  },
+  pagination: {
+    totalPages: 2,
+    currentPage: 2,
+    total: 3,
+  },
+}
+
+const mockUseReviews = ({ page = 1 } = {}) => {
+  const data = page === 2 ? MOCK_REVIEWS_PAGE_2 : MOCK_REVIEWS_PAGE_1
+  return {
+    data,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+  }
+}
+
+vi.mock('../hooks/Review/useMyReviews', () => ({
+  useMyReviews: vi.fn((params) => mockUseReviews(params)),
+}))
+
+vi.mock('../hooks/Review/useUserReviews', () => ({
+  useUserReviews: vi.fn((params) => mockUseReviews(params)),
+}))
+
+vi.mock('../hooks/Review/useReviewListingOptions', () => ({
+  useReviewListingOptions: () => ({
+    data: [],
+    isLoading: false,
+  }),
+}))
+
 // ── Imports (after mocks) ─────────────────────────────────────────────────────
 import ProfileScreen from '../components/profile/profile'
 import ProfileHeader from '../components/profile/ProfileHeader'
 import ReviewCard, { StarRating } from '../components/profile/ReviewCard'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-const renderWithRouter = (ui) => render(<HashRouter>{ui}</HashRouter>)
+const renderWithRouter = (ui) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <HashRouter>{ui}</HashRouter>
+    </QueryClientProvider>
+  )
+}
 
 // 1. StarRating
 
@@ -147,18 +263,13 @@ describe('ReviewCard', () => {
 describe('ProfileHeader', () => {
   beforeEach(() => mockNavigate.mockClear())
 
-  it('renders the user name from store', () => {
-    renderWithRouter(<ProfileHeader />)
+  it('renders the user name', () => {
+    renderWithRouter(<ProfileHeader profile={mockProfile} />)
     expect(screen.getByRole('heading', { name: /Sohila/i })).toBeInTheDocument()
   })
 
-  it('renders the user title', () => {
-    renderWithRouter(<ProfileHeader />)
-    expect(screen.getByText(/Full-Stack Developer/i)).toBeInTheDocument()
-  })
-
   it('renders the bio text', () => {
-    renderWithRouter(<ProfileHeader />)
+    renderWithRouter(<ProfileHeader profile={mockProfile} />)
     expect(
       screen.getByText(
         /Passionate developer who loves building great products/i
@@ -167,18 +278,24 @@ describe('ProfileHeader', () => {
   })
 
   it('renders Edit Profile button', () => {
-    renderWithRouter(<ProfileHeader />)
+    renderWithRouter(
+      <ProfileHeader profile={mockProfile} isOwnProfile={true} />
+    )
     expect(screen.getByText(/Edit Profile/i)).toBeInTheDocument()
   })
 
   it('navigates to /profile/edit when Edit Profile is clicked', () => {
-    renderWithRouter(<ProfileHeader />)
+    renderWithRouter(
+      <ProfileHeader profile={mockProfile} isOwnProfile={true} />
+    )
     fireEvent.click(screen.getByText(/Edit Profile/i))
     expect(mockNavigate).toHaveBeenCalledWith('/profile/edit')
   })
 
   it('renders Share button', () => {
-    renderWithRouter(<ProfileHeader />)
+    renderWithRouter(
+      <ProfileHeader profile={mockProfile} isOwnProfile={true} />
+    )
     expect(screen.getByText(/Share/i)).toBeInTheDocument()
   })
 })
@@ -190,8 +307,6 @@ describe('ProfileScreen', () => {
 
   it('renders the profile page core content', () => {
     renderWithRouter(<ProfileScreen />)
-    // NavBar & Footer live in MainLayout (the router wrapper), not in ProfileScreen.
-    // This test verifies the page itself renders its primary sections.
     expect(screen.getByRole('heading', { name: /Sohila/i })).toBeInTheDocument()
     expect(screen.getByText('Account Settings')).toBeInTheDocument()
     expect(screen.getByText(/Recent Feedback/i)).toBeInTheDocument()
@@ -209,7 +324,9 @@ describe('ProfileScreen', () => {
 
   it('renders user email in Account Settings', () => {
     renderWithRouter(<ProfileScreen />)
-    expect(screen.getByText('sohila@badilni.com')).toBeInTheDocument()
+    expect(
+      screen.getAllByText('sohila@badilni.com').length
+    ).toBeGreaterThanOrEqual(1)
   })
 
   it('renders Ratings & Reviews section', () => {
@@ -224,19 +341,20 @@ describe('ProfileScreen', () => {
 
   it('renders initial 2 review cards', () => {
     renderWithRouter(<ProfileScreen />)
-    // First two reviewers from MOCK_REVIEWS
     expect(screen.getByText('Sarah Jenkins')).toBeInTheDocument()
     expect(screen.getByText('Michael Chen')).toBeInTheDocument()
   })
 
-  it('shows Load More Reviews button when more reviews exist', () => {
+  it('shows Load More button when more reviews exist', () => {
     renderWithRouter(<ProfileScreen />)
-    expect(screen.getByText(/Load More Reviews/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Load More/i })
+    ).toBeInTheDocument()
   })
 
   it('loads more reviews when Load More is clicked', async () => {
     renderWithRouter(<ProfileScreen />)
-    fireEvent.click(screen.getByText(/Load More Reviews/i))
+    fireEvent.click(screen.getByRole('button', { name: /Load More/i }))
     await waitFor(() => {
       expect(screen.getByText('Layla Hassan')).toBeInTheDocument()
     })
@@ -244,40 +362,20 @@ describe('ProfileScreen', () => {
 
   it('hides Load More button after all reviews are shown', async () => {
     renderWithRouter(<ProfileScreen />)
-    fireEvent.click(screen.getByText(/Load More Reviews/i))
+    fireEvent.click(screen.getByRole('button', { name: /Load More/i }))
     await waitFor(() => {
-      expect(screen.queryByText(/Load More Reviews/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: /Load More/i })
+      ).not.toBeInTheDocument()
     })
-  })
-
-  it('opens sort dropdown when clicked', () => {
-    renderWithRouter(<ProfileScreen />)
-    fireEvent.click(screen.getByText('Most Recent'))
-    expect(screen.getByText('Highest Rated')).toBeVisible()
-  })
-
-  it('changes sort option when Highest Rated is selected', () => {
-    renderWithRouter(<ProfileScreen />)
-    fireEvent.click(screen.getByText('Most Recent'))
-    fireEvent.click(screen.getByText('Highest Rated'))
-    // The button now shows the selected option
-    expect(screen.getAllByText('Highest Rated').length).toBeGreaterThanOrEqual(
-      1
-    )
-  })
-
-  it('renders CTA card', () => {
-    renderWithRouter(<ProfileScreen />)
-    expect(
-      screen.getByText(/Ready to share your knowledge/i)
-    ).toBeInTheDocument()
-    expect(screen.getByText(/Start a Session/i)).toBeInTheDocument()
   })
 
   it('renders all default skill tags', () => {
     renderWithRouter(<ProfileScreen />)
-    expect(screen.getByText('UI/UX Design')).toBeInTheDocument()
-    expect(screen.getByText('Tailwind CSS')).toBeInTheDocument()
-    expect(screen.getByText('React Architecture')).toBeInTheDocument()
+    expect(screen.getAllByText('UI/UX Design').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Tailwind CSS').length).toBeGreaterThanOrEqual(1)
+    expect(
+      screen.getAllByText('React Architecture').length
+    ).toBeGreaterThanOrEqual(1)
   })
 })

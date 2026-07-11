@@ -69,7 +69,7 @@ const UserReviewCard = ({ review, user }) => {
 
           {/* Directional Indicator */}
           <span className="text-[11px] text-[var(--gray-text)] font-extrabold bg-[var(--secondary-light)]/5 px-2 py-0.5 rounded-md align-items tracking-wider text-center">
-             →
+            →
           </span>
 
           {/* Reviewee */}

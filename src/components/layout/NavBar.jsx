@@ -62,7 +62,6 @@ export default function NavBar() {
     <>
       <header className="w-full sticky top-0 z-40 transition-colors duration-200 border-b border-gray-200/80 dark:border-slate-800/80 bg-[var(--whiteBackground)]/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm">
         <div className="w-[96%] xl:w-11/12 max-w-[1600px] mx-auto px-2 sm:px-4 h-16 flex items-center justify-between gap-4">
-          
           {/* ── 1. LEFT SECTION (Logo + Nav Links) ────────────────────────── */}
           <div className="flex items-center gap-4 xl:gap-8 shrink-0">
             {/* Brand Logo */}
@@ -149,9 +148,17 @@ export default function NavBar() {
                 strokeWidth={2}
               >
                 {menuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 )}
               </svg>
             </button>

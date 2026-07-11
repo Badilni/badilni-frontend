@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const RequestSchema = z.object({
   category: z.string().min(1, 'Please select a category'),
@@ -22,7 +22,7 @@ export const RequestSchema = z.object({
     existing: z.array(z.any()),
     files: z.array(z.any()),
   }),
-});
+})
 
 export const requestDefaultValues = {
   category: '',
@@ -31,4 +31,4 @@ export const requestDefaultValues = {
   creditsOffered: '',
   deadline: '',
   images: { existing: [], files: [] },
-};
+}

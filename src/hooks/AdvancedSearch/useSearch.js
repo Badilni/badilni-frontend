@@ -21,7 +21,6 @@ export default function useSearch() {
     }
   }
 
-
   const handleClearSearch = () => {
     setKeywordInput('')
     setSearchParams({})

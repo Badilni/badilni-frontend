@@ -206,7 +206,10 @@ export default function BookingChatCard({ bookingId, booking }) {
       </div>
 
       {/* Messages */}
-      <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-slate-950/20 scrollbar-hide">
+      <div
+        ref={containerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-slate-950/20 scrollbar-hide"
+      >
         {isLoading ? (
           <div className="h-full flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 dark:border-blue-400"></div>
@@ -228,17 +231,19 @@ export default function BookingChatCard({ bookingId, booking }) {
                   <img
                     src={
                       isMe
-                        ? (currentUser?.avatar?.url ||
-                          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150')
-                        : (otherParticipant?.avatar?.url ||
-                          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150')
+                        ? currentUser?.avatar?.url ||
+                          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
+                        : otherParticipant?.avatar?.url ||
+                          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
                     }
                     alt=""
                     className="w-full h-full object-cover"
                   />
                 </div>
 
-                <div className={`flex flex-col max-w-[75%] ${isMe ? 'items-end' : 'items-start'}`}>
+                <div
+                  className={`flex flex-col max-w-[75%] ${isMe ? 'items-end' : 'items-start'}`}
+                >
                   {/* Bubble */}
                   <div
                     className={`p-3 rounded-2xl shadow-sm leading-relaxed text-sm ${

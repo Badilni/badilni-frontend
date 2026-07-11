@@ -4,7 +4,12 @@ import { io } from 'socket.io-client'
 import ChatSidebar from './ChatSidebar'
 import ChatWindow from './ChatWindow'
 import ChatInfoPanel from './ChatInfoPanel'
-import { getConversations, getMessages, sendMessage, markMessagesAsRead } from '../../api/chatApi'
+import {
+  getConversations,
+  getMessages,
+  sendMessage,
+  markMessagesAsRead,
+} from '../../api/chatApi'
 import { getUserProfileRequest } from '../../api/authApi'
 import { getAccessToken } from '../../api/axios'
 import useAuthStore from '../../store/authStore'
@@ -34,20 +39,26 @@ const ChatPage = () => {
 
   // Fetch initial conversations list
   useEffect(() => {
-    getConversations().then((data) => {
-      const chatsArray = data?.data?.conversations || []
-      setChats(chatsArray)
-      setHasLoadedConversations(true)
+    getConversations()
+      .then((data) => {
+        const chatsArray = data?.data?.conversations || []
+        setChats(chatsArray)
+        setHasLoadedConversations(true)
 
-      // Default to selecting the first (latest) conversation on page load if no other state is requested
-      if (!activeChatId && !location.state?.selectUserId && chatsArray.length > 0) {
-        setActiveChatId(chatsArray[0]._id)
-        setViewMode('chat')
-      }
-    }).catch((err) => {
-      console.error('Error fetching conversations:', err)
-      setHasLoadedConversations(true)
-    })
+        // Default to selecting the first (latest) conversation on page load if no other state is requested
+        if (
+          !activeChatId &&
+          !location.state?.selectUserId &&
+          chatsArray.length > 0
+        ) {
+          setActiveChatId(chatsArray[0]._id)
+          setViewMode('chat')
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching conversations:', err)
+        setHasLoadedConversations(true)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -97,7 +108,13 @@ const ChatPage = () => {
       }, 0)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.state?.selectUserId, chats, user, hasLoadedConversations, location.pathname])
+  }, [
+    location.state?.selectUserId,
+    chats,
+    user,
+    hasLoadedConversations,
+    location.pathname,
+  ])
 
   // Fetch messages for active conversation and mark it as read
   useEffect(() => {
@@ -196,13 +213,17 @@ const ChatPage = () => {
           : payload.conversation
 
       setChats((prevChats) => {
-        const existingChatIdx = prevChats.findIndex((c) => c._id === conversationId)
+        const existingChatIdx = prevChats.findIndex(
+          (c) => c._id === conversationId
+        )
 
         if (existingChatIdx > -1) {
           const updatedChats = [...prevChats]
           const existingChat = updatedChats[existingChatIdx]
           const isCurrentActive = conversationId === activeChatIdRef.current
-          const newUnreadCount = isCurrentActive ? 0 : (existingChat.unreadCount || 0) + 1
+          const newUnreadCount = isCurrentActive
+            ? 0
+            : (existingChat.unreadCount || 0) + 1
 
           updatedChats[existingChatIdx] = {
             ...existingChat,
@@ -215,7 +236,9 @@ const ChatPage = () => {
             unreadCount: newUnreadCount,
           }
 
-          return updatedChats.sort((a, b) => new Date(b.lastActivityAt) - new Date(a.lastActivityAt))
+          return updatedChats.sort(
+            (a, b) => new Date(b.lastActivityAt) - new Date(a.lastActivityAt)
+          )
         } else {
           // If conversation is new/not in sidebar, refetch conversations list
           getConversations().then((data) => {
@@ -251,7 +274,9 @@ const ChatPage = () => {
           return {
             ...prev,
             messages: prev.messages.map((m) =>
-              (m.sender?._id || m.sender) === user?._id ? { ...m, isRead: true } : m
+              (m.sender?._id || m.sender) === user?._id
+                ? { ...m, isRead: true }
+                : m
             ),
           }
         })
@@ -346,19 +371,23 @@ const ChatPage = () => {
         }))
         // Update last message in sidebar
         setChats((prevChats) =>
-          prevChats.map((c) =>
-            c._id === activeChatId
-              ? {
-                  ...c,
-                  lastMessage: {
-                    body: newMessage.body || '📎 Attachment',
-                    sender: user._id,
-                    createdAt: newMessage.createdAt,
-                  },
-                  lastActivityAt: newMessage.createdAt,
-                }
-              : c
-          ).sort((a, b) => new Date(b.lastActivityAt) - new Date(a.lastActivityAt))
+          prevChats
+            .map((c) =>
+              c._id === activeChatId
+                ? {
+                    ...c,
+                    lastMessage: {
+                      body: newMessage.body || '📎 Attachment',
+                      sender: user._id,
+                      createdAt: newMessage.createdAt,
+                    },
+                    lastActivityAt: newMessage.createdAt,
+                  }
+                : c
+            )
+            .sort(
+              (a, b) => new Date(b.lastActivityAt) - new Date(a.lastActivityAt)
+            )
         )
       }
 
@@ -420,4 +449,3 @@ const ChatPage = () => {
 }
 
 export default ChatPage
-
