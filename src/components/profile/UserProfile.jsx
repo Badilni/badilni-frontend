@@ -163,9 +163,7 @@ const UserProfile = () => {
           />
 
           {/* Summary reviews */}
-          {profile && (
-              <ReviewSummary userId={userId || profile._id} />
-            )}
+          {profile && <ReviewSummary userId={userId || profile._id} />}
 
           {/* List of user reviews */}
           <ProfileReviewsSection userId={userId} />

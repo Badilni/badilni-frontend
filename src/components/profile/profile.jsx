@@ -149,9 +149,7 @@ const ProfileScreen = () => {
             />
 
             {/* Summary reviews */}
-            {profile && (
-              <ReviewSummary userId={userId || profile._id} />
-            )}
+            {profile && <ReviewSummary userId={userId || profile._id} />}
 
             <ProfileReviewsSection userId={userId || currentLoggedUserId} />
           </div>

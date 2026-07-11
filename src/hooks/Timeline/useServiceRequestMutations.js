@@ -5,6 +5,7 @@ import {
   deleteServiceRequest,
 } from '../../api/posts'
 import { serviceRequestKeys } from './useServiceRequests'
+import toast from 'react-hot-toast'
 
 export function useCreateServiceRequest() {
   const qc = useQueryClient()
@@ -19,7 +20,6 @@ export function useCreateServiceRequest() {
 export function useEditServiceRequest() {
   const qc = useQueryClient()
   return useMutation({
-    // pass only the fields that changed — confirmed PATCH is a true partial update (img 7)
     mutationFn: ({ id, payload }) => editServiceRequest(id, payload),
     onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: serviceRequestKeys.detail(id) })
@@ -31,23 +31,34 @@ export function useEditServiceRequest() {
 export function useDeleteServiceRequest() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: deleteServiceRequest,
-    // Optimistic removal from the active list views
+    mutationFn: (id) => {
+      console.log('Delete Request initiated for ID:', id)
+      return deleteServiceRequest(id)
+    },
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: serviceRequestKeys.all })
-      const previous = qc.getQueriesData({ queryKey: serviceRequestKeys.all })
-      qc.setQueriesData({ queryKey: serviceRequestKeys.all }, (old) => {
-        if (!old?.data) return old
-        return {
-          ...old,
-          data: old.data.filter((item) => (item.id ?? item._id) !== id),
-        }
+      const previous = qc.getQueryData(serviceRequestKeys.all)
+
+      qc.setQueryData(serviceRequestKeys.all, (old) => {
+        if (!old) return old
+
+        const list = Array.isArray(old) ? old : old.data || []
+
+        const updatedList = list.filter((item) => (item.id ?? item._id) !== id)
+
+        return Array.isArray(old) ? updatedList : { ...old, data: updatedList }
       })
+
       return { previous }
     },
-    onError: (_err, _id, context) => {
-      context?.previous?.forEach(([key, data]) => qc.setQueryData(key, data))
+    onError: (err, id, context) => {
+      console.error('Delete Error:', err)
+      if (context?.previous) {
+        qc.setQueryData(serviceRequestKeys.all, context.previous)
+      }
+      toast.error("Couldn't delete the request. Please try again.")
     },
+    onSuccess: () => toast.success('Service request deleted'),
     onSettled: () => {
       qc.invalidateQueries({ queryKey: serviceRequestKeys.all })
     },
