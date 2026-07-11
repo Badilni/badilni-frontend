@@ -12,7 +12,7 @@ vi.mock('react-router-dom', async () => {
   }
 })
 
-vi.mock('../components/Bookings/CreateBookingModal', () => ({
+vi.mock('../components/bookings/CreateBookingModal', () => ({
   default: () => null,
 }))
 
