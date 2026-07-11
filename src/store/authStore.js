@@ -30,7 +30,7 @@ const useAuthStore = create((set) => ({
     } catch {
     } finally {
       set({ user: null, isAuthenticated: false })
-      navigate?.('/signIn', { replace: true })
+      navigate?.('/', { replace: true })
     }
   },
 }))

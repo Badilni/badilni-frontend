@@ -48,10 +48,10 @@ export default function EmptyState({
           </button>
         )}
         <button
-          onClick={onPostRequest}
+          onClick={onPostRequest || (() => navigate('/'))}
           className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110"
         >
-          {actionLabel}
+          {actionLabel || 'Go to Home Page'}
         </button>
       </div>
     </div>
