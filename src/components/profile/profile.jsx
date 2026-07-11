@@ -6,6 +6,7 @@ import ProfileHeader from './ProfileHeader'
 import ProfileActivityTabs from './ProfileActiveTabs'
 import ProfileReviewsSection from '../reviews/ProfileReviewsMe'
 import ProfileRatingSection from '../reviews/ProfileRatingUser'
+import ReviewSummary from '../reviews/ReviewSummary'
 import DeactivateButton from '../DeactiveateMe/Deactiveate'
 import DeactivateConfirmModal from '../DeactiveateMe/DeactivateConfirmModal'
 import { useProfile } from '../../hooks/Profile/useProfile'
@@ -146,10 +147,19 @@ const ProfileScreen = () => {
               averageRating={profile?.averageRating}
               reviewsCount={profile?.totalReviews}
             />
+
+            {/* Summary reviews */}
+            {profile && (
+              <ReviewSummary userId={userId || profile._id} />
+            )}
+
             <ProfileReviewsSection userId={userId || currentLoggedUserId} />
           </div>
-          <ProfileActivityTabs isOwnProfile={isOwnProfile} />
         </div>
+      </div>
+
+      <div className="mt-8">
+        <ProfileActivityTabs isOwnProfile={isOwnProfile} />
       </div>
 
       <DeactivateConfirmModal

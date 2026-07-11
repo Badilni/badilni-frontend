@@ -8,6 +8,7 @@ import { useUserProfile } from '../../hooks/Profile/useUserProfile'
 import ProfileReviewsSection from '../reviews/ProfileReviewsMe'
 import { useStartChat } from '../../hooks/Chat/useStartChat'
 import SkillBadge from './SkillBadge'
+import ReviewSummary from '../reviews/ReviewSummary'
 import ProfileActivityTabs from '../profile/ProfileActiveTabs'
 import ProfileRatingSection from '../reviews/ProfileRatingUser'
 
@@ -160,6 +161,12 @@ const UserProfile = () => {
             averageRating={profile?.averageRating}
             reviewsCount={profile?.reviewsCount}
           />
+
+          {/* Summary reviews */}
+          {profile && (
+              <ReviewSummary userId={userId || profile._id} />
+            )}
+
           {/* List of user reviews */}
           <ProfileReviewsSection userId={userId} />
         </div>
