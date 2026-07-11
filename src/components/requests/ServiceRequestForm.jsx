@@ -46,7 +46,7 @@ export default function RequestForm({
         <select
           value={form.category}
           onChange={(e) => update('category', e.target.value)}
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+          className="w-full bg-[var(--bg-color)] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-[var(--text-color)]"
         >
           <option value="" disabled>
             Select a category
@@ -70,7 +70,7 @@ export default function RequestForm({
         <input
           value={form.title}
           onChange={(e) => update('title', e.target.value)}
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+          className="w-full bg-[var(--bg-color)] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-[var(--text-color)]"
         />
         {getError('title') && (
           <p className="text-xs text-red-500 mt-1">{getError('title')}</p>
@@ -86,7 +86,7 @@ export default function RequestForm({
           rows={4}
           value={form.description}
           onChange={(e) => update('description', e.target.value)}
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+          className="w-full bg-[var(--bg-color)] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-[var(--text-color)]"
         />
         {getError('description') && (
           <p className="text-xs text-red-500 mt-1">{getError('description')}</p>
@@ -103,7 +103,7 @@ export default function RequestForm({
             type="number"
             value={form.creditsOffered}
             onChange={(e) => update('creditsOffered', e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+            className="w-full bg-[var(--bg-color)] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-[var(--text-color)]"
           />
           {getError('creditsOffered') && (
             <p className="text-xs text-red-500 mt-1">
@@ -119,7 +119,7 @@ export default function RequestForm({
             type="datetime-local"
             value={form.deadline}
             onChange={(e) => update('deadline', e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+            className="w-full bg-[var(--bg-color)] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-[var(--text-color)]"
           />
           {getError('deadline') && (
             <p className="text-xs text-red-500 mt-1">{getError('deadline')}</p>

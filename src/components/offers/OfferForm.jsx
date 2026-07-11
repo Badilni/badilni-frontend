@@ -21,12 +21,6 @@ export default function OfferForm({
     formState: { errors },
   } = useForm({
     resolver: zodResolver(offerSchema),
-    // Computed once, at mount, from whatever was passed in when editing.
-    // NOTE: do not "sync" this with an effect that calls reset() on every
-    // initialValues/parent re-render — isPending flips during submit would
-    // re-trigger it and silently wipe unsaved edits right as the user hits
-    // submit. Since the parent modal fully unmounts on close, a fresh mount
-    // on each open is enough to pick up new initialValues correctly.
     defaultValues: initialValues
       ? { ...offerDefaultValues, ...initialValues }
       : offerDefaultValues,
@@ -113,7 +107,7 @@ export default function OfferForm({
           <input
             type="number"
             min={1}
-            step="0.5"
+            step="1"
             {...register('hourlyRate')}
             className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"
           />
