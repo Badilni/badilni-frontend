@@ -16,17 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Changed node-version from 20 to 22 to satisfy @rolldown/plugin-babel
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
+      # Changed from 'npm ci' to 'npm install' to bypass the missing lockfile error
       - name: Install dependencies
         run: npm install
 
       - name: Build project
-        run: npm run build
+        run: npm run build -- --debug
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
