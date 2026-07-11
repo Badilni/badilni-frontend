@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchBookings } from '../../services/booking/fetchBookings'
-import { getBookings } from '../../services/booking/bookingService'
-import { getBooking } from '../../api/posts'
+import { getBooking, getBookings } from '../../api/posts'
 
 export const bookingKeys = {
   all: ['bookings'],
