@@ -316,12 +316,14 @@ export default function BookingChatCard({ bookingId, booking }) {
             <FiSmile size={17} />
           </button>
           {showEmojiPicker && (
-            <div className="absolute bottom-16 left-2 z-30">
-              <EmojiPicker
-                onEmojiClick={(e) => setMessageText((prev) => prev + e.emoji)}
-              />
-            </div>
-          )}
+              <div className="absolute bottom-16 left-2 z-30 w-[280px] h-[350px]">
+                <EmojiPicker
+                  onEmojiClick={(e) => setMessageText((prev) => prev + e.emoji)}
+                  width="100%"
+                  height="100%"
+                />
+              </div>
+            )}
         </div>
 
         {/* File Trigger */}
