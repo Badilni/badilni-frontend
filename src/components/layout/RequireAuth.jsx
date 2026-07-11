@@ -1,12 +1,13 @@
 import { Navigate } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import { Outlet } from 'react-router-dom'
+import Spinner from '../common/Spinner'
 
 export default function RequireAuth({ children }) {
   const { isAuthenticated, isLoading } = useAuthStore()
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Spinner/>
   }
 
   if (!isAuthenticated) {

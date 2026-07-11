@@ -72,7 +72,6 @@ export default function RequestFilters({
           {[
             { value: '', label: 'All Statuses' },
             { value: 'open', label: 'Open' },
-            { value: 'matched', label: 'Matched' },
             { value: 'fulfilled', label: 'Fulfilled' },
             { value: 'expired', label: 'Expired' },
           ].map((opt) => (

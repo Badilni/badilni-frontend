@@ -283,6 +283,8 @@ export default function NotificationDropdown() {
       window.dispatchEvent(new Event('open-user-sidebar'))
     } else if (type === 'NEW_REVIEW') {
       navigate('/profile', { state: { scrollToReviews: true } })
+    } else if (type === 'AI_MATCH') {
+      navigate(`/matches/${n.relatedId}`)
     }
   }
 
@@ -437,7 +439,6 @@ export default function NotificationDropdown() {
 
 function NotificationItem({ notification: n, isDeleting, onClick, onDelete }) {
   const meta = getTypeMeta(n.type)
-
   return (
     <div
       id={`notification-item-${n._id}`}

@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { label: 'Requests', path: '/requests' },
   { label: 'Offers', path: '/offers' },
   { label: 'Bookings', path: '/booking' },
+  { label: 'Matches', path: '/matches'},
   { label: 'About Us', path: '/about' },
   { label: 'Contact', path: '/contact' },
 ]

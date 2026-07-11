@@ -16,7 +16,6 @@ import ContactPage from '../pages/contactUs/contact'
 import AboutPage from '../pages/about/about'
 import ExplorePage from '../pages/Explore'
 import Requests from '../pages/timeline/Requests'
-import VerifyEmail from '../components/auth/signup/VerifyEmail'
 import RequestPage from '../pages/timeLine/RequestPage'
 import Offers from '../pages/timeLine/Offers'
 import OfferPage from '../pages/timeLine/OfferPage'
@@ -27,6 +26,8 @@ import ChatBadilni from '../pages/Chat/chat'
 import NotificationsPageWrapper from '../pages/Notifications/notifications'
 import BookingPage from '../pages/Booking/BookingPage'
 import BookingPageDetail from '../pages/Booking/BookingPageDetail'
+import Matcher from '../pages/matcher/Matcher'
+import { MatchPage } from '../pages/matcher/MatchPage'
 
 const RootLayout = () => (
   <>
@@ -46,6 +47,12 @@ const router = createHashRouter([
           { index: true, element: <Home /> },
           { path: 'contact', element: <ContactPage /> },
           { path: 'about', element: <AboutPage /> },
+          { path: 'requests', element: <Requests /> },
+          { path: 'requests/:requestId', element: <RequestPage /> },
+          { path: 'offers', element: <Offers /> },
+          { path: 'offers/:offerId', element: <OfferPage /> },
+          { path: 'explore', element: <ExplorePage /> },
+          { path: 'search', element: <SearchPage /> },
           {
             element: <RequireAuth />,
             children: [
@@ -54,16 +61,11 @@ const router = createHashRouter([
               { path: 'profile/:userId', element: <OtherProfile /> },
               { path: 'chat', element: <ChatBadilni /> },
               { path: 'notifications', element: <NotificationsPageWrapper /> },
-              { path: 'chat/:conversationId', element: <div>chat</div> },
-              { path: 'explore', element: <ExplorePage /> },
               { path: 'booking', element: <BookingPage /> },
               { path: 'bookings/:bookingId', element: <BookingPageDetail /> },
-              { path: 'requests', element: <Requests /> },
-              { path: 'requests/:requestId', element: <RequestPage /> },
-              { path: 'offers', element: <Offers /> },
-              { path: 'offers/:offerId', element: <OfferPage /> },
+              { path: 'matches', element: <Matcher />},
+              { path: 'matches/:matchId', element: <MatchPage /> },
               { path: 'settings', element: <EditProfilePage /> },
-              { path: 'search', element: <SearchPage /> },
             ],
           },
         ],
