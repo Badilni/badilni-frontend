@@ -3,10 +3,9 @@ import { serverBaseUrl } from '../utils/constants'
 
 const api = axios.create({
   baseURL: serverBaseUrl,
-  withCredentials: true, // keep this if refresh token lives in an httpOnly cookie
+  withCredentials: true,
 })
 
-// ---- Access token store (in-memory, not localStorage, to limit XSS exposure) ----
 let accessToken = null
 let navigateFn = null
 
@@ -49,7 +48,6 @@ export const executeLogout = async () => {
   }
 }
 
-// ---- Attach token to every outgoing request ----
 api.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`
