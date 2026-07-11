@@ -7,7 +7,7 @@ import {
   useReviews,
   useCreateReview,
 } from '../../hooks/Review/useReviews'
-import { useBookingsLegacy } from '../../hooks/Booking/useBookings'
+import { useBookingsLegacy } from '../../hooks/booking/useBookings'
 import { handleToastMessage } from '../../utils/helper'
 import ReviewCard from '../reviews/ReviewCard'
 
