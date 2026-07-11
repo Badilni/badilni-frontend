@@ -1,9 +1,9 @@
-import MatchesPage from "../../components/matches/MatchesPage";
+import MatchesPage from '../../components/matches/MatchesPage'
 
 const Matcher = () => {
   return (
     <>
-      <MatchesPage/>
+      <MatchesPage />
     </>
   )
 }

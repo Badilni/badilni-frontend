@@ -15,20 +15,30 @@ function ScoreRing({ score }) {
   const offset = circumference - (pct / 100) * circumference
 
   const color =
-    pct >= 80 ? '#10b981' : pct >= 60 ? '#6366f1' : pct >= 40 ? '#f59e0b' : '#ef4444'
+    pct >= 80
+      ? '#10b981'
+      : pct >= 60
+        ? '#6366f1'
+        : pct >= 40
+          ? '#f59e0b'
+          : '#ef4444'
 
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="relative w-24 h-24">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 88 88">
           <circle
-            cx="44" cy="44" r={radius}
+            cx="44"
+            cy="44"
+            r={radius}
             fill="none"
             stroke="var(--background-light)"
             strokeWidth="8"
           />
           <circle
-            cx="44" cy="44" r={radius}
+            cx="44"
+            cy="44"
+            r={radius}
             fill="none"
             stroke={color}
             strokeWidth="8"
@@ -39,7 +49,9 @@ function ScoreRing({ score }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-black" style={{ color }}>{pct}%</span>
+          <span className="text-2xl font-black" style={{ color }}>
+            {pct}%
+          </span>
         </div>
       </div>
       <span className="text-xs font-bold text-[var(--gray-text)] uppercase tracking-wider">
@@ -190,16 +202,18 @@ export default function MatchPageDetails() {
   const match = data?.data?.match
 
   if (isLoading) return <MatchPageSkeleton />
-  if (isError) return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <ErrorState message={error?.message} onRetry={refetch} />
-    </div>
-  )
-  if (!match) return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center text-[var(--gray-text)]">
-      Match not found.
-    </div>
-  )
+  if (isError)
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <ErrorState message={error?.message} onRetry={refetch} />
+      </div>
+    )
+  if (!match)
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center text-[var(--gray-text)]">
+        Match not found.
+      </div>
+    )
 
   // Contextual booking targeting and label definitions matching the list view setup
   const currentId = currentUser?._id ?? currentUser?.id
@@ -211,12 +225,14 @@ export default function MatchPageDetails() {
 
   const listingId = match.listing?._id ?? match.listing?.id
   const requestId = match.request?._id ?? match.request?.id
-  
-  const bookingTarget = isProvider
-    ? { requestId }
-    : { listingId }
 
-  const bookBtnLabel = isProvider ? 'Offer to Help' : isReceiver ? 'Book This Skill' : 'Book Session'
+  const bookingTarget = isProvider ? { requestId } : { listingId }
+
+  const bookBtnLabel = isProvider
+    ? 'Offer to Help'
+    : isReceiver
+      ? 'Book This Skill'
+      : 'Book Session'
 
   const providerPath = getProfilePath(match.provider, currentUser)
   const receiverPath = getProfilePath(match.receiver, currentUser)
@@ -229,8 +245,18 @@ export default function MatchPageDetails() {
         onClick={() => navigate('/matches')}
         className="flex items-center gap-2 text-sm font-semibold text-[var(--gray-text)] hover:text-[var(--black-text)] dark:hover:text-white transition-colors mb-8"
       >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2.5}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
         </svg>
         Back to Matches
       </button>
@@ -254,8 +280,7 @@ export default function MatchPageDetails() {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
-                  })
-                }
+                })}
               </p>
             </div>
 
@@ -281,8 +306,18 @@ export default function MatchPageDetails() {
               />
               <div className="flex flex-col items-center gap-1 shrink-0">
                 <div className="h-px w-8 bg-gradient-to-r from-[var(--secondary-light)] to-[var(--primary-light)]" />
-                <svg className="w-5 h-5 text-[var(--primary-light)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 text-[var(--primary-light)]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
                 <div className="h-px w-8 bg-gradient-to-r from-[var(--secondary-light)] to-[var(--primary-light)]" />
               </div>
@@ -313,7 +348,11 @@ export default function MatchPageDetails() {
               </p>
               <div className="bg-[var(--background-light)] dark:bg-slate-800/50 rounded-2xl p-5 flex gap-3">
                 <div className="shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--secondary-light)] to-[var(--primary-light)] flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                   </svg>
                 </div>

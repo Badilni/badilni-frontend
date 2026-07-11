@@ -54,7 +54,6 @@ const router = createHashRouter([
           { path: 'explore', element: <ExplorePage /> },
           { path: 'search', element: <SearchPage /> },
           { path: 'profile', element: <ProfilePage /> },
-          { path: 'profile/:userId', element: <OtherProfile /> },
           {
             element: <RequireAuth />,
             children: [
@@ -63,7 +62,8 @@ const router = createHashRouter([
               { path: 'notifications', element: <NotificationsPageWrapper /> },
               { path: 'booking', element: <BookingPage /> },
               { path: 'bookings/:bookingId', element: <BookingPageDetail /> },
-              { path: 'matches', element: <Matcher />},
+              { path: 'profile/:userId', element: <OtherProfile /> },
+              { path: 'matches', element: <Matcher /> },
               { path: 'matches/:matchId', element: <MatchPage /> },
               { path: 'settings', element: <EditProfilePage /> },
             ],

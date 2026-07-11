@@ -40,7 +40,6 @@ export const clearAccessToken = () => {
   accessToken = null
 }
 
-
 export const executeLogout = async () => {
   try {
     const response = await api.post('/auth/logout')
@@ -90,7 +89,12 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      error.response.data.message ===
+        'Your token has expired. Please log in again'
+    ) {
       if (originalRequest.url.includes('/auth/refresh')) {
         return Promise.reject(error)
       }

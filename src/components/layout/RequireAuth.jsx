@@ -7,7 +7,7 @@ export default function RequireAuth({ children }) {
   const { isAuthenticated, isLoading } = useAuthStore()
 
   if (isLoading) {
-    return <Spinner/>
+    return <Spinner />
   }
 
   if (!isAuthenticated) {

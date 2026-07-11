@@ -1,7 +1,5 @@
-import MatchPageDetails from "../../components/matches/MatchPageDetails";
+import MatchPageDetails from '../../components/matches/MatchPageDetails'
 
 export function MatchPage() {
-    return (
-        <MatchPageDetails />
-    )
+  return <MatchPageDetails />
 }
