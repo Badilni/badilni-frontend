@@ -118,9 +118,9 @@ export default function CreateBookingModal({
               </label>
               <input
                 required
-                type="number"
-                min={0.5}
-                step={0.5}
+                type="number" 
+                min={0}
+                step={1}
                 value={form.durationHours}
                 onChange={(e) => update('durationHours', e.target.value)}
                 className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white"

@@ -4,6 +4,7 @@ import { FaStar } from 'react-icons/fa6'
 import { getProfilePath } from '../../utils/getProfilePath'
 import { useOffer } from '../../hooks/Timeline/useOffer'
 import { useDeleteOffer } from '../../hooks/Timeline/useOfferMutation'
+import { useRequireAuth } from '../../hooks/useRequierAuth'
 import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import OfferGallery from './OfferGallery'
@@ -22,7 +23,7 @@ export default function OfferPageComponent() {
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const [bookingOpen, setBookingOpen] = useState(false)
-
+  const requireAuth = useRequireAuth()
   const extractResource = (payload, primaryKey, fallbackKey) => {
     const candidates = [
       payload?.[primaryKey],
@@ -204,7 +205,8 @@ export default function OfferPageComponent() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (!isUnavailable) setBookingOpen(true)
+                    if (!isUnavailable) 
+                      requireAuth(() => setBookingOpen(true))
                   }}
                   disabled={isUnavailable}
                   className={`inline-flex w-full items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xl font-medium transition-all duration-200 ${

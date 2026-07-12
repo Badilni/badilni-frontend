@@ -3,6 +3,7 @@ import { useServiceRequests } from '../../hooks/Timeline/useServiceRequests'
 import { useCategories } from '../../hooks/useCategories'
 import { useProposeSession } from '../../hooks/Timeline/useProposeSession'
 import { useDeleteServiceRequest } from '../../hooks/Timeline/useServiceRequestMutations'
+import { useRequireAuth } from '../../hooks/useRequierAuth'
 import RequestsHeader from './RequestsHeader'
 import RequestFilters from './RequestFilters'
 import RequestCard from './RequestCard'
@@ -24,6 +25,9 @@ export default function ServiceRequestsPage() {
   const [createOpen, setCreateOpen] = useState(false)
   const [editingRequest, setEditingRequest] = useState(null)
   const [deletingRequest, setDeletingRequest] = useState(null)
+
+  const requireAuth = useRequireAuth()
+  const openCreate = () => requireAuth(() => setCreateOpen(true))
 
   const filters = useMemo(
     () => ({ category, status, sort, page, limit: PAGE_SIZE }),
@@ -106,7 +110,7 @@ export default function ServiceRequestsPage() {
         <EmptyState
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
-          onPostRequest={() => setCreateOpen(true)}
+          onPostRequest={openCreate}
         />
       )}
 
@@ -136,7 +140,7 @@ export default function ServiceRequestsPage() {
           hasMore={filters.page < totalPages}
           isLoadingMore={isFetching}
           onLoadMore={() => setPage((prev) => prev + 1)}
-          onPostRequest={() => setCreateOpen(true)}
+          onPostRequest={openCreate}
         />
       )}
 

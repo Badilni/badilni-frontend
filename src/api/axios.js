@@ -20,7 +20,7 @@ export const navigateTo = (path) => {
     try {
       if (window.location.hash || window.location.href.includes('#')) {
         window.location.hash = path
-      } else {
+      } else {  
         window.location.assign(path)
       }
     } catch {
@@ -66,10 +66,7 @@ const processQueue = (error, token = null) => {
   failedQueue = []
 }
 
-/**
- * Robust wrapper to hit the refresh endpoint.
- * If the server responds with a 429, it pauses and retries up to 'retries' times.
- */
+
 const executeRefreshWithBackoff = async (retries = 3, delay = 1000) => {
   try {
     return await api.post('/auth/refresh')
@@ -87,7 +84,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // Requests that explicitly opt out of the refresh flow (e.g. getMe on boot)
     if (originalRequest?.skipAuthRefresh) {
       if (error.response?.data?.message) {
         error.message = error.response.data.message
@@ -116,10 +112,8 @@ api.interceptors.response.use(
       isRefreshing = true
 
       try {
-        // Run the token refresh with the 429 retry safety net built-in
         const refreshResponse = await executeRefreshWithBackoff()
 
-        // Adjust this path to match your backend's actual response shape
         const newAccessToken = refreshResponse.data.accessToken
         setAccessToken(newAccessToken)
 
@@ -133,17 +127,14 @@ api.interceptors.response.use(
         processQueue(refreshError)
         clearAccessToken()
 
-        // Redirect via registered useNavigate SPA navigation helper
         try {
           navigateTo('/signIn')
         } catch {
-          // ignore in non-browser environments
         }
         return Promise.reject(refreshError)
       }
     }
 
-    // Attach any server-sent message to the thrown Error for downstream handlers
     if (error.response?.data?.message) {
       error.message = error.response.data.message
     }

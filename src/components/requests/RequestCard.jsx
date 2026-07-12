@@ -7,6 +7,8 @@ import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getAccentColor } from '../../utils/getAccentColor'
 import { getProfilePath } from '../../utils/getProfilePath'
 import CreateBookingModal from '../bookings/CreateBookingModal'
+import { useRequireAuth } from '../../hooks/useRequierAuth'
+
 
 export { getAccentColor }
 
@@ -41,6 +43,7 @@ export default function RequestCard({
     resolvedCategory?.name || safeRequest.category?.name || 'General'
   const accentColor = getAccentColor(categoryName)
   const profilePath = getProfilePath(safeUser, currentUser)
+  const requireAuth = useRequireAuth()
 
   const deadlineMs = safeRequest.deadline
     ? new Date(safeRequest.deadline).getTime()
@@ -268,7 +271,9 @@ export default function RequestCard({
           <button
             onClick={(e) => {
               e.stopPropagation()
-              if (!isUnavailable) setBookingOpen(true)
+              requireAuth(() => {
+                if (!isUnavailable) setBookingOpen(true)
+              })
             }}
             disabled={isUnavailable}
             className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${

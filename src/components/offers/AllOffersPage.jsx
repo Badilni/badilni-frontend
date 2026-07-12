@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useOffers } from '../../hooks/Timeline/useOffer'
 import { useDeleteOffer } from '../../hooks/Timeline/useOfferMutation'
 import { useCategories } from '../../hooks/useCategories'
+import { useRequireAuth } from '../../hooks/useRequierAuth'
 import OffersHeader from './OffersHeader'
 import OfferFilters from './OfferFilters'
 import OfferCard from './OfferCard'
@@ -22,6 +23,9 @@ export default function AllOffersPage() {
   const [createOpen, setCreateOpen] = useState(false)
   const [editingOffer, setEditingOffer] = useState(null)
   const [deletingOffer, setDeletingOffer] = useState(null)
+  const requireAuth = useRequireAuth()
+  const openCreate = () => requireAuth(() => setCreateOpen(true))
+
 
   const filters = useMemo(() => {
     const page = Number(searchParams.get('page') || 1)
@@ -121,7 +125,7 @@ export default function AllOffersPage() {
         <EmptyState
           hasActiveFilters={hasActiveFilters}
           onClearFilters={resetFilters}
-          onPostRequest={() => setCreateOpen(true)}
+          onPostRequest={openCreate}
           title={
             hasActiveFilters ? 'No offers match these filters' : 'No offers yet'
           }
@@ -159,7 +163,7 @@ export default function AllOffersPage() {
               { resetPage: false }
             )
           }
-          onPostOffer={() => setCreateOpen(true)}
+          onPostOffer={openCreate}
         />
       )}
 

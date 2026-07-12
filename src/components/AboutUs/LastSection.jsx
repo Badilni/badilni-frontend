@@ -26,7 +26,7 @@ export default function LastSection() {
           </Link>
 
           <Link
-            to={isLoggedIn ? '/request-skills' : '/signin'}
+            to={isLoggedIn ? '/requests' : '/signin'}
             className="border border-[var(--background-light)] text-white px-6 py-3 rounded-xl text-xs font-semibold
             hover:bg-[var(--whiteBackground)]  hover:text-[#3b82f6] dark:hover:text-[var(--black-text)] transition-colors inline-block text-center"
           >

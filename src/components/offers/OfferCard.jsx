@@ -5,6 +5,7 @@ import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getAccentColor } from '../../utils/getAccentColor'
 import { getProfilePath } from '../../utils/getProfilePath'
+import { useRequireAuth } from '../../hooks/useRequierAuth'
 import CreateBookingModal from '../bookings/CreateBookingModal'
 
 export default function OfferCard({ offer, onEdit, onDelete }) {
@@ -15,6 +16,7 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
   const owner = checkIsOwner(currentUser, offer.user)
   const accentColor = getAccentColor(offer.category?.name)
   const profilePath = getProfilePath(offer.user, currentUser)
+  const requireAuth = useRequireAuth()
 
   const handleCardClick = () => navigate(`/offers/${offer._id ?? offer.id}`)
 
@@ -150,8 +152,10 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
               <button
                 type="button"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  setBookingOpen(true)
+                  e.stopPropagation();
+                  requireAuth(()=>(
+                    setBookingOpen(true)
+                  ))
                 }}
                 className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r ${accentColor} hover:brightness-110 transition-all active:scale-95`}
               >

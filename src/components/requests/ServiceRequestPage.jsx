@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useServiceRequest } from '../../hooks/Timeline/useServiceRequests'
 import { useDeleteServiceRequest } from '../../hooks/Timeline/useServiceRequestMutations'
+import { useRequireAuth } from '../../hooks/useRequierAuth'
 import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getProfilePath } from '../../utils/getProfilePath'
@@ -22,6 +23,7 @@ export default function ServiceRequestPage() {
   const currentUser = useAuthStore((state) => state.user)
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const requireAuth = useRequireAuth()
 
   const extractResource = (payload, primaryKey, fallbackKey) => {
     const candidates = [
@@ -211,7 +213,8 @@ export default function ServiceRequestPage() {
           <button
             onClick={(e) => {
               e.stopPropagation()
-              if (!isUnavailable) setBookingOpen(true)
+              if (!isUnavailable) 
+                requireAuth(() => setBookingOpen(true))
             }}
             disabled={isUnavailable}
             className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
