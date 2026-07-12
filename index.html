@@ -25,6 +25,18 @@
     <title>Badilni</title>
   </head>
   <body>
+    <!-- Capture beforeinstallprompt BEFORE React mounts.
+         The event fires early during page load — if we wait for React's
+         useEffect the event is already gone and canInstall never becomes true. -->
+    <script>
+      window.__pwaInstallPrompt = null
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault()
+        window.__pwaInstallPrompt = e
+        // Notify any already-mounted React listener (e.g. hot reload in dev)
+        window.dispatchEvent(new CustomEvent('pwa-prompt-ready'))
+      })
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

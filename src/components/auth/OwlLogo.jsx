@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const OwlLogo = ({
   errorMessage = '',
   passwordFocused = false,
   submitHovered = false,
 }) => {
+  const navigate = useNavigate()
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
@@ -39,7 +41,10 @@ const OwlLogo = ({
 
   return (
     <div className="flex justify-center items-center w-full">
-      <div className="w-[220px] h-[220px] md:w-[250px] md:h-[250px]">
+      <div
+        className="w-[220px] h-[220px] md:w-[250px] md:h-[250px] cursor-pointer"
+        onClick={() => navigate(-1)}
+      >
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           {/* Graduation Cap */}
           <rect x="20" y="30" width="80" height="25" fill="var(--owl-logo)" />

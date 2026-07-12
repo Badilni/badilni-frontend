@@ -203,7 +203,10 @@ const Login = ({ onBack, onSuccess, onForgotPassword, onSignUp }) => {
               passwordFocused={passwordFocused}
               submitHovered={submitHovered}
             />
-            <h2 className="text-6xl font-extrabold tracking-wider bg-gradient-to-r from-[var(--primary-light)] to-[var(--secondary-light)] bg-clip-text text-transparent">
+            <h2
+              className="text-6xl font-extrabold tracking-wider bg-gradient-to-r from-[var(--primary-light)] to-[var(--secondary-light)] bg-clip-text text-transparent cursor-pointer"
+              onClick={() => navigate('/')}
+            >
               Badilni
             </h2>
           </div>

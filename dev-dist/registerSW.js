@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/badilni-frontend/dev-sw.js?dev-sw', { scope: '/badilni-frontend/', type: 'classic' })

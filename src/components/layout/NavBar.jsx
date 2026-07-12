@@ -8,6 +8,7 @@ import AdvancedSearchSystem from '../AdvancedSearch/AdvancedSearchSystem'
 import UserSidebar from './UserSidebar'
 import HeaderChatDropdown from '../Chat/HeaderChatDropdown'
 import NotificationDropdown from '../notifications/NotificationDropdown'
+import PWAInstallButton from './PWAInstallButton'
 
 // Centralized Navigation Config with Labels and Routes
 const NAV_ITEMS = [
@@ -118,9 +119,11 @@ export default function NavBar() {
             {/* Notification Bell */}
             <NotificationDropdown />
 
+            <PWAInstallButton />
+
+
             {/* Dark Mode Switcher */}
             <ThemeToggle />
-
             {/* Secure Authentication Access Nodes */}
             {!user ? (
               <Button variant="outline" size="sm" onClick={handleLogin}>
@@ -195,6 +198,9 @@ export default function NavBar() {
                 )
               })}
             </nav>
+
+            {/* PWA Install — mobile/tablet */}
+            <PWAInstallButton inMobileMenu />
 
             {!user && (
               <div className="pt-3 border-t border-gray-100 dark:border-slate-800">

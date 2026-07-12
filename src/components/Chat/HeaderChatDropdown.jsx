@@ -195,6 +195,8 @@ const HeaderChatDropdown = () => {
     }
   }
 
+  if (!currentUser) return null
+
   return (
     <div className="relative inline-block">
       <button
