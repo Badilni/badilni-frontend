@@ -49,7 +49,7 @@ export const executeLogout = async () => {
 }
 
 api.interceptors.request.use((config) => {
-  if (accessToken) {
+  if (accessToken && !config.skipAuthHeader) {
     config.headers.Authorization = `Bearer ${accessToken}`
   }
   return config
@@ -87,16 +87,20 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
+    // Requests that explicitly opt out of the refresh flow (e.g. getMe on boot)
+    if (originalRequest?.skipAuthRefresh) {
+      if (error.response?.data?.message) {
+        error.message = error.response.data.message
+      }
+      return Promise.reject(error)
+    }
+
     if (
       error.response?.status === 401 &&
+      originalRequest &&
       !originalRequest._retry &&
-      error.response.data.message ===
-        'Your token has expired. Please log in again'
+      !originalRequest.url.includes('/auth/refresh')
     ) {
-      if (originalRequest.url.includes('/auth/refresh')) {
-        return Promise.reject(error)
-      }
-
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject })
