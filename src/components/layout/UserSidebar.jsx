@@ -14,6 +14,7 @@ import { useBookings } from '../../hooks/booking/useBookings'
 import { getBookingRole } from '../../utils/bookingPermissions'
 import { BOOKING_STATUS } from '../../utils/bookingStatus'
 import BookingStatusBadge from '../bookings/BookingStatusBadge'
+import PWAInstallButton from './PWAInstallButton'
 
 const TABS = [
   {
@@ -200,6 +201,8 @@ const ProfileTab = ({ user, navigate, openConfirmModal }) => (
         </div>
       ))}
     </div>
+
+    <PWAInstallButton />
 
     <button
       style={{
