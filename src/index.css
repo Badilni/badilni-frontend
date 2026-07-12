@@ -15,6 +15,17 @@ body {
   padding: 0;
 }
 
+/* Pointer cursor on all interactive elements globally */
+button,
+a,
+[role='button'],
+[role='link'],
+label[for],
+select,
+summary {
+  cursor: pointer;
+}
+
 :root {
   /* light_mode */
   --background-light: #f5f5f5; /*main color for background*/

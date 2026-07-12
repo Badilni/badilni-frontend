@@ -32,7 +32,6 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Global listener to open user sidebar contextually
   useEffect(() => {
     const handleOpenSidebar = () => setSidebarOpen(true)
     window.addEventListener('open-user-sidebar', handleOpenSidebar)
@@ -40,7 +39,6 @@ export default function NavBar() {
       window.removeEventListener('open-user-sidebar', handleOpenSidebar)
   }, [])
 
-  // Automatically close mobile hamburger menu on route changes
   useEffect(() => {
     setMenuOpen(false)
   }, [location.pathname])
@@ -52,96 +50,100 @@ export default function NavBar() {
     await logout(navigate)
   }
 
-  // Checks if a navigation tab matches the active window path
   const isActiveRoute = (path) => {
-    if (path === '/') {
-      return location.pathname === '/'
-    }
+    if (path === '/') return location.pathname === '/'
     return location.pathname.startsWith(path)
   }
 
   return (
     <>
-      <header className="w-full sticky top-0 z-40 transition-colors duration-200 border-b border-gray-200/80 dark:border-slate-800/80 bg-[var(--whiteBackground)]/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm">
-        <div className="w-[96%] xl:w-11/12 max-w-[1600px] mx-auto px-2 sm:px-4 h-16 flex items-center justify-between gap-4">
-          {/* ── 1. LEFT SECTION (Logo + Nav Links) ────────────────────────── */}
-          <div className="flex items-center gap-4 xl:gap-8 shrink-0">
-            {/* Brand Logo */}
-            <button
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2 shrink-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 p-1 hover:opacity-90 transition-all duration-200"
-              aria-label="Go to homepage"
-            >
-              <img
-                src={Logo}
-                alt="Badilni Logo"
-                className="w-9 h-9 object-contain"
-              />
-              <span className="text-2xl font-black tracking-tight hidden sm:block bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-300 font-sans">
-                Badilni
-              </span>
-            </button>
+      <header className="w-full sticky top-0 z-40 border-b border-gray-200/80 dark:border-slate-800/80 bg-[var(--whiteBackground)]/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm transition-colors duration-200">
+        <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-5 h-16 flex items-center gap-2">
 
-            {/* Desktop Links */}
-            <nav
-              className="hidden xl:flex items-center gap-1"
-              aria-label="Main navigation"
-            >
-              {NAV_ITEMS.map((item) => {
-                const active = isActiveRoute(item.path)
-                return (
-                  <button
-                    key={item.path}
-                    onClick={() => navigate(item.path)}
-                    className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
-                      active
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
+          {/* ── LOGO — always visible ─────────────────────────────────────── */}
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 shrink-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 p-1 hover:opacity-90 transition-opacity duration-200"
+            aria-label="Go to homepage"
+          >
+            <img
+              src={Logo}
+              alt="Badilni Logo"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
+            />
+            <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-300">
+              Badilni
+            </span>
+          </button>
 
-          {/* ── 2. MIDDLE SECTION (Centered Search Field) ─────────────────── */}
-          <div className="hidden md:flex flex-1 justify-center items-center transition-all duration-200">
+          {/* ── DESKTOP NAV LINKS — 2xl+ only (≥1536px) ──────────────────── */}
+          <nav
+            className="hidden 2xl:flex items-center gap-0.5 shrink-0 ml-2"
+            aria-label="Main navigation"
+          >
+            {NAV_ITEMS.map((item) => {
+              const active = isActiveRoute(item.path)
+              return (
+                <button
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  className={`px-3 py-2 text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 whitespace-nowrap ${
+                    active
+                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              )
+            })}
+          </nav>
+
+          {/* ── SEARCH — xl+ inline; below xl it goes into drawer ─────────── */}
+          <div className="hidden xl:flex flex-1 justify-center items-center min-w-0 px-3">
             <AdvancedSearchSystem compact />
           </div>
 
-          {/* ── 3. RIGHT SECTION (Header Action Utilities) ────────────────── */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Inbox Chat Triggers */}
-            <HeaderChatDropdown />
+          {/* ── RIGHT ACTIONS ──────────────────────────────────────────────── */}
+          <div className="flex items-center gap-1 sm:gap-1.5 ml-auto shrink-0">
 
-            {/* Notification Bell */}
-            <NotificationDropdown />
+            {/* Chat — sm+ header (component hides itself when not logged in) */}
+            <div className="hidden sm:block">
+              <HeaderChatDropdown />
+            </div>
 
-            <PWAInstallButton />
+            {/* Notifications — sm+ header */}
+            <div className="hidden sm:block">
+              <NotificationDropdown />
+            </div>
 
+            {/* Install — sm+ header */}
+            <div className="hidden sm:block">
+              <PWAInstallButton />
+            </div>
 
-            {/* Dark Mode Switcher */}
+            {/* Theme toggle — always visible */}
             <ThemeToggle />
-            {/* Secure Authentication Access Nodes */}
+
+            {/* Auth button — hidden below sm (available in drawer) */}
             {!user ? (
-              <Button variant="outline" size="sm" onClick={handleLogin}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogin}
+                className="hidden sm:flex whitespace-nowrap"
+              >
                 Sign In
               </Button>
             ) : (
               <AvatarButton user={user} onClick={() => setSidebarOpen(true)} />
             )}
 
-            {/* Tablet/Mobile Hamburger Control Button */}
+            {/* Hamburger — visible below 2xl */}
             <button
-              className="xl:hidden p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              className="2xl:hidden p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
               onClick={() => setMenuOpen((prev) => !prev)}
-              aria-label={
-                menuOpen
-                  ? 'Close system navigation menu'
-                  : 'Open system navigation menu'
-              }
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
             >
               <svg
@@ -152,35 +154,26 @@ export default function NavBar() {
                 strokeWidth={2}
               >
                 {menuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Responsive Drawer Menu Expansion Panel */}
+        {/* ── DRAWER — below 2xl ──────────────────────────────────────────── */}
         {menuOpen && (
-          <div className="xl:hidden border-t border-gray-100 dark:border-slate-800 bg-[var(--whiteBackground)] dark:bg-slate-900 transition-all duration-300 ease-in-out px-4 py-4 space-y-4 shadow-inner">
-            {/* Mobile View Standalone Search Input Overlay */}
-            <div className="md:hidden flex justify-center">
+          <div className="2xl:hidden border-t border-gray-100 dark:border-slate-800 bg-[var(--whiteBackground)] dark:bg-slate-900 px-4 py-4 space-y-2 shadow-inner">
+
+            {/* Search — below xl only */}
+            <div className="xl:hidden pb-1">
               <AdvancedSearchSystem compact />
             </div>
 
-            <nav
-              className="flex flex-col gap-1"
-              aria-label="Mobile navigation configuration context"
-            >
+            {/* Nav links */}
+            <nav className="flex flex-col gap-0.5" aria-label="Mobile navigation">
               {NAV_ITEMS.map((item) => {
                 const active = isActiveRoute(item.path)
                 return (
@@ -199,26 +192,39 @@ export default function NavBar() {
               })}
             </nav>
 
-            {/* PWA Install — mobile/tablet */}
-            <PWAInstallButton inMobileMenu />
+            {/* Utility section */}
+            <div className="border-t border-gray-100 dark:border-slate-800 pt-3 space-y-1">
 
-            {!user && (
-              <div className="pt-3 border-t border-gray-100 dark:border-slate-800">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogin}
-                  className="w-full justify-center py-2.5"
-                >
-                  Sign In
-                </Button>
+              {/* Icons row — only below sm (sm+ already in header) */}
+              <div className="sm:hidden flex items-center gap-2 px-1 pb-1">
+                <HeaderChatDropdown />
+                <NotificationDropdown />
+                <PWAInstallButton />
               </div>
-            )}
+
+              {/* Install as full-width labelled button — sm to 2xl */}
+              <div className="hidden sm:block">
+                <PWAInstallButton inMobileMenu />
+              </div>
+
+              {/* Sign In — below sm only */}
+              {!user && (
+                <div className="sm:hidden pt-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogin}
+                    className="w-full justify-center py-2.5"
+                  >
+                    Sign In
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </header>
 
-      {/* Global Context User Navigation Drawer */}
       {user && (
         <UserSidebar
           open={sidebarOpen}
@@ -236,11 +242,11 @@ function AvatarButton({ user, onClick }) {
     <button
       onClick={onClick}
       className="flex items-center gap-2 p-1 border border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 rounded-full cursor-pointer transition-all duration-200 bg-gray-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-      aria-label="Open personalized user profile settings drawer"
+      aria-label="Open user profile drawer"
     >
       <img
         src={user.avatar?.url}
-        alt={user.name || 'User configuration profile image'}
+        alt={user.name || 'User avatar'}
         className="w-7 h-7 rounded-full object-cover border-2 border-[var(--primary-light)] shadow-sm shrink-0"
       />
       <span className="hidden sm:block text-xs font-semibold text-gray-700 dark:text-gray-200 pr-2 max-w-[90px] truncate select-none">
