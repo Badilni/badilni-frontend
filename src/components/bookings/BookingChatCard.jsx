@@ -57,26 +57,7 @@ export default function BookingChatCard({ bookingId, booking }) {
       })
   }, [bookingId])
 
-  // 2. Polling every 4s — silently merges new messages (most reliable fallback)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getBookingMessages(bookingId)
-        .then((res) => {
-          const msgs = res?.data?.messages || res?.messages || []
-          setMessages((prev) => {
-            if (msgs.length === prev.length) return prev
-            // Merge: keep existing + add new ones by id
-            const existingIds = new Set(prev.map((m) => m._id))
-            const added = msgs.filter((m) => !existingIds.has(m._id))
-            if (added.length === 0) return prev
-            markBookingMessagesAsRead(bookingId).catch(() => {})
-            return [...prev, ...added]
-          })
-        })
-        .catch(() => {})
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [bookingId])
+
 
   // 3. Socket.IO — listen on both possible event names the server might emit
   useEffect(() => {

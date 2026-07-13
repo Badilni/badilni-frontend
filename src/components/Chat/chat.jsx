@@ -176,25 +176,7 @@ const ChatPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChatId])
 
-  // Polling fallback: re-fetch active conversation messages every 5s silently
-  useEffect(() => {
-    if (!activeChatId || activeChatId.startsWith('pending_')) return
-    const interval = setInterval(() => {
-      getMessages(activeChatId)
-        .then((res) => {
-          const msgs = res?.data?.messages || []
-          setCurrentChat((prev) => {
-            if (!prev) return prev
-            const existingIds = new Set((prev.messages || []).map((m) => m._id))
-            const added = msgs.filter((m) => !existingIds.has(m._id))
-            if (added.length === 0) return prev
-            return { ...prev, messages: [...(prev.messages || []), ...added] }
-          })
-        })
-        .catch(() => {})
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [activeChatId])
+
 
   // Socket.IO real-time connection and event registration
   useEffect(() => {
