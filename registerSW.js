@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/badilni-frontend/sw.js', { scope: '/badilni-frontend/' })})}
