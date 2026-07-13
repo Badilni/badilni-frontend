@@ -8,6 +8,7 @@ import {
   FiFile,
   FiFileText,
 } from 'react-icons/fi'
+import { VscMention } from "react-icons/vsc";
 import EmojiPicker from 'emoji-picker-react'
 import useAuthStore from '../../store/authStore'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +23,8 @@ const ChatWindow = ({
   onSendMessage,
   onTyping,
   compact = false,
+  mention,
+  onClearMention,
 }) => {
   const navigate = useNavigate()
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -116,6 +119,17 @@ const ChatWindow = ({
     isTypingRef.current = false
   }
 
+  const goToReference = (msg) => {
+    const refId =
+      typeof msg.reference === 'object' ? msg.reference._id : msg.reference
+    if (!refId) return
+    const path =
+      msg.referenceType === 'ServiceRequest'
+        ? `/requests/${refId}`
+        : `/offers/${refId}`
+    navigate(path)
+  }
+
   return (
     <div
       className={`flex-1 h-full flex flex-col transition-all duration-300 bg-blue-50/50 dark:bg-slate-950 ${compact ? 'p-2' : 'p-4 md:p-6'} ${compact ? 'flex' : viewMode === 'chat' ? 'flex' : 'hidden lg:flex'}`}
@@ -152,10 +166,6 @@ const ChatWindow = ({
                 <h3 className="font-bold text-slate-800 dark:text-white group-hover:text-blue-500 transition-colors">
                   {otherParticipant?.name || 'Unknown User'}
                 </h3>
-                {/* <p className="text-[10px] text-blue-500 font-bold uppercase tracking-wider flex items-center gap-1">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>{' '}
-                  Active now
-                </p> */}
               </div>
             </div>
           </div>
@@ -194,6 +204,24 @@ const ChatWindow = ({
                 <div
                   className={`p-3 rounded-2xl shadow-sm leading-relaxed ${isMe ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-tr-none shadow-md shadow-blue-500/10' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-gray-100 dark:border-slate-700/50'}`}
                 >
+                  {/* Reference chip (offer/request mention) */}
+                  {msg.reference && (
+                    <div
+                      onClick={() => goToReference(msg)}
+                      className={`mb-2 flex items-center gap-1.5 p-2 rounded-lg text-xs cursor-pointer hover:underline ${
+                        isMe
+                          ? 'bg-white/15'
+                          : 'bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300'
+                      }`}
+                    >
+                      <VscMention size={12} />
+                      {msg.referenceType === 'ServiceRequest' ? 'Request' : 'Offer'}:{' '}
+                      {typeof msg.reference === 'object'
+                        ? msg.reference.title || 'View details'
+                        : 'View details'}
+                    </div>
+                  )}
+
                   {/* Render Attachments (Array structure from backend) */}
                   {msg.attachments && msg.attachments.length > 0 && (
                     <div className="space-y-2 mt-1 mb-2">
@@ -261,6 +289,23 @@ const ChatWindow = ({
         })}
         <div ref={internalMessagesEndRef} />
       </div>
+
+      {/* Mention chip for the message about to be sent */}
+      {mention && (
+        <div className="flex items-center gap-2 mb-2 px-3 py-2 bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700 rounded-2xl text-xs text-blue-700 dark:text-blue-300">
+          <VscMention size={14} className="shrink-0" />
+          <span className="truncate">
+            Mentioning: <span className="font-semibold">{mention.title}</span>
+          </span>
+          <button
+            type="button"
+            onClick={onClearMention}
+            className="ml-auto text-blue-400 hover:text-blue-600"
+          >
+            <FiX size={14} />
+          </button>
+        </div>
+      )}
 
       {/* Input Field and Action Bar */}
       <form

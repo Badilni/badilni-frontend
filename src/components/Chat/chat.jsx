@@ -26,6 +26,7 @@ const ChatPage = () => {
   const [activeChatId, setActiveChatId] = useState(null)
   const [viewMode, setViewMode] = useState('sidebar')
   const [currentChat, setCurrentChat] = useState(null)
+  const [pendingMention, setPendingMention] = useState(null)
   const messagesEndRef = useRef(null)
 
   const socketRef = useRef(null)
@@ -62,13 +63,21 @@ const ChatPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Handle select user id from router state (e.g. from MentorCard/profile)
+  // Handle select user id from router state (e.g. from MentorCard/profile/offer/request)
   useEffect(() => {
     if (hasLoadedConversations && location.state?.selectUserId) {
       const targetUserId = location.state.selectUserId
+      const targetMention = location.state.mention || null
 
       // Consume the state parameter immediately to prevent unexpected automated re-focusing
       navigate(location.pathname, { replace: true, state: null })
+
+      if (targetMention) {
+        setPendingMention(targetMention)
+        setMessageText((prev) =>
+          prev?.trim() ? prev : `Hi! I'm interested in "${targetMention.title}"`
+        )
+      }
 
       const targetChat = chats.find((chat) =>
         chat.participants?.some((p) => p._id === targetUserId)
@@ -204,7 +213,6 @@ const ChatPage = () => {
     })
 
     socket.on('message:new', (payload) => {
-      console.log('[Chat Socket] New message:', payload)
 
       // conversation can be a populated object or a plain string id
       const conversationId =
@@ -267,7 +275,6 @@ const ChatPage = () => {
     })
 
     socket.on('message:read', (payload) => {
-      console.log('[Chat Socket] Messages read:', payload)
       if (payload.conversation === activeChatIdRef.current) {
         setCurrentChat((prev) => {
           if (!prev || !prev.messages) return prev
@@ -309,13 +316,13 @@ const ChatPage = () => {
   }, [user?._id])
 
   const handleSelectChat = (id) => {
+    if (id !== activeChatId) setPendingMention(null)
     setActiveChatId(id)
     setViewMode('chat')
   }
 
   const handleTyping = (isTyping) => {
     if (!socketRef.current || !activeChatId || !currentChat) return
-    // Skip if it is a pending chat
     if (activeChatId.startsWith('pending_')) return
 
     const otherParticipant = currentChat.participants?.find(
@@ -343,17 +350,18 @@ const ChatPage = () => {
     const formData = new FormData()
     if (messageText.trim()) formData.append('body', messageText)
     if (file) formData.append('attachments', file)
+    if (pendingMention) {
+      formData.append('referenceType', pendingMention.referenceType)
+      formData.append('reference', pendingMention.reference)
+    }
 
     try {
       const response = await sendMessage(recipient._id, formData)
       const newMessage = response?.data?.message || response
 
-      // Stop typing status instantly upon send
       handleTyping(false)
 
-      // If it was a pending conversation, we now have a real conversation ID!
       if (activeChatId.startsWith('pending_')) {
-        // Refetch conversations to sync state and select the newly created chat
         getConversations().then((data) => {
           const conversations = data?.data?.conversations || []
           setChats(conversations)
@@ -369,7 +377,6 @@ const ChatPage = () => {
           ...prev,
           messages: [...(prev?.messages || []), newMessage],
         }))
-        // Update last message in sidebar
         setChats((prevChats) =>
           prevChats
             .map((c) =>
@@ -392,6 +399,7 @@ const ChatPage = () => {
       }
 
       setMessageText('')
+      setPendingMention(null)
     } catch (error) {
       console.error('Error sending message:', error)
       alert(error.message || 'Failed to send message. Please try again.')
@@ -434,6 +442,8 @@ const ChatPage = () => {
           messagesEndRef={messagesEndRef}
           isInfoOpen={isInfoOpen}
           setIsInfoOpen={setIsInfoOpen}
+          mention={pendingMention}
+          onClearMention={() => setPendingMention(null)}
         />
 
         <ChatInfoPanel

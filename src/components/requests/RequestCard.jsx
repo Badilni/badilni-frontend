@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { resolveCategory } from '../../utils/resolveCategory'
 import { useNavigate } from 'react-router-dom'
 import { FaEllipsisVertical } from 'react-icons/fa6'
+import { VscMention } from "react-icons/vsc";
 import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getAccentColor } from '../../utils/getAccentColor'
@@ -73,6 +74,22 @@ export default function RequestCard({
         day: 'numeric',
       })
     : 'Recently posted'
+
+  const handleMention = (e) => {
+    e.stopPropagation()
+    requireAuth(() => {
+      navigate('/chat', {
+        state: {
+          selectUserId: safeUser?._id,
+          mention: {
+            referenceType: 'ServiceRequest',
+            reference: safeRequest._id ?? safeRequest.id,
+            title: safeRequest.title,
+          },
+        },
+      })
+    })
+  }
 
   return (
     <>
@@ -252,7 +269,7 @@ export default function RequestCard({
             >
               {safeUser.name?.charAt(0) || 'U'}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
                 {safeUser.name || 'Anonymous User'}
               </p>
@@ -265,6 +282,17 @@ export default function RequestCard({
                 <span className="truncate">{categoryName}</span>
               </div>
             </div>
+
+            {!isOwner && (
+              <button
+                type="button"
+                onClick={handleMention}
+                title="Message about this request"
+                className="shrink-0 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-gray-500 hover:text-blue-600 hover:border-blue-200 transition-colors"
+              >
+                <VscMention size={16} />
+              </button>
+            )}
           </div>
 
           {/* Book Session — per spec: clicker becomes Provider; hidden for owner and expired */}

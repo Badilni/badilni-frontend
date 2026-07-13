@@ -81,7 +81,7 @@ define(['./workbox-bbbdf4d3'], (function (workbox) { 'use strict';
     "revision": "012cac81bea0d95ce49a8e3219e002f6"
   }, {
     "url": "/badilni-frontend/index.html",
-    "revision": "0.8kn7i8ojrng"
+    "revision": "0.0l9r4cue6bg"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/badilni-frontend/index.html"), {

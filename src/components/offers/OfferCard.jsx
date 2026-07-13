@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaEllipsisVertical, FaStar } from 'react-icons/fa6'
+import { VscMention } from "react-icons/vsc";
 import useAuthStore from '../../store/authStore'
 import { isOwner as checkIsOwner } from '../../utils/isOwner'
 import { getAccentColor } from '../../utils/getAccentColor'
@@ -19,6 +20,22 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
   const requireAuth = useRequireAuth()
 
   const handleCardClick = () => navigate(`/offers/${offer._id ?? offer.id}`)
+
+  const handleMention = (e) => {
+    e.stopPropagation()
+    requireAuth(() => {
+      navigate('/chat', {
+        state: {
+          selectUserId: offer.user?._id,
+          mention: {
+            referenceType: 'SkillListing',
+            reference: offer._id ?? offer.id,
+            title: offer.title,
+          },
+        },
+      })
+    })
+  }
 
   return (
     <>
@@ -147,6 +164,17 @@ export default function OfferCard({ offer, onEdit, onDelete }) {
                 <span>{offer.totalBookings ?? 0} bookings</span>
               </div>
             </div>
+
+            {!owner && (
+              <button
+                type="button"
+                onClick={handleMention}
+                title="Message about this offer"
+                className="shrink-0 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-gray-500 hover:text-blue-600 hover:border-blue-200 transition-colors"
+              >
+                <VscMention size={16} />
+              </button>
+            )}
 
             {!owner && offer.isActive && (
               <button

@@ -14,10 +14,14 @@ export const fetchConversations = (page = 1, limit = 20) =>
 export const fetchMessages = (conversationId, page = 1) =>
   getMessages(conversationId, page)
 
-export const sendChatMessage = (conversationId, text, files = []) => {
+export const sendChatMessage = (conversationId, text, files = [], mention = null) => {
   const formData = new FormData()
   formData.append('body', text)
   files.forEach((file) => formData.append('attachments', file))
+  if (mention) {
+    formData.append('referenceType', mention.referenceType)
+    formData.append('reference', mention.reference)
+  }
   return sendMessage(conversationId, formData)
 }
 

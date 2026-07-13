@@ -13,6 +13,8 @@ import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import ErrorState from '../shared/ErrorState'
 import OfferReviews from './OfferReviews'
 import CreateBookingModal from '../bookings/CreateBookingModal'
+import { VscMention } from "react-icons/vsc";
+
 
 export default function OfferPageComponent() {
   const { offerId } = useParams()
@@ -72,6 +74,21 @@ export default function OfferPageComponent() {
   const handleDelete = () => {
     deleteOffer.mutate(offer._id ?? offer.id, {
       onSuccess: () => navigate('/offers'),
+    })
+  }
+
+  const handleMention = () => {
+    requireAuth(() => {
+      navigate('/chat', {
+        state: {
+          selectUserId: offer.user?._id,
+          mention: {
+            referenceType: 'SkillListing',
+            reference: offer._id ?? offer.id,
+            title: offer.title,
+          },
+        },
+      })
     })
   }
 
@@ -202,27 +219,36 @@ export default function OfferPageComponent() {
                     This offer is currently inactive.
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!isUnavailable) 
-                      requireAuth(() => setBookingOpen(true))
-                  }}
-                  disabled={isUnavailable}
-                  className={`inline-flex w-full items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xl font-medium transition-all duration-200 ${
-                    owner
-                      ? 'bg-gray-100 text-gray-500 cursor-default'
-                      : isUnavailable
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={handleMention}
+                    className="px-5 py-2.5 rounded-xl text-sm font-bold border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800"
+                  >
+                    <VscMention size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!isUnavailable)
+                        requireAuth(() => setBookingOpen(true))
+                    }}
+                    disabled={isUnavailable}
+                    className={`flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xl font-medium transition-all duration-200 ${
+                      owner
                         ? 'bg-gray-100 text-gray-500 cursor-default'
-                        : 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110 cursor-pointer'
-                  }`}
-                >
-                  {owner
-                    ? 'Your Offer'
-                    : isFulfilled || !isActive
-                      ? 'Unavailable'
-                      : 'Book'}
-                </button>
+                        : isUnavailable
+                          ? 'bg-gray-100 text-gray-500 cursor-default'
+                          : 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:brightness-110 cursor-pointer'
+                    }`}
+                  >
+                    {owner
+                      ? 'Your Offer'
+                      : isFulfilled || !isActive
+                        ? 'Unavailable'
+                        : 'Book'}
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -11,6 +11,8 @@ import OfferGallery from '../offers/OfferGallery'
 import ConfirmDeleteModal from '../shared/ConfirmDeleteModal'
 import ErrorState from '../shared/ErrorState'
 import CreateBookingModal from '../bookings/CreateBookingModal'
+import { VscMention } from "react-icons/vsc";
+
 
 export default function ServiceRequestPage() {
   const { requestId } = useParams()
@@ -83,6 +85,21 @@ export default function ServiceRequestPage() {
   const handleDelete = () => {
     deleteRequest.mutate(request._id ?? request.id, {
       onSuccess: () => navigate('/requests'),
+    })
+  }
+
+  const handleMention = () => {
+    requireAuth(() => {
+      navigate('/chat', {
+        state: {
+          selectUserId: request.user?._id,
+          mention: {
+            referenceType: 'ServiceRequest',
+            reference: request._id ?? request.id,
+            title: request.title,
+          },
+        },
+      })
     })
   }
 
@@ -210,29 +227,38 @@ export default function ServiceRequestPage() {
               This request deadline has passed.
             </div>
           )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              if (!isUnavailable) 
-                requireAuth(() => setBookingOpen(true))
-            }}
-            disabled={isUnavailable}
-            className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
-              isOwner
-                ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 cursor-default'
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={handleMention}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800"
+            >
+              <VscMention size={16} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                if (!isUnavailable)
+                  requireAuth(() => setBookingOpen(true))
+              }}
+              disabled={isUnavailable}
+              className={`flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed ${
+                isOwner
+                  ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 cursor-default'
+                  : isFulfilled
+                    ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-default'
+                    : 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:shadow-lg hover:brightness-110'
+              }`}
+            >
+              {isOwner
+                ? 'Your Request'
                 : isFulfilled
-                  ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-default'
-                  : 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:shadow-lg hover:brightness-110'
-            }`}
-          >
-            {isOwner
-              ? 'Your Request'
-              : isFulfilled
-                ? 'Fulfilled'
-                : isExpired
-                  ? 'Deadline Passed'
-                  : 'Book Session'}
-          </button>
+                  ? 'Fulfilled'
+                  : isExpired
+                    ? 'Deadline Passed'
+                    : 'Book Session'}
+            </button>
+          </div>
         </div>
       </div>
 
