@@ -54,7 +54,6 @@ export const useUnreadCount = () => {
   return useQuery({
     queryKey: ['chat', 'unread-count'],
     queryFn: getUnreadCount,
-    refetchInterval: 30000,
   })
 }
 
