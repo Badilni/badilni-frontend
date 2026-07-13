@@ -81,11 +81,11 @@ export default function AdvancedSearchSystem({ compact = false }) {
     return (
       <form
         onSubmit={onSubmit}
-        className="flex items-center font-sans relative"
+        className="flex items-center font-sans relative w-full justify-center"
         ref={dropdownRef}
       >
         <div
-          className={`group relative flex items-center h-10 w-72 md:w-96 rounded-full border bg-white dark:bg-slate-900 transition-all duration-300 ${
+          className={`group relative flex items-center h-10 w-full max-w-md md:max-w-xl rounded-full border bg-white dark:bg-slate-900 transition-all duration-300 ${
             mode === 'smart'
               ? 'border-slate-200 dark:border-slate-700 focus-within:border-violet-400 focus-within:ring-4 focus-within:ring-violet-500/10'
               : 'border-slate-200 dark:border-slate-700 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/10'
@@ -153,45 +153,45 @@ export default function AdvancedSearchSystem({ compact = false }) {
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </button>
-        </div>
 
-        {/* Dropdown Menu */}
-        {isDropdownOpen && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-52 rounded-xl bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 py-1.5 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-            {MODES.map((m) => {
-              const isActive = mode === m.key
-              return (
-                <button
-                  key={m.key}
-                  type="button"
-                  onClick={() => {
-                    setMode(m.key)
-                    setIsDropdownOpen(false)
-                  }}
-                  className={`w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50 ${
-                    isActive ? 'bg-slate-50 dark:bg-slate-700/30' : ''
-                  }`}
-                >
-                  <span
-                    className={`mt-0.5 shrink-0 ${isActive ? (m.key === 'smart' ? 'text-violet-500' : 'text-blue-500') : 'text-slate-400'}`}
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <div className="absolute top-[calc(100%+8px)] left-0 w-52 rounded-xl bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 py-1.5 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+              {MODES.map((m) => {
+                const isActive = mode === m.key
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => {
+                      setMode(m.key)
+                      setIsDropdownOpen(false)
+                    }}
+                    className={`w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50 ${
+                      isActive ? 'bg-slate-50 dark:bg-slate-700/30' : ''
+                    }`}
                   >
-                    {m.icon}
-                  </span>
-                  <div>
-                    <div
-                      className={`text-xs font-bold uppercase tracking-wide ${isActive ? (m.key === 'smart' ? 'text-violet-600 dark:text-violet-400' : 'text-blue-600 dark:text-blue-400') : 'text-slate-700 dark:text-slate-300'}`}
+                    <span
+                      className={`mt-0.5 shrink-0 ${isActive ? (m.key === 'smart' ? 'text-violet-500' : 'text-blue-500') : 'text-slate-400'}`}
                     >
-                      {m.label}
+                      {m.icon}
+                    </span>
+                    <div>
+                      <div
+                        className={`text-xs font-bold uppercase tracking-wide ${isActive ? (m.key === 'smart' ? 'text-violet-600 dark:text-violet-400' : 'text-blue-600 dark:text-blue-400') : 'text-slate-700 dark:text-slate-300'}`}
+                      >
+                        {m.label}
+                      </div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight pr-2">
+                        {m.description}
+                      </div>
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight pr-2">
-                      {m.description}
-                    </div>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        )}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </form>
     )
   }

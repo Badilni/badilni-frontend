@@ -29,12 +29,19 @@ import BookingPageDetail from '../pages/Booking/BookingPageDetail'
 import Matcher from '../pages/matcher/Matcher'
 import { MatchPage } from '../pages/matcher/MatchPage'
 
-const RootLayout = () => (
-  <>
-    <AuthInitializer />
-    <Outlet />
-  </>
-)
+import Spinner from '../components/common/Spinner'
+import useAuthStore from '../store/authStore'
+
+const RootLayout = () => {
+  const isAuthLoading = useAuthStore((s) => s.isLoading)
+
+  return (
+    <>
+      <AuthInitializer />
+      {isAuthLoading ? <Spinner /> : <Outlet />}
+    </>
+  )
+}
 
 const router = createHashRouter([
   {

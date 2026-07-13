@@ -4,13 +4,11 @@ import NavBar from '../components/layout/NavBar'
 import Footer from '../components/layout/Footer'
 import Spinner from '../components/common/Spinner'
 import { useSocketNotifications } from '../hooks/useSocketNotifications'
-import useAuthStore from '../store/authStore'
 
 const MainLayout = () => {
   useSocketNotifications()
   const location = useLocation()
   const [loading, setLoading] = useState(true)
-  const isAuthLoading = useAuthStore((s) => s.isLoading)
 
   useEffect(() => {
     setTimeout(() => {
@@ -21,14 +19,6 @@ const MainLayout = () => {
   }, [location.pathname])
 
   const isChatRoute = location.pathname.startsWith('/chat')
-
-  if (isAuthLoading) {
-    return (
-      <div className="flex w-full flex-col items-center">
-        <Spinner />
-      </div>
-    )
-  }
 
   return (
     <div className="flex w-full flex-col items-center">

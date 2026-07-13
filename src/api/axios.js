@@ -114,7 +114,10 @@ api.interceptors.response.use(
       try {
         const refreshResponse = await executeRefreshWithBackoff()
 
-        const newAccessToken = refreshResponse.data.accessToken
+        const newAccessToken =
+          refreshResponse.data?.data?.accessToken ||
+          refreshResponse.data?.accessToken ||
+          refreshResponse.data?.data?.token
         setAccessToken(newAccessToken)
 
         isRefreshing = false

@@ -22,7 +22,11 @@ const useAuthStore = create((set) => ({
     if (!getAccessToken()) {
       try {
         const refreshResponse = await api.post('/auth/refresh')
-        setAccessToken(refreshResponse.data.accessToken)
+        const token =
+          refreshResponse.data?.data?.accessToken ||
+          refreshResponse.data?.accessToken ||
+          refreshResponse.data?.data?.token
+        setAccessToken(token)
       } catch {
         // No valid refresh token either — genuinely logged out.
         clearAccessToken()
