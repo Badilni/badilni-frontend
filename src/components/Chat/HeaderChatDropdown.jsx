@@ -91,28 +91,7 @@ const HeaderChatDropdown = () => {
     }
   }, [currentUser])
 
-  // Polling fallback when popup is open
-  useEffect(() => {
-    if (!isPopupOpen || !selectedChat?.id) return
-    const interval = setInterval(() => {
-      getMessages(selectedChat.id)
-        .then((res) => {
-          const msgs = res?.data?.messages || []
-          setSelectedChat((prev) => {
-            if (!prev) return prev
-            const existingIds = new Set((prev.messages || []).map((m) => m._id))
-            const added = msgs.filter((m) => !existingIds.has(m._id))
-            if (added.length === 0) return prev
-            return {
-              ...prev,
-              messages: [...(prev.messages || []), ...added],
-            }
-          })
-        })
-        .catch(() => {})
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [isPopupOpen, selectedChat?.id])
+
 
   useEffect(() => {
     if (isDropdownOpen) {
